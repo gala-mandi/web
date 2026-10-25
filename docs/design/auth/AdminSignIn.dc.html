@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Platform admin sign in — Galla Mandi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#C4B5FD}a:hover{color:#EDE9FE}
+input::placeholder{color:#8B8798}
+</style>
+</helmet>
+<div style="position: relative; min-height: 100vh; overflow: hidden; background-color: #0F0D16; font-family: Inter, system-ui, sans-serif; color: #F4F2FA; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 40px 24px">
+  <img src="../images/wheat-field.webp" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.35">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(ellipse at center, rgba(15,13,22,0.55) 0%, rgba(15,13,22,0.96) 70%)"></div>
+
+  <div style="position: relative; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
+      <div style="width: 40px; height: 40px; border-radius: 12px; background-color: #6D28D9; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V9"/><path d="M12 13c-2.5 0-4-1.6-4-4 2.5 0 4 1.6 4 4z"/><path d="M12 13c2.5 0 4-1.6 4-4-2.5 0-4 1.6-4 4z"/><path d="M12 18c-2.5 0-4-1.6-4-4 2.5 0 4 1.6 4 4z"/><path d="M12 18c2.5 0 4-1.6 4-4-2.5 0-4 1.6-4 4z"/></svg>
+      </div>
+      <span style="font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-weight: 800; font-size: 19px">Galla Mandi</span>
+      <span style="padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background-color: rgba(196,181,253,0.16); color: #DDD6FE; border: 1px solid rgba(196,181,253,0.3)">Platform</span>
+    </div>
+
+    <div style="box-sizing: border-box; border-radius: 22px; padding: 32px; background-color: rgba(28,25,38,0.92); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 32px 64px -16px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Super-admin sign in</h2>
+        <p style="margin: 0; font-size: 14px; color: #B7B2C6">Manage shops, plans and platform settings.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="ad-email" style="font-size: 13px; font-weight: 600; color: #D6D2E2">Work email</label>
+        <input id="ad-email" type="email" placeholder="you@company.com" autocomplete="username" style="height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 1px solid #3A3549; background-color: #15121E; outline: 0; font: inherit; font-size: 15px; color: #F4F2FA">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="ad-pass" style="font-size: 13px; font-weight: 600; color: #D6D2E2">Password</label>
+        <input id="ad-pass" type="password" placeholder="Your password" autocomplete="current-password" style="height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 2px solid #8B5CF6; box-shadow: 0 0 0 4px rgba(139,92,246,0.22); background-color: #15121E; outline: 0; font: inherit; font-size: 15px; color: #F4F2FA">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="ad-2fa" style="font-size: 13px; font-weight: 600; color: #D6D2E2">Authenticator code</label>
+        <input id="ad-2fa" type="text" inputmode="numeric" placeholder="6-digit code" autocomplete="one-time-code" style="height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; border: 1px solid #3A3549; background-color: #15121E; outline: 0; font: inherit; font-size: 15px; letter-spacing: 0.2em; color: #F4F2FA">
+      </div>
+
+      <button type="button" style="height: 50px; border: 0; border-radius: 14px; cursor: pointer; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700; background-image: linear-gradient(90deg, #6D28D9, #9333EA)">Sign in securely</button>
+
+      <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background-color: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.28); font-size: 12.5px; line-height: 1.5; color: #FDE68A">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M12 9v4M12 16v.5"/></svg>
+        <span>Restricted area. Every sign-in and every action on a shop is recorded in the audit log.</span>
+      </div>
+    </div>
+
+    <a href="Main.dc.html" style="align-self: center; font-size: 13px; text-decoration: none">Go to shop sign in</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mobile verify code — Galla Mandi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Noto+Nastaliq+Urdu:wght@400;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#5B21B6}a:hover{color:#3B0764}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background-color: #FFFFFF; font-family: Inter, system-ui, sans-serif; color: #1E1B2E; padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <a href="MobileSignIn.dc.html" aria-label="Back" style="width: 44px; height: 44px; border-radius: 14px; border: 1px solid #E7E3EF; display: flex; align-items: center; justify-content: center; color: #1E1B2E"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <span style="font-size: 13px; font-weight: 600; color: #5B5668">Step 2 of 3</span>
+  </div>
+
+  <div style="position: relative; height: 170px; border-radius: 24px; overflow: hidden; background-color: #3B2A12">
+    <img src="../images/wheat-field.webp" alt="Wheat field at sunrise" style="width: 100%; height: 100%; object-fit: cover; object-position: center 65%">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(180deg, rgba(0,0,0,0) 30%, {{shade}} 100%)"></div>
+    <div style="position: absolute; left: 18px; bottom: 16px; width: 52px; height: 52px; border-radius: 16px; background-color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px -8px rgba(0,0,0,0.5)">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-13.2 8L3 21l1.1-4.6A9 9 0 1 1 21 12z"/><path d="M9 11.5l2 2 4-4"/></svg>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h2 style="margin: 0; font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-size: 26px; font-weight: 800; letter-spacing: -0.02em">Check WhatsApp</h2>
+    <p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #5B5668">Enter the 6-digit code sent to <strong style="color: #1E1B2E">+92 300 •••• 567</strong></p>
+    <p lang="ur" dir="rtl" style="margin: 0; font-family: 'Noto Nastaliq Urdu', serif; font-size: 13px; line-height: 2; color: #5B5668">واٹس ایپ پر آنے والا کوڈ درج کریں</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{digits}}" as="d" hint-placeholder-count="6">
+      <input type="text" inputmode="numeric" maxlength="1" value="{{d.v}}" aria-label="{{d.label}}" style="width: 100%; box-sizing: border-box; height: 56px; text-align: center; border-radius: 14px; font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-size: 22px; font-weight: 800; color: #1E1B2E; outline: 0; border: {{d.border}}; box-shadow: {{d.shadow}}; background-color: {{d.bg}}">
+    </sc-for>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5B5668">
+    <span>Expires in 4:18</span>
+    <span>Resend in <strong style="color: #3F3A4D">0:42</strong></span>
+  </div>
+
+  <a href="MobileSignIn.dc.html" style="margin-top: auto; height: 54px; border-radius: 16px; text-decoration: none; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; background-image: linear-gradient(90deg, {{btnA}}, {{btnB}}); box-shadow: 0 10px 24px -8px {{btnShadow}}">
+    Verify <span aria-hidden="true">·</span> <span lang="ur" style="font-family: 'Noto Nastaliq Urdu', serif; font-size: 15px; font-weight: 600">تصدیق کریں</span>
+  </a>
+  <a href="MobileSignIn.dc.html" style="align-self: center; padding: 10px; font-size: 13.5px; font-weight: 600; text-decoration: none; color: {{accent}}">Send by SMS instead</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["violet","indigo","blue","green","red","dark"],"default":"violet"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const B = { violet: ['#6D28D9', '#9333EA'], indigo: ['#4338CA', '#7C3AED'], blue: ['#1D4ED8', '#2563EB'], green: ['#065F46', '#047857'], red: ['#BE123C', '#E11D48'], dark: ['#18181B', '#3F3F46'] };
+    const k = this.props.theme || 'violet';
+    const b = B[k] || B.violet;
+    const vals = ['4', '8', '2', '9', '', ''];
+    return {
+      accent: b[0], shade: b[0] + 'CC', btnA: b[0], btnB: b[1], btnShadow: b[0] + '80',
+      digits: vals.map((v, i) => ({
+        v: v,
+        label: 'Digit ' + (i + 1) + ' of 6',
+        border: i === 4 ? '2px solid ' + b[0] : (v ? '1px solid #C9C3D6' : '1px solid #DCD8E6'),
+        shadow: i === 4 ? '0 0 0 4px ' + b[0] + '26' : 'none',
+        bg: v ? '#F6F3FF' : '#FFFFFF'
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
