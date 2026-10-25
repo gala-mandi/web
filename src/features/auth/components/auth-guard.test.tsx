@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { api } from "@/lib/api";
 import { hardRedirect } from "@/lib/navigation";
@@ -22,6 +22,8 @@ describe("AuthGuard", () => {
   });
 
   afterEach(() => {
+    // Unmount first so a guard never reacts to the cleared store.
+    cleanup();
     api.defaults.adapter = defaultAdapter;
     useSessionStore.getState().clear();
   });
