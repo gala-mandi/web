@@ -127,7 +127,12 @@ export function ChangePasswordForm() {
         </div>
       ) : null}
       <FormProvider {...form}>
-        <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
+        <form
+          method="post"
+          noValidate
+          onSubmit={onSubmit}
+          className="flex flex-col gap-5"
+        >
           <Controller
             name="currentPassword"
             control={form.control}

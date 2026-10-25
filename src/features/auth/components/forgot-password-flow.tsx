@@ -218,7 +218,12 @@ function RequestStep({
         ur={t.request.ur}
       />
       {formError ? <FormMessage>{formError}</FormMessage> : null}
-      <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
+      <form
+        method="post"
+        noValidate
+        onSubmit={onSubmit}
+        className="flex flex-col gap-5"
+      >
         <Controller
           name="phone"
           control={form.control}
@@ -389,7 +394,12 @@ function CodeStep({
         }
         ur={sent.channel === "whatsapp" ? t.code.ur : undefined}
       />
-      <form noValidate onSubmit={verify} className="flex flex-col gap-5">
+      <form
+        method="post"
+        noValidate
+        onSubmit={verify}
+        className="flex flex-col gap-5"
+      >
         <fieldset className="flex flex-col gap-2">
           <legend className={cn(fieldLabelClass, "mb-2")}>
             {t.code.legend}
@@ -521,7 +531,12 @@ function PasswordStep({
       />
       {formError ? <FormMessage>{formError}</FormMessage> : null}
       <FormProvider {...form}>
-        <form noValidate onSubmit={onSubmit} className="flex flex-col gap-5">
+        <form
+          method="post"
+          noValidate
+          onSubmit={onSubmit}
+          className="flex flex-col gap-5"
+        >
           <NewPasswordFields idPrefix="np" />
           <PrimaryButton
             type="submit"

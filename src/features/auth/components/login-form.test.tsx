@@ -40,6 +40,12 @@ describe("LoginForm", () => {
     useSessionStore.getState().clear();
   });
 
+  it("posts natively, so a submit before hydration never puts the password in the URL", () => {
+    const { container } = render(<LoginForm />);
+
+    expect(container.querySelector("form")).toHaveAttribute("method", "post");
+  });
+
   it("shows field errors for empty fields and sends nothing", async () => {
     render(<LoginForm />);
 
