@@ -9,6 +9,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-heading: var(--font-jakarta);
+  --font-urdu: var(--font-nastaliq);
+  --color-brand-from: var(--brand-from);
+  --color-brand-to: var(--brand-to);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-border: var(--destructive-border);
+  --color-notice: var(--notice);
+  --color-notice-soft: var(--notice-soft);
+  --color-surface-muted: var(--surface-muted);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,6 +56,14 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* Auth design tokens: cards 24px, inputs 12px, big buttons 14px */
+  --radius-card: 1.5rem;
+  --radius-field: 0.75rem;
+  --radius-button: 0.875rem;
+  --shadow-card:
+    0 1px 2px rgb(30 27 46 / 0.06), 0 28px 56px -16px rgb(76 29 149 / 0.22);
+  --shadow-button: 0 10px 24px -8px
+    color-mix(in srgb, var(--primary) 50%, transparent);
 }
 
 :root {
@@ -85,6 +103,15 @@
   --success: #047857;
   --brand-from: #4c1d95;
   --brand-to: #9333ea;
+  --warning: #b45309;
+  --warning-soft: #fffbeb;
+  --warning-strong: #d97706;
+  --warning-track: #fde68a;
+  --destructive-soft: #fff1f2;
+  --destructive-border: #fecdd3;
+  --notice: #9a3412;
+  --notice-soft: #fff7ed;
+  --surface-muted: #edeaf3;
 }
 
 .dark {
