@@ -6,6 +6,7 @@ import {
   type InternalAxiosRequestConfig,
 } from "axios";
 import type { Session, User } from "@/features/auth/types";
+import { rolePermissions } from "./permissions";
 
 export const owner: User = {
   id: "u1",
@@ -13,6 +14,7 @@ export const owner: User = {
   phone: "03000000002",
   email: null,
   role: "owner",
+  permissions: [...rolePermissions.owner],
   tenantId: "t1",
   mustChangePassword: false,
   tenant: { id: "t1", name: "Demo Mandi", logoUrl: null, status: "active" },

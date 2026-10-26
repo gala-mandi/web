@@ -9,7 +9,7 @@ import { useSessionStore } from "@/stores/session";
 import { panelText } from "../text";
 import { SideMenu } from "./side-menu";
 
-/** Header (shop, user, role, logout) + role-based menu around panel pages. */
+/** Header (shop, user, role, logout) + permission-based menu around panel pages. */
 export function PanelShell({ children }: { children: ReactNode }) {
   const sessionUser = useSessionStore((s) => s.user);
   const me = useMe();
@@ -77,7 +77,7 @@ export function PanelShell({ children }: { children: ReactNode }) {
       </header>
       <div className="flex flex-1 flex-col lg:flex-row">
         <aside className="bg-card border-b p-3 lg:w-60 lg:border-e lg:border-b-0 lg:p-4">
-          <SideMenu role={user?.role ?? null} />
+          <SideMenu user={user ?? null} />
         </aside>
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </div>

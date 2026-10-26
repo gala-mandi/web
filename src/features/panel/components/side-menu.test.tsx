@@ -1,8 +1,13 @@
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { rolePermissions } from "@/test/permissions";
 import { SideMenu } from "./side-menu";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/dashboard" }));
+
+function userWith(role: keyof typeof rolePermissions) {
+  return { permissions: [...rolePermissions[role]] };
+}
 
 function menuLabels() {
   const nav = screen.getByRole("navigation", { name: "Main menu" });
@@ -13,7 +18,7 @@ function menuLabels() {
 
 describe("SideMenu", () => {
   it("shows every item to the owner", () => {
-    render(<SideMenu role="owner" />);
+    render(<SideMenu user={userWith("owner")} />);
 
     expect(menuLabels()).toEqual([
       "Dashboard",
@@ -30,17 +35,22 @@ describe("SideMenu", () => {
   });
 
   it("hides Staff and Settings from a manager", () => {
-    render(<SideMenu role="manager" />);
+    render(<SideMenu user={userWith("manager")} />);
 
-    const labels = menuLabels();
-    expect(labels).not.toContain("Staff");
-    expect(labels).not.toContain("Settings");
-    expect(labels).toContain("Reports");
-    expect(labels).toHaveLength(8);
+    expect(menuLabels()).toEqual([
+      "Dashboard",
+      "Daily rates",
+      "Purchases",
+      "Sales",
+      "Traders",
+      "Khata",
+      "Payments",
+      "Reports",
+    ]);
   });
 
   it("shows an operator only rates, purchases, sales and payments (plus the dashboard)", () => {
-    render(<SideMenu role="operator" />);
+    render(<SideMenu user={userWith("operator")} />);
 
     expect(menuLabels()).toEqual([
       "Dashboard",
@@ -51,14 +61,29 @@ describe("SideMenu", () => {
     ]);
   });
 
-  it("shows nothing without a role", () => {
-    render(<SideMenu role={null} />);
+  it("follows the permissions, not the role", () => {
+    render(
+      <SideMenu
+        user={{ permissions: ["dashboard.view", "report.view", "trader.view"] }}
+      />,
+    );
 
+    expect(menuLabels()).toEqual(["Dashboard", "Reports"]);
+  });
+
+  it("shows nothing without a user or permissions", () => {
+    const { rerender } = render(<SideMenu user={null} />);
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+
+    rerender(<SideMenu user={{ permissions: [] }} />);
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
+
+    rerender(<SideMenu user={userWith("super_admin")} />);
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 
   it("links only pages that exist and marks the current one", () => {
-    render(<SideMenu role="owner" />);
+    render(<SideMenu user={userWith("owner")} />);
 
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(1);
