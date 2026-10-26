@@ -3,6 +3,7 @@ import {
   bearer,
   mockEndpoint,
   owner,
+  rolePermissions,
   session,
   setRefreshCookie,
 } from "./mock-api";
@@ -196,7 +197,12 @@ test.describe("auth", () => {
   });
 
   test("operator sees the limited menu", async ({ page, context }) => {
-    const operator = { ...owner, role: "operator", name: "Bilal" };
+    const operator = {
+      ...owner,
+      role: "operator",
+      name: "Bilal",
+      permissions: rolePermissions.operator,
+    };
     await setRefreshCookie(context);
     await mockEndpoint(page, "POST", "/auth/refresh", () => ({
       status: 200,

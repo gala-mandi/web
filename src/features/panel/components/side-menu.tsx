@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Role } from "@/features/auth/types";
+import type { User } from "@/features/auth/types";
 import { cn } from "@/lib/utils";
 import { menuFor } from "../menu";
 import { panelText } from "../text";
 
 /**
- * Role-based menu. Items whose page doesn't exist yet are shown, but not as
+ * Permission-based menu (the user's `permissions` from the server). Items whose page doesn't exist yet are shown, but not as
  * links (marked "Soon"), so each role already sees its real menu.
  */
-export function SideMenu({ role }: { role: Role | null }) {
+export function SideMenu({ user }: { user: Pick<User, "permissions"> | null }) {
   const pathname = usePathname();
-  const items = menuFor(role);
+  const items = menuFor(user);
 
   return (
     <nav aria-label={panelText.menuLabel}>

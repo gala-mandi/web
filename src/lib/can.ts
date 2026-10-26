@@ -1,48 +1,65 @@
-import type { Role } from "@/features/auth/types";
+import type { User } from "@/features/auth/types";
+import { useSessionStore } from "@/stores/session";
 
 /**
- * What each shop role may see. Only for showing/hiding UI: the server checks
- * every request again (`RolesGuard`).
+ * Every permission the server knows, copied name for name from the server's
+ * `src/common/auth/permissions.ts`. The server decides which of these a user
+ * has and sends them as `user.permissions`; the browser keeps no role matrix.
+ * Only for showing/hiding UI: the server checks every request again.
  */
-export const permissions = [
-  "dashboard:view",
-  "rates:view",
-  "purchases:view",
-  "sales:view",
-  "traders:view",
-  "khata:view",
-  "payments:view",
-  "reports:view",
-  "staff:manage",
-  "settings:manage",
+export const PERMISSIONS = [
+  // Platform (super_admin only)
+  "tenant.manage",
+  "plan.manage",
+  "platform_report.view",
+  // Shop
+  "dashboard.view",
+  "staff.manage",
+  "settings.manage",
+  "trader.view",
+  "trader.manage",
+  "trader.delete",
+  "commodity.view",
+  "commodity.manage",
+  "commodity.delete",
+  "rate.view",
+  "rate.manage",
+  "purchase.view",
+  "purchase.create",
+  "purchase.edit",
+  "purchase.delete",
+  "sale.view",
+  "sale.create",
+  "sale.edit",
+  "sale.delete",
+  "payment.view",
+  "payment.create",
+  "payment.edit",
+  "payment.delete",
+  "ledger.view",
+  "report.view",
+  "audit.view",
 ] as const;
 
-export type Permission = (typeof permissions)[number];
+export type Permission = (typeof PERMISSIONS)[number];
 
-const operator: Permission[] = [
-  "dashboard:view",
-  "rates:view",
-  "purchases:view",
-  "sales:view",
-  "payments:view",
-];
+type WithPermissions = Pick<User, "permissions"> | null | undefined;
 
-const manager: Permission[] = permissions.filter(
-  (p) => p !== "staff:manage" && p !== "settings:manage",
-);
-
-const byRole: Record<Role, readonly Permission[]> = {
-  owner: permissions,
-  manager,
-  operator,
-  // The platform admin never uses the shop panel.
-  super_admin: [],
-};
-
-export function can(
-  role: Role | null | undefined,
+/** Pure check for tests and non-React code. No user / no permissions → false. */
+export function hasPermission(
+  user: WithPermissions,
   permission: Permission,
 ): boolean {
-  if (!role) return false;
-  return byRole[role].includes(permission);
+  const granted: readonly string[] | undefined = user?.permissions;
+  return Array.isArray(granted) && granted.includes(permission);
+}
+
+/** Checks the signed-in user (session store). Not reactive: use `useCan` in components. */
+export function can(permission: Permission): boolean {
+  return hasPermission(useSessionStore.getState().user, permission);
+}
+
+/** Re-renders when the signed-in user's permissions change. */
+export function useCan(permission: Permission): boolean {
+  return useSessionStore((s) => hasPermission(s.user, permission));
 }

@@ -1,5 +1,7 @@
 /** Shapes returned by the server auth API (see the auth contract). */
 
+import type { Permission } from "@/lib/can";
+
 export type Role = "super_admin" | "owner" | "manager" | "operator";
 
 export type TenantStatus = "trial" | "active" | "suspended" | "cancelled";
@@ -17,6 +19,8 @@ export interface User {
   phone: string;
   email: string | null;
   role: Role;
+  /** What this user may do, decided by the server from their role. */
+  permissions: Permission[];
   /** null for super_admin */
   tenantId: string | null;
   mustChangePassword: boolean;

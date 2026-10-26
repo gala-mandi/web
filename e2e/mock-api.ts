@@ -1,4 +1,7 @@
 import type { BrowserContext, Page, Request, Route } from "@playwright/test";
+import { rolePermissions } from "../src/test/permissions";
+
+export { rolePermissions };
 
 export const API = "http://localhost:4000";
 
@@ -8,6 +11,7 @@ export const owner = {
   phone: "03000000002",
   email: null,
   role: "owner",
+  permissions: rolePermissions.owner,
   tenantId: "t1",
   mustChangePassword: false,
   tenant: { id: "t1", name: "Demo Mandi", logoUrl: null, status: "active" },
