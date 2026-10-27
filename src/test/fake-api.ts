@@ -20,6 +20,24 @@ export const owner: User = {
   tenant: { id: "t1", name: "Demo Mandi", logoUrl: null, status: "active" },
 };
 
+export const manager: User = {
+  ...owner,
+  id: "u2",
+  name: "Nadeem",
+  phone: "03000000003",
+  role: "manager",
+  permissions: [...rolePermissions.manager],
+};
+
+export const operator: User = {
+  ...owner,
+  id: "u3",
+  name: "Bilal",
+  phone: "03000000004",
+  role: "operator",
+  permissions: [...rolePermissions.operator],
+};
+
 export function sessionFor(user: User, accessToken = "token-1"): Session {
   return { accessToken, expiresIn: 900, user };
 }

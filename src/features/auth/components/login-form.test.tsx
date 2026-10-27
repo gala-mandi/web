@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useSessionStore } from "@/stores/session";
-import { httpError, owner, sessionFor } from "@/test/fake-api";
+import { httpError, operator, owner, sessionFor } from "@/test/fake-api";
 import { login } from "../api";
 import { LoginForm } from "./login-form";
 
@@ -115,6 +115,26 @@ describe("LoginForm", () => {
     fill("owner@shop.pk", "secret");
     submit();
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard?x=1"));
+  });
+
+  it("sends an operator (no dashboard) to Daily rates", async () => {
+    vi.mocked(login).mockResolvedValue(sessionFor(operator));
+    render(<LoginForm />);
+    fill("bilal@shop.pk", "secret");
+
+    submit();
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/rates"));
+  });
+
+  it("ignores a ?next= page the user may not open", async () => {
+    vi.mocked(login).mockResolvedValue(sessionFor(operator));
+    render(<LoginForm next="/settings" />);
+    fill("bilal@shop.pk", "secret");
+
+    submit();
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/rates"));
   });
 
   it("sends only one request on a double click", async () => {

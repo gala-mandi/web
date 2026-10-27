@@ -17,6 +17,15 @@ export const owner = {
   tenant: { id: "t1", name: "Demo Mandi", logoUrl: null, status: "active" },
 };
 
+export const operator = {
+  ...owner,
+  id: "u3",
+  name: "Bilal",
+  phone: "03000000004",
+  role: "operator",
+  permissions: rolePermissions.operator,
+};
+
 export type Reply = {
   status: number;
   body?: unknown;

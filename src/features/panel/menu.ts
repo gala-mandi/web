@@ -1,54 +1,79 @@
+import {
+  BarChart3,
+  BookOpenText,
+  HandCoins,
+  LayoutDashboard,
+  type LucideIcon,
+  Settings,
+  ShoppingCart,
+  Store,
+  TrendingUp,
+  UserCog,
+  Users,
+  Wheat,
+} from "lucide-react";
 import type { User } from "@/features/auth/types";
-import { hasPermission, type Permission } from "@/lib/can";
+import type { Permission } from "@/lib/can";
+import {
+  landingSectionFor,
+  type PanelSection,
+  panelRoutes,
+  sectionPermission,
+  sectionsFor,
+} from "@/lib/routes";
+import { panelText } from "./text";
 
 export interface MenuItem {
-  key: string;
+  key: PanelSection;
   label: string;
+  href: string;
+  icon: LucideIcon;
   permission: Permission;
-  /** null until the page exists (added by the layout ticket). */
-  href: string | null;
 }
 
-/**
- * The shop panel menu; each item is shown only to users the server gave its
- * permission. Traders needs `trader.manage`: operators may pick traders in a
- * purchase (`trader.view`) but don't get the Traders page.
- */
-export const menuItems: readonly MenuItem[] = [
-  {
-    key: "dashboard",
-    label: "Dashboard",
-    permission: "dashboard.view",
-    href: "/dashboard",
-  },
-  { key: "rates", label: "Daily rates", permission: "rate.view", href: null },
-  {
-    key: "purchases",
-    label: "Purchases",
-    permission: "purchase.view",
-    href: null,
-  },
-  { key: "sales", label: "Sales", permission: "sale.view", href: null },
-  { key: "traders", label: "Traders", permission: "trader.manage", href: null },
-  { key: "khata", label: "Khata", permission: "ledger.view", href: null },
-  {
-    key: "payments",
-    label: "Payments",
-    permission: "payment.view",
-    href: null,
-  },
-  { key: "reports", label: "Reports", permission: "report.view", href: null },
-  { key: "staff", label: "Staff", permission: "staff.manage", href: null },
-  {
-    key: "settings",
-    label: "Settings",
-    permission: "settings.manage",
-    href: null,
-  },
-];
+const icons: Record<PanelSection, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  rates: TrendingUp,
+  purchases: ShoppingCart,
+  sales: Store,
+  traders: Users,
+  commodities: Wheat,
+  ledger: BookOpenText,
+  payments: HandCoins,
+  reports: BarChart3,
+  staff: UserCog,
+  settings: Settings,
+};
 
+export function menuItem(key: PanelSection): MenuItem {
+  return {
+    key,
+    label: panelText.sections[key].label,
+    href: panelRoutes[key],
+    icon: icons[key],
+    permission: sectionPermission[key],
+  };
+}
+
+/** Every panel page in menu order (see `sectionPermission` for the gating). */
+export const menuItems: readonly MenuItem[] = (
+  Object.keys(panelRoutes) as PanelSection[]
+).map(menuItem);
+
+/**
+ * The menu for this user: only items whose permission the server gave them.
+ * Owner: all 11. Manager: no Staff, Settings. Operator: Daily rates,
+ * Purchases, Sales, Payments.
+ */
 export function menuFor(
   user: Pick<User, "permissions"> | null | undefined,
 ): MenuItem[] {
-  return menuItems.filter((item) => hasPermission(user, item.permission));
+  return sectionsFor(user).map(menuItem);
+}
+
+/** The menu item of the user's landing page (first item they may open). */
+export function landingItemFor(
+  user: Pick<User, "permissions"> | null | undefined,
+): MenuItem {
+  return menuItem(landingSectionFor(user));
 }

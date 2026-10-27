@@ -147,7 +147,8 @@ test.describe("auth", () => {
     );
 
     await page.goto("/dashboard");
-    await page.getByRole("button", { name: "Log out", exact: true }).click();
+    await page.getByRole("button", { name: /^Account menu/ }).click();
+    await page.getByRole("menuitem", { name: "Log out", exact: true }).click();
 
     await expect(page).toHaveURL("/login");
     await expect(
@@ -179,7 +180,10 @@ test.describe("auth", () => {
     );
 
     await page.goto("/dashboard");
-    await page.getByRole("button", { name: "Log out of all devices" }).click();
+    await page.getByRole("button", { name: /^Account menu/ }).click();
+    await page
+      .getByRole("menuitem", { name: "Log out of all devices" })
+      .click();
 
     await expect(page).toHaveURL("/login");
     expect(calls).toHaveLength(1);
@@ -196,7 +200,10 @@ test.describe("auth", () => {
     ).toBeVisible();
   });
 
-  test("operator sees the limited menu", async ({ page, context }) => {
+  test("a signed-in operator opening /login lands on Daily rates", async ({
+    page,
+    context,
+  }) => {
     const operator = {
       ...owner,
       role: "operator",
@@ -213,10 +220,11 @@ test.describe("auth", () => {
       body: operator,
     }));
 
-    await page.goto("/dashboard");
+    await page.goto("/login");
 
+    await expect(page).toHaveURL("/rates");
     const menu = page.getByRole("navigation", { name: "Main menu" });
-    await expect(menu.getByRole("listitem")).toHaveCount(5);
+    await expect(menu.getByRole("listitem")).toHaveCount(4);
     await expect(menu.getByText("Staff")).toHaveCount(0);
   });
 });

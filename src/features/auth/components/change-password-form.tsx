@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { toApiError } from "@/lib/api-error";
+import { landingPathFor } from "@/lib/routes";
 import { useSessionStore } from "@/stores/session";
 import { changePassword } from "../api";
 import { authKeys, useLogout } from "../hooks";
@@ -86,7 +87,7 @@ export function ChangePasswordForm() {
       <PasswordChanged
         revokedSessions={revoked}
         otherDevices
-        href="/dashboard"
+        href={landingPathFor(user)}
         label={passwordChangedText.toDashboard}
         labelUr={passwordChangedText.toDashboardUr}
       />
