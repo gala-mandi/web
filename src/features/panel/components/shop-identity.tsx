@@ -20,7 +20,9 @@ export function ShopIdentity() {
 
   const name = shop?.name ?? panelText.shopFallback;
   return (
-    <div className="flex min-w-0 items-center gap-2.5">
+    // The shop name matters more than breadcrumbs or the search label, which
+    // hide first on narrow screens; it never shrinks below logo + a few letters.
+    <div className="flex min-w-[7.5rem] items-center gap-2.5">
       <ShopLogo name={name} logoUrl={shop?.logoUrl ?? null} />
       <span
         className="font-heading truncate text-[15px] font-extrabold"

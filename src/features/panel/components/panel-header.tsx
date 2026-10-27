@@ -30,9 +30,9 @@ export function PanelHeader({ user }: { user: User | null }) {
       <ShopIdentity />
       <Separator
         orientation="vertical"
-        className="mx-1 hidden data-vertical:h-5 data-vertical:self-center md:block"
+        className="mx-1 hidden data-vertical:h-5 data-vertical:self-center lg:block"
       />
-      <PanelBreadcrumbs user={user} className="hidden min-w-0 md:block" />
+      <PanelBreadcrumbs user={user} className="hidden min-w-0 lg:block" />
       <div className="ms-auto flex shrink-0 items-center gap-1.5">
         <PaletteButton />
         {user ? <UserMenu user={user} /> : null}

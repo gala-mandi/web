@@ -55,13 +55,13 @@ export function PaletteButton() {
       variant="outline"
       onClick={() => setOpen(true)}
       aria-keyshortcuts="Control+K Meta+K"
-      className="text-muted-foreground h-10 gap-2 rounded-xl px-2.5 sm:w-56 sm:justify-start sm:px-3"
+      className="text-muted-foreground h-10 gap-2 rounded-xl px-2.5 lg:w-56 lg:justify-start lg:px-3"
     >
       <Search aria-hidden />
-      <span className="sr-only sm:not-sr-only">{t.open}</span>
+      <span className="sr-only lg:not-sr-only">{t.open}</span>
       <kbd
         aria-hidden
-        className="bg-muted text-muted-foreground ms-auto hidden rounded-md px-1.5 py-0.5 font-sans text-[11px] font-semibold sm:inline"
+        className="bg-muted text-muted-foreground ms-auto hidden rounded-md px-1.5 py-0.5 font-sans text-[11px] font-semibold lg:inline"
       >
         {t.shortcut}
       </kbd>
