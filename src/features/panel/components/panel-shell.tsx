@@ -1,86 +1,51 @@
 "use client";
 
-import { LogOut, Wheat } from "lucide-react";
-import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { useLogout, useLogoutAll, useMe } from "@/features/auth/hooks";
-import { brandText } from "@/features/auth/text";
+import { type ReactNode, useEffect } from "react";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useMe } from "@/features/auth/hooks";
 import { useSessionStore } from "@/stores/session";
+import { useUiStore } from "@/stores/ui";
 import { panelText } from "../text";
-import { SideMenu } from "./side-menu";
+import { AppSidebar } from "./app-sidebar";
+import { CommandPalette, usePaletteShortcut } from "./command-palette";
+import { PanelHeader } from "./panel-header";
 
-/** Header (shop, user, role, logout) + permission-based menu around panel pages. */
+export const MAIN_CONTENT_ID = "main-content";
+
+/** Skip link, sidebar, header and Ctrl+K palette around every panel page. */
 export function PanelShell({ children }: { children: ReactNode }) {
   const sessionUser = useSessionStore((s) => s.user);
   const me = useMe();
   const user = me.data ?? sessionUser;
-  const logout = useLogout();
-  const logoutAll = useLogoutAll();
-  const busy = logout.isPending || logoutAll.isPending;
+  const sidebarOpen = useUiStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
+
+  // Saved sidebar choice is read after mount, so server and client HTML match.
+  useEffect(() => {
+    void useUiStore.persist.rehydrate();
+  }, []);
+  usePaletteShortcut();
 
   return (
-    <div className="bg-background flex min-h-screen flex-col">
-      <header className="bg-card flex flex-wrap items-center gap-x-6 gap-y-3 border-b px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-xl">
-            <Wheat aria-hidden className="size-5" />
-          </div>
-          <div className="flex flex-col">
-            <span
-              className="font-heading text-base font-extrabold"
-              data-testid="shop-name"
-            >
-              {user?.tenant?.name ?? brandText.name}
-            </span>
-            <span className="text-muted-foreground text-xs">
-              {brandText.name}
-            </span>
-          </div>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+      <a
+        href={`#${MAIN_CONTENT_ID}`}
+        className="bg-primary text-primary-foreground focus-visible:ring-ring/50 sr-only z-50 rounded-lg px-4 py-2 text-sm font-semibold focus:not-sr-only focus:fixed focus:start-3 focus:top-3 focus-visible:ring-4"
+      >
+        {panelText.skipToContent}
+      </a>
+      <AppSidebar user={user} />
+      <SidebarInset className="min-w-0">
+        <PanelHeader user={user} />
+        <div
+          id={MAIN_CONTENT_ID}
+          tabIndex={-1}
+          className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 p-4 outline-none sm:p-6 lg:p-8"
+        >
+          {children}
         </div>
-        <div className="ms-auto flex flex-wrap items-center gap-3">
-          {user ? (
-            <div className="flex flex-col items-end text-end">
-              <span className="text-sm font-semibold" data-testid="user-name">
-                {user.name}
-              </span>
-              <span
-                className="text-muted-foreground text-xs"
-                data-testid="user-role"
-              >
-                {panelText.roles[user.role]}
-              </span>
-            </div>
-          ) : null}
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => logout.mutate()}
-            disabled={busy}
-          >
-            <LogOut aria-hidden />
-            {panelText.logout}
-          </Button>
-          <Button
-            variant="ghost"
-            size="lg"
-            onClick={() => logoutAll.mutate()}
-            disabled={busy}
-          >
-            {panelText.logoutAll}
-          </Button>
-        </div>
-        {logoutAll.isError ? (
-          <p role="alert" className="text-destructive w-full text-end text-sm">
-            {panelText.logoutAllFailed}
-          </p>
-        ) : null}
-      </header>
-      <div className="flex flex-1 flex-col lg:flex-row">
-        <aside className="bg-card border-b p-3 lg:w-60 lg:border-e lg:border-b-0 lg:p-4">
-          <SideMenu user={user ?? null} />
-        </aside>
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
-      </div>
-    </div>
+      </SidebarInset>
+      <CommandPalette user={user} />
+    </SidebarProvider>
   );
 }

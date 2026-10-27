@@ -35,10 +35,32 @@ describe("proxy", () => {
     }
   });
 
-  it("sends a signed-in user from /login to the dashboard", () => {
+  it("sends a signed-in user from /login to /home (which picks the landing page)", () => {
     const res = proxy(request("/login", true));
 
-    expect(res.headers.get("location")).toBe("http://localhost:3000/dashboard");
+    expect(res.headers.get("location")).toBe("http://localhost:3000/home");
+  });
+
+  it("passes a safe ?next= on to /home", () => {
+    const res = proxy(request("/login?next=%2Fsales%3Fday%3D1", true));
+
+    expect(res.headers.get("location")).toBe(
+      "http://localhost:3000/home?next=%2Fsales%3Fday%3D1",
+    );
+  });
+
+  it("drops an off-site ?next=", () => {
+    const res = proxy(request("/login?next=%2F%2Fevil.example", true));
+
+    expect(res.headers.get("location")).toBe("http://localhost:3000/home");
+  });
+
+  it("protects /home and every panel page", () => {
+    for (const path of ["/home", "/rates", "/settings", "/no-such-page"]) {
+      expect(proxy(request(path)).headers.get("location")).toBe(
+        `http://localhost:3000/login?next=${encodeURIComponent(path)}`,
+      );
+    }
   });
 
   it("shows /login when it explains why (e.g. session expired)", () => {

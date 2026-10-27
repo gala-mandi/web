@@ -2,7 +2,7 @@ import type { Session, User } from "@/features/auth/types";
 import { toApiError } from "@/lib/api-error";
 import { hardRedirect } from "@/lib/navigation";
 import { getQueryClient } from "@/lib/query-client";
-import { isPublicPath } from "@/lib/routes";
+import { canOpenPath, isPublicPath, landingPathFor } from "@/lib/routes";
 import { useSessionStore } from "@/stores/session";
 
 /** 403 codes that end the session and send the user to an explanation page. */
@@ -24,10 +24,15 @@ export function startSession(session: Session): Session {
   return session;
 }
 
-/** Where to go right after a successful sign-in. */
+/**
+ * Where to go right after a successful sign-in: the `?next=` page if the user
+ * may open it, otherwise their landing page (first menu page they may open:
+ * `/dashboard` for owners and managers, `/rates` for operators).
+ */
 export function homePathFor(user: User, next: string | null): string {
   if (user.mustChangePassword) return "/change-password";
-  return next ?? "/dashboard";
+  if (next && canOpenPath(user, next)) return next;
+  return landingPathFor(user);
 }
 
 /** Clears everything the browser knows about the user. */
