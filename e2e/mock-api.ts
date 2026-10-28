@@ -38,7 +38,7 @@ function cors(origin: string | null): Record<string, string> {
     "access-control-allow-origin": origin ?? "*",
     "access-control-allow-credentials": "true",
     "access-control-allow-headers": "authorization, content-type, accept",
-    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
     "access-control-expose-headers": "retry-after, x-ratelimit-remaining",
   };
 }
