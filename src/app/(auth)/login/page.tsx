@@ -16,7 +16,13 @@ async function LoginWithParams({
   searchParams: PageProps<"/login">["searchParams"];
 }) {
   const params = await searchParams;
-  return <LoginForm reason={first(params.reason)} next={first(params.next)} />;
+  return (
+    <LoginForm
+      reason={first(params.reason)}
+      next={first(params.next)}
+      phone={first(params.phone)}
+    />
+  );
 }
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
