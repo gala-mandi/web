@@ -28,6 +28,7 @@ describe("proxy", () => {
     for (const path of [
       "/login",
       "/forgot-password",
+      "/accept-invite?token=abc",
       "/shop-suspended",
       "/account-disabled",
     ]) {

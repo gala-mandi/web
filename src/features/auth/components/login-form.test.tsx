@@ -282,3 +282,19 @@ describe("LoginForm", () => {
     expect(screen.getByText("Your session has ended")).toBeInTheDocument();
   });
 });
+
+describe("LoginForm ?phone= prefill", () => {
+  it("fills in the phone after accepting an invite", () => {
+    render(<LoginForm phone="03011234567" />);
+
+    expect(screen.getByLabelText("Phone number or email")).toHaveValue(
+      "03011234567",
+    );
+  });
+
+  it("ignores a value that isn't a phone number", () => {
+    render(<LoginForm phone="<script>" />);
+
+    expect(screen.getByLabelText("Phone number or email")).toHaveValue("");
+  });
+});
