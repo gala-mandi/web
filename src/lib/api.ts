@@ -19,7 +19,12 @@ export const api = axios.create({
 });
 
 /** A 401 from these never triggers a refresh (they are the session itself). */
-const noRefreshPaths = ["/auth/login", "/auth/refresh", "/auth/logout"];
+const noRefreshPaths = [
+  "/auth/login",
+  "/auth/refresh",
+  "/auth/logout",
+  "/auth/accept-invite",
+];
 
 function isNoRefreshUrl(url: string | undefined): boolean {
   if (!url) return false;

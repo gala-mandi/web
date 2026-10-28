@@ -20,6 +20,7 @@ import {
   loginSchema,
   maskIdentifier,
   normalizeIdentifier,
+  normalizePhone,
 } from "../schemas";
 import { loginText } from "../text";
 import {
@@ -52,10 +53,16 @@ export interface LoginFormProps {
   reason?: string | null;
   /** `?next=` from the URL, only same-origin paths are used. */
   next?: string | null;
+  /** `?phone=` from the URL (after accepting an invite): prefills the field. */
+  phone?: string | null;
 }
 
 /** 1.1 Sign in, with 1.2 wrong password, 1.3 locked and 3.3 session expired. */
-export function LoginForm({ reason = null, next = null }: LoginFormProps) {
+export function LoginForm({
+  reason = null,
+  next = null,
+  phone = null,
+}: LoginFormProps) {
   const router = useRouter();
   const [failure, setFailure] = useState<Failure | null>(null);
   const [lock, setLock] = useState<Lock | null>(null);
@@ -64,7 +71,11 @@ export function LoginForm({ reason = null, next = null }: LoginFormProps) {
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { identifier: "", password: "", rememberMe: true },
+    defaultValues: {
+      identifier: (phone && normalizePhone(phone)) ?? "",
+      password: "",
+      rememberMe: true,
+    },
   });
 
   const submit = async (values: LoginValues) => {

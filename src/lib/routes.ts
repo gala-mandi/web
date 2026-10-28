@@ -6,6 +6,7 @@ export const publicPaths = [
   "/",
   "/login",
   "/forgot-password",
+  "/accept-invite",
   "/account-disabled",
   "/shop-suspended",
 ] as const;
