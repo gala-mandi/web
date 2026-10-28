@@ -51,7 +51,14 @@ export function LogoUpload({
     maxSize: MAX_BYTES,
     multiple: false,
     disabled: busy,
-    onDropAccepted: async ([file]) => {
+    // One callback: with several files react-dropzone accepts the first and
+    // rejects the rest, and nothing should be uploaded then.
+    onDrop: async ([file], rejections) => {
+      if (rejections.length > 0) {
+        setError(rejectionMessage(rejections));
+        return;
+      }
+      if (!file) return;
       setError(null);
       try {
         await upload.mutateAsync(file);
@@ -60,7 +67,6 @@ export function LogoUpload({
         fail(e);
       }
     },
-    onDropRejected: (rejections) => setError(rejectionMessage(rejections)),
   });
 
   const onRemove = async () => {

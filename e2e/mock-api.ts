@@ -26,6 +26,27 @@ export const operator = {
   permissions: rolePermissions.operator,
 };
 
+/** The shop's settings as `GET /settings` returns them. */
+export const shopSettings = {
+  name: "Demo Mandi",
+  phone: "03000000002",
+  email: null as string | null,
+  address: "Shop 12, Grain Market" as string | null,
+  city: "Okara" as string | null,
+  logoUrl: null as string | null,
+  displayName: null as string | null,
+  parchiFooter: null as string | null,
+  defaultCommissionPct: "2.50",
+  marketFeePct: "0.00",
+  labourPerBag: "15.00",
+  defaultUnit: "maund",
+  maundKg: "40.000",
+  billPrefix: null as string | null,
+  financialYearStart: "2026-07-01" as string | null,
+  language: "en",
+  updatedAt: "2026-10-28T10:00:00.000Z",
+};
+
 export type Reply = {
   status: number;
   body?: unknown;
