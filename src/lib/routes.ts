@@ -35,6 +35,12 @@ export const panelRoutes = {
 
 export type PanelSection = keyof typeof panelRoutes;
 
+/** Pages of the Traders section. */
+export const traderRoutes = {
+  list: panelRoutes.traders,
+  detail: (id: string) => `${panelRoutes.traders}/${encodeURIComponent(id)}`,
+} as const;
+
 export const panelSections = Object.keys(panelRoutes) as PanelSection[];
 
 /**
