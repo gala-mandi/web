@@ -5,6 +5,7 @@ import {
   owner,
   session,
   setRefreshCookie,
+  shopSettings,
 } from "./mock-api";
 
 const ownerMenu = [
@@ -73,6 +74,11 @@ test.describe("shop panel layout", () => {
         return { status: 204 };
       },
     );
+    // The Settings page loads the shop's settings before showing its title.
+    await mockEndpoint(page, "GET", "/settings", () => ({
+      status: 200,
+      body: shopSettings,
+    }));
     await signIn(page, context, owner);
 
     await expect(page).toHaveURL("/dashboard");

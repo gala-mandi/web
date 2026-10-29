@@ -56,3 +56,31 @@ export function formatRelative(
   }
   return relative.format(0, "minute");
 }
+
+/** "12.500" → 12500 (thousandths), without float rounding. Null if not a decimal. */
+function toThousandths(value: string | number): number | null {
+  const match = /^(\d+)(?:\.(\d{0,3})\d*)?$/.exec(String(value).trim());
+  if (!match) return null;
+  return Number(match[1]) * 1000 + Number((match[2] ?? "").padEnd(3, "0"));
+}
+
+const kgNumber = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 3 });
+
+/**
+ * A weight in kg as maund + kg, e.g. `12 mn 15 kg`, `25 mn`, `15 kg`.
+ * `maundKg` is the shop's setting (40 unless the owner changed it).
+ */
+export function formatMaund(
+  kg: string | number,
+  maundKg: string | number = "40",
+): string {
+  const total = toThousandths(kg);
+  const perMaund = toThousandths(maundKg);
+  if (total === null || !perMaund) return "";
+  const maunds = Math.floor(total / perMaund);
+  const rest = total - maunds * perMaund;
+  const kgPart = `${kgNumber.format(rest / 1000)} kg`;
+  if (maunds === 0) return kgPart;
+  const mnPart = `${kgNumber.format(maunds)} mn`;
+  return rest === 0 ? mnPart : `${mnPart} ${kgPart}`;
+}
