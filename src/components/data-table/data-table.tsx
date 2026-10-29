@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  type ColumnVisibilityState,
   functionalUpdate,
   type Header,
   type OnChangeFn,
   type PaginationState,
   type RowData,
+  type RowSelectionState,
   type SortingState,
   useTable,
 } from "@tanstack/react-table";
@@ -17,8 +19,9 @@ import {
   ChevronRight,
   CircleAlert,
 } from "lucide-react";
-import { type MouseEvent, type ReactNode, useId } from "react";
+import { type MouseEvent, type ReactNode, useId, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -33,7 +36,9 @@ import { cn } from "@/lib/utils";
 import {
   type DataTableColumn,
   type DataTableFeatures,
+  dataTableColumnHelper,
   dataTableFeatures,
+  getLabelledColumns,
 } from "./columns";
 import { dataTableText as t } from "./text";
 
@@ -61,9 +66,27 @@ export interface DataTableProps<TData extends RowData> {
   caption: string;
   /** Mouse convenience; every row must also have a keyboard link. */
   onRowClick?: (row: TData) => void;
+  /**
+   * Bulk select: pass both to get a checkbox column. Keyed by `getRowId`;
+   * the selection survives paging, so clear it when the list changes if
+   * that suits the page.
+   */
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: (next: RowSelectionState) => void;
+  /** Name of a row for its checkbox label ("Select <name>"); default the id. */
+  getRowLabel?: (row: TData) => string;
+  /**
+   * Buttons shown in the bar above the table while rows are selected. Gets
+   * the selected rows of the loaded page and every selected id.
+   */
+  bulkActions?: (selectedRows: TData[], selectedIds: string[]) => ReactNode;
+  /** Hidden columns (`{ [columnId]: false }`); see `useColumnVisibility`. */
+  columnVisibility?: ColumnVisibilityState;
+  onColumnVisibilityChange?: (next: ColumnVisibilityState) => void;
 }
 
 const emptyRows: never[] = [];
+const emptyObject = {};
 
 function alignClass(align: "start" | "end" | undefined) {
   return align === "end" ? "text-end" : "text-start";
@@ -75,11 +98,17 @@ function ariaSort(sorted: false | "asc" | "desc") {
   return "none" as const;
 }
 
-/** Clicks on links, buttons and inputs inside a row keep their own action. */
+/**
+ * Clicks on links, buttons and inputs inside a row keep their own action, and
+ * so do clicks in a portal (a row's menu) that React bubbles up to the row.
+ */
 function fromInteractive(event: MouseEvent<HTMLElement>): boolean {
   const target = event.target as HTMLElement;
+  if (!event.currentTarget.contains(target)) return true;
   return Boolean(
-    target.closest("a, button, input, select, textarea, [role='button']"),
+    target.closest(
+      "a, button, input, select, textarea, [role='button'], [role='checkbox'], [role='menuitem']",
+    ),
   );
 }
 
@@ -137,9 +166,47 @@ function HeaderCell<TData extends RowData>({
   );
 }
 
+const SELECT_COLUMN_ID = "select";
+
+function selectColumn<TData extends RowData>(
+  getRowLabel: (row: TData, id: string) => string,
+): DataTableColumn<TData> {
+  const col = dataTableColumnHelper<TData>();
+  return col.display({
+    id: SELECT_COLUMN_ID,
+    enableSorting: false,
+    enableHiding: false,
+    meta: { className: "w-10" },
+    header: ({ table }) => (
+      <Checkbox
+        aria-label={t.selection.selectPage}
+        checked={
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : false
+        }
+        disabled={table.getRowModel().rows.length === 0}
+        onCheckedChange={(value) =>
+          table.toggleAllPageRowsSelected(value === true)
+        }
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        aria-label={t.selection.selectRow(getRowLabel(row.original, row.id))}
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(value === true)}
+      />
+    ),
+  });
+}
+
 /**
  * Shared list table (TanStack Table v9) with server-side paging and sorting,
- * loading skeleton rows, an empty state and an error state with retry.
+ * optional bulk select and column visibility, loading skeleton rows, an empty
+ * state and an error state with retry.
  */
 export function DataTable<TData extends RowData>({
   columns,
@@ -157,29 +224,70 @@ export function DataTable<TData extends RowData>({
   empty,
   caption,
   onRowClick,
+  rowSelection = emptyObject,
+  onRowSelectionChange,
+  getRowLabel,
+  bulkActions,
+  columnVisibility = emptyObject,
+  onColumnVisibilityChange,
 }: DataTableProps<TData>) {
+  const selectable = Boolean(onRowSelectionChange);
+
+  const allColumns = useMemo(
+    () =>
+      selectable
+        ? [
+            selectColumn<TData>((row, id) =>
+              getRowLabel ? getRowLabel(row) : id,
+            ),
+            ...columns,
+          ]
+        : columns,
+    [selectable, columns, getRowLabel],
+  );
+
+  // Only labelled columns can be hidden, whatever was stored.
+  const visibility = useMemo(() => {
+    const hideable = new Set(getLabelledColumns(columns).map((c) => c.id));
+    return Object.fromEntries(
+      Object.entries(columnVisibility).filter(([id]) => hideable.has(id)),
+    );
+  }, [columns, columnVisibility]);
+
   const handleSorting: OnChangeFn<SortingState> = (updater) =>
     onSortingChange?.(functionalUpdate(updater, sorting));
   const handlePagination: OnChangeFn<PaginationState> = (updater) =>
     onPaginationChange(functionalUpdate(updater, pagination));
+  const handleSelection: OnChangeFn<RowSelectionState> = (updater) =>
+    onRowSelectionChange?.(functionalUpdate(updater, rowSelection));
+  const handleVisibility: OnChangeFn<ColumnVisibilityState> = (updater) =>
+    onColumnVisibilityChange?.(functionalUpdate(updater, visibility));
 
   const table = useTable<DataTableFeatures, TData>({
     features: dataTableFeatures,
-    columns,
+    columns: allColumns,
     data: data ?? (emptyRows as TData[]),
     getRowId: (row) => getRowId(row),
     rowCount,
-    state: { sorting, pagination },
+    state: {
+      sorting,
+      pagination,
+      rowSelection,
+      columnVisibility: visibility,
+    },
     onSortingChange: handleSorting,
     onPaginationChange: handlePagination,
+    onRowSelectionChange: handleSelection,
+    onColumnVisibilityChange: handleVisibility,
     manualSorting: true,
     manualPagination: true,
     enableSorting: Boolean(onSortingChange),
     enableMultiSort: false,
     enableSortingRemoval: false,
+    enableRowSelection: selectable,
   });
 
-  const columnCount = columns.length;
+  const columnCount = Math.max(1, table.getVisibleLeafColumns().length);
   const rows = table.getRowModel().rows;
   const pageCount = Math.max(1, table.getPageCount());
   const page = pagination.pageIndex + 1;
@@ -189,8 +297,42 @@ export function DataTable<TData extends RowData>({
   const showPager = !isLoading && !isError && rowCount > 0;
   const busy = isLoading || isFetching;
 
+  const selectedIds = Object.keys(rowSelection);
+  const selectedRows = selectable
+    ? (data ?? []).filter((row) => rowSelection[getRowId(row)])
+    : [];
+
   return (
     <div className="bg-card text-card-foreground rounded-card overflow-hidden border">
+      {selectable && selectedIds.length > 0 ? (
+        <div
+          role="region"
+          aria-label={t.selection.bar}
+          className="bg-secondary/50 flex flex-wrap items-center gap-3 border-b px-4 py-2 text-sm"
+        >
+          <span className="font-semibold">
+            {t.selection.count(selectedIds.length)}
+          </span>
+          {bulkActions ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {bulkActions(selectedRows, selectedIds)}
+            </div>
+          ) : null}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="ms-auto"
+            onClick={() => onRowSelectionChange?.({})}
+          >
+            {t.selection.clear}
+          </Button>
+        </div>
+      ) : null}
+
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {isLoading || isError ? "" : t.results(rowCount)}
+      </p>
+
       <Table
         aria-busy={busy || undefined}
         className={cn(isFetching && !isLoading && "opacity-60")}
@@ -270,6 +412,9 @@ export function DataTable<TData extends RowData>({
             rows.map((row) => (
               <TableRow
                 key={row.id}
+                data-state={
+                  selectable && row.getIsSelected() ? "selected" : undefined
+                }
                 onClick={
                   onRowClick
                     ? (event) => {
@@ -279,7 +424,7 @@ export function DataTable<TData extends RowData>({
                 }
                 className={cn(onRowClick && "cursor-pointer")}
               >
-                {row.getAllCells().map((cell) => {
+                {row.getVisibleCells().map((cell) => {
                   const meta = cell.column.columnDef.meta;
                   return (
                     <TableCell
@@ -305,7 +450,7 @@ export function DataTable<TData extends RowData>({
           aria-label={t.pagination.label}
           className="flex flex-col gap-3 border-t px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between"
         >
-          <p className="text-muted-foreground" aria-live="polite">
+          <p className="text-muted-foreground">
             {t.pagination.range(from, to, rowCount)}
           </p>
           <div className="flex items-center gap-2">
