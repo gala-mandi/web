@@ -26,6 +26,8 @@ describe("hasPermission", () => {
   it("limits the operator to daily work", () => {
     expect(hasPermission(operator, "purchase.create")).toBe(true);
     expect(hasPermission(operator, "trader.view")).toBe(true);
+    // Quick add from a purchase form, but no Traders page.
+    expect(hasPermission(operator, "trader.create")).toBe(true);
     expect(hasPermission(operator, "trader.manage")).toBe(false);
     expect(hasPermission(operator, "purchase.edit")).toBe(false);
     expect(hasPermission(operator, "purchase.delete")).toBe(false);

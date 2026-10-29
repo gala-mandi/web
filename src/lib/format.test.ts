@@ -4,6 +4,7 @@ import {
   formatDateTime,
   formatMaund,
   formatRelative,
+  formatRs,
 } from "./format";
 
 describe("format", () => {
@@ -63,6 +64,42 @@ describe("format", () => {
       expect(formatMaund("100", "0.000")).toBe("");
       expect(formatMaund("100", "")).toBe("");
       expect(formatMaund("100", "forty")).toBe("");
+    });
+  });
+
+  describe("formatRs", () => {
+    it("shows rupees with thousands separators and 2 decimals", () => {
+      expect(formatRs("50000.00")).toBe("Rs 50,000.00");
+      expect(formatRs("50000")).toBe("Rs 50,000.00");
+      expect(formatRs("1234567.5")).toBe("Rs 1,234,567.50");
+      expect(formatRs("999")).toBe("Rs 999.00");
+      expect(formatRs("0")).toBe("Rs 0.00");
+      expect(formatRs("0.05")).toBe("Rs 0.05");
+    });
+
+    it("keeps big amounts exact (no float maths)", () => {
+      expect(formatRs("999999999999.99")).toBe("Rs 999,999,999,999.99");
+      expect(formatRs("90071992547409931.01")).toBe(
+        "Rs 90,071,992,547,409,931.01",
+      );
+      // Cut, never rounded.
+      expect(formatRs("10.999")).toBe("Rs 10.99");
+      expect(formatRs("007.1")).toBe("Rs 7.10");
+    });
+
+    it("puts the minus before Rs, but not on zero", () => {
+      expect(formatRs("-50000.00")).toBe("-Rs 50,000.00");
+      expect(formatRs("-0.00")).toBe("Rs 0.00");
+    });
+
+    it("returns an empty string for anything else", () => {
+      expect(formatRs("")).toBe("");
+      expect(formatRs(null)).toBe("");
+      expect(formatRs(undefined)).toBe("");
+      expect(formatRs("abc")).toBe("");
+      expect(formatRs("1e5")).toBe("");
+      expect(formatRs("1,000")).toBe("");
+      expect(formatRs(".5")).toBe("");
     });
   });
 });
