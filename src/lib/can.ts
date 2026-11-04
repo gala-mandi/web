@@ -17,6 +17,7 @@ export const PERMISSIONS = [
   "staff.manage",
   "settings.manage",
   "trader.view",
+  "trader.create",
   "trader.manage",
   "trader.delete",
   "commodity.view",

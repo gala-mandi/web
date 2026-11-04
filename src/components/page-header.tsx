@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
-  title: string;
+  /** Usually text; a node for e.g. a name that needs its own direction. */
+  title: ReactNode;
   description?: ReactNode;
   /** Buttons shown at the end of the header (e.g. "Add trader"). */
   actions?: ReactNode;

@@ -75,6 +75,10 @@ export const panelText = {
       description: "Shop name, logo, bill (parchi) and deduction settings.",
     },
   } satisfies Record<PanelSection, { label: string; description: string }>,
+  /** Last breadcrumb of a page below a section (`/traders/:id`). */
+  crumbs: {
+    traderProfile: "Trader profile",
+  },
   comingSoon: {
     title: "Nothing here yet",
     body: "This page is coming in a later ticket.",

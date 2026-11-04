@@ -84,3 +84,21 @@ export function formatMaund(
   const mnPart = `${kgNumber.format(maunds)} mn`;
   return rest === 0 ? mnPart : `${mnPart} ${kgPart}`;
 }
+
+/**
+ * Rupees as the server sends them (a decimal string, e.g. `"50000.5"`) →
+ * `Rs 50,000.50`; a negative amount gets a leading minus (`-Rs 1,200.00`).
+ * The integer and decimal parts are formatted as text, so no float maths
+ * touches the amount; more than 2 decimals are cut, never rounded. Returns ""
+ * for anything that isn't a plain decimal.
+ */
+export function formatRs(value: string | null | undefined): string {
+  const match = /^(-?)(\d+)(?:\.(\d*))?$/.exec((value ?? "").trim());
+  if (!match) return "";
+  const [, sign, rawInt, rawDec = ""] = match;
+  const int = rawInt.replace(/^0+(?=\d)/, "");
+  const dec = rawDec.padEnd(2, "0").slice(0, 2);
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const negative = sign === "-" && /[1-9]/.test(int + dec);
+  return `${negative ? "-" : ""}Rs ${grouped}.${dec}`;
+}
