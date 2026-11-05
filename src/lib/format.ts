@@ -102,3 +102,18 @@ export function formatRs(value: string | null | undefined): string {
   const negative = sign === "-" && /[1-9]/.test(int + dec);
   return `${negative ? "-" : ""}Rs ${grouped}.${dec}`;
 }
+
+/**
+ * A weight in kg as the server sends it (a decimal string, e.g. `"1250.500"`)
+ * → `1,250.5 kg`: trailing zeros go, at most 3 decimals (cut, never rounded),
+ * no float maths. Returns "" for anything that isn't a plain decimal.
+ */
+export function formatKg(value: string | null | undefined): string {
+  const match = /^(\d+)(?:\.(\d*))?$/.exec((value ?? "").trim());
+  if (!match) return "";
+  const [, rawInt, rawDec = ""] = match;
+  const int = rawInt.replace(/^0+(?=\d)/, "");
+  const dec = rawDec.slice(0, 3).replace(/0+$/, "");
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `${grouped}${dec ? `.${dec}` : ""} kg`;
+}

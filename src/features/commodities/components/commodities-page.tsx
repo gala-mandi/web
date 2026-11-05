@@ -1,0 +1,267 @@
+"use client";
+
+import { Plus, Search, Wheat } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  DataTable,
+  DataTableExport,
+  DataTableSelectFilter,
+  DataTableStatusFilter,
+  DataTableToolbar,
+  DataTableViewOptions,
+  useColumnVisibility,
+  useDataTableState,
+} from "@/components/data-table";
+import { EmptyState } from "@/components/empty-state";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { RequirePermission } from "@/features/panel/components/require-permission";
+import { ForbiddenState } from "@/features/panel/components/status-pages";
+import { panelText } from "@/features/panel/text";
+import { toApiError } from "@/lib/api-error";
+import { useCan } from "@/lib/can";
+import { toListSearchParams } from "@/lib/list-query";
+import { useCommodities } from "../hooks";
+import {
+  COMMODITIES_TABLE_ID,
+  commodityListFilters,
+  commodityStatuses,
+} from "../search-params";
+import { categoryLabel, commodityText, suggestedCategories } from "../text";
+import {
+  type Commodity,
+  type CommodityListQuery,
+  commoditySortFields,
+} from "../types";
+import { commodityColumns } from "./commodity-columns";
+import {
+  type CommodityStatusAction,
+  CommodityStatusDialog,
+  DeleteCommodityDialog,
+} from "./commodity-dialogs";
+import { CommodityFormSheet } from "./commodity-form-sheet";
+
+const t = commodityText.list;
+
+const statusOptions = commodityStatuses.map((status) => ({
+  value: status,
+  label: status === "active" ? commodityText.active : commodityText.inactive,
+  dotClassName: status === "active" ? "bg-success" : "bg-muted-foreground",
+}));
+
+/** The shop's starting categories, plus one from the URL that isn't among them. */
+function categoryOptions(current: string | null) {
+  const values: string[] = [...suggestedCategories];
+  if (current && !values.includes(current.toLowerCase())) values.push(current);
+  return values.map((value) => ({ value, label: categoryLabel(value) }));
+}
+
+const getRowId = (row: Commodity) => row.id;
+const getRowLabel = (row: Commodity) => row.name;
+
+type OpenDialog =
+  | { kind: "status"; commodity: Commodity; action: CommodityStatusAction }
+  | { kind: "delete"; commodity: Commodity };
+
+/**
+ * `/commodities`: needs `commodity.manage` (operators only pick commodities
+ * in forms, through `CommodityCombobox`).
+ */
+export function CommoditiesPage() {
+  return (
+    <RequirePermission permission="commodity.manage">
+      <CommoditiesList />
+    </RequirePermission>
+  );
+}
+
+/**
+ * Search, status and category filters, sort and page live in the URL
+ * (`?q=&status=&category=&page=&sort=`), so reload and Back keep the view.
+ */
+function CommoditiesList() {
+  const section = panelText.sections.commodities;
+  const canManage = useCan("commodity.manage");
+  const canDelete = useCan("commodity.delete");
+  const [dialog, setDialog] = useState<OpenDialog | null>(null);
+  // Kept while the sheet closes, so its content doesn't jump.
+  const [formCommodity, setFormCommodity] = useState<Commodity | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+
+  const list = useDataTableState({
+    filters: commodityListFilters,
+    sortFields: commoditySortFields,
+    defaultSort: "name",
+  });
+  const { columnVisibility, onColumnVisibilityChange } =
+    useColumnVisibility(COMMODITIES_TABLE_ID);
+
+  const { status, ...params } = toListSearchParams(list.listParams);
+  const listQuery: CommodityListQuery = {
+    ...params,
+    ...(status ? { active: status === "active" } : {}),
+  };
+  const query = useCommodities(listQuery);
+  const rows = query.data?.data;
+
+  const openForm = (commodity: Commodity | null) => {
+    setFormCommodity(commodity);
+    setFormOpen(true);
+  };
+
+  const columns = useMemo(
+    () =>
+      commodityColumns({
+        canManage,
+        canDelete,
+        onEdit: (commodity) => {
+          setFormCommodity(commodity);
+          setFormOpen(true);
+        },
+        onStatus: (commodity, action) =>
+          setDialog({ kind: "status", commodity, action }),
+        onDelete: (commodity) => setDialog({ kind: "delete", commodity }),
+      }),
+    [canManage, canDelete],
+  );
+
+  if (query.isError && toApiError(query.error).status === 403) {
+    return <ForbiddenState />;
+  }
+
+  const addButton = canManage ? (
+    <Button
+      size="lg"
+      className="h-10 gap-2 px-4 font-semibold"
+      onClick={() => openForm(null)}
+    >
+      <Plus aria-hidden />
+      {t.addButton}
+    </Button>
+  ) : null;
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title={section.label}
+        description={section.description}
+        actions={addButton}
+      />
+
+      <DataTableToolbar
+        search={{
+          value: list.search,
+          onChange: list.setSearch,
+          label: t.searchLabel,
+          placeholder: t.searchPlaceholder,
+        }}
+        filters={
+          <>
+            <DataTableStatusFilter
+              label={t.statusLabel}
+              allLabel={t.statusAll}
+              value={list.filters.status}
+              options={statusOptions}
+              onChange={(value) => list.setFilter("status", value)}
+            />
+            <DataTableSelectFilter
+              label={t.categoryLabel}
+              allLabel={t.categoryAll}
+              value={list.filters.category}
+              options={categoryOptions(list.filters.category)}
+              onChange={(value) => list.setFilter("category", value)}
+            />
+          </>
+        }
+        isFiltered={list.isFiltered}
+        onClearFilters={list.clearAll}
+        actions={
+          <>
+            <DataTableViewOptions
+              columns={columns}
+              columnVisibility={columnVisibility}
+              onColumnVisibilityChange={onColumnVisibilityChange}
+            />
+            <DataTableExport
+              fileName={t.exportFileName}
+              columns={columns}
+              rows={rows}
+              columnVisibility={columnVisibility}
+            />
+          </>
+        }
+      />
+
+      <DataTable
+        caption={t.caption}
+        columns={columns}
+        data={rows}
+        getRowId={getRowId}
+        getRowLabel={getRowLabel}
+        rowCount={query.data?.meta.total ?? 0}
+        pagination={list.pagination}
+        onPaginationChange={list.onPaginationChange}
+        sorting={list.sorting}
+        onSortingChange={list.onSortingChange}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={onColumnVisibilityChange}
+        isLoading={query.isPending}
+        isFetching={query.isPlaceholderData}
+        isError={query.isError}
+        onRetry={() => void query.refetch()}
+        onRowClick={canManage ? (row) => openForm(row) : undefined}
+        empty={
+          list.isFiltered ? (
+            <EmptyState
+              icon={Search}
+              title={t.noMatches.title}
+              body={t.noMatches.body}
+              className="rounded-none border-0"
+              action={
+                <Button variant="outline" onClick={list.clearAll}>
+                  {t.noMatches.clear}
+                </Button>
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={Wheat}
+              title={t.empty.title}
+              body={t.empty.body}
+              className="rounded-none border-0"
+              action={addButton}
+            />
+          )
+        }
+      />
+
+      <CommodityFormSheet
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        commodity={formCommodity}
+      />
+
+      {dialog?.kind === "status" ? (
+        <CommodityStatusDialog
+          commodity={dialog.commodity}
+          action={dialog.action}
+          onClose={() => setDialog(null)}
+        />
+      ) : null}
+      {dialog?.kind === "delete" ? (
+        <DeleteCommodityDialog
+          commodity={dialog.commodity}
+          canDeactivate={canManage && dialog.commodity.isActive}
+          onDeactivate={() =>
+            setDialog({
+              kind: "status",
+              commodity: dialog.commodity,
+              action: "deactivate",
+            })
+          }
+          onClose={() => setDialog(null)}
+        />
+      ) : null}
+    </div>
+  );
+}

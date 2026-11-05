@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   formatDate,
   formatDateTime,
+  formatKg,
   formatMaund,
   formatRelative,
   formatRs,
@@ -64,6 +65,23 @@ describe("format", () => {
       expect(formatMaund("100", "0.000")).toBe("");
       expect(formatMaund("100", "")).toBe("");
       expect(formatMaund("100", "forty")).toBe("");
+    });
+  });
+
+  describe("formatKg", () => {
+    it("drops trailing zeros and groups thousands, without rounding", () => {
+      expect(formatKg("100.000")).toBe("100 kg");
+      expect(formatKg("1250.500")).toBe("1,250.5 kg");
+      expect(formatKg("0.125")).toBe("0.125 kg");
+      expect(formatKg("40.1259")).toBe("40.125 kg");
+      expect(formatKg("007")).toBe("7 kg");
+    });
+
+    it("returns an empty string for anything else", () => {
+      expect(formatKg(null)).toBe("");
+      expect(formatKg("")).toBe("");
+      expect(formatKg("-5")).toBe("");
+      expect(formatKg("abc")).toBe("");
     });
   });
 
