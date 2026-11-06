@@ -87,7 +87,7 @@ export function paymentFormSchema(
         .trim()
         .min(1, e.amountRequired)
         .refine(isMoney, e.amount)
-        .refine(isAboveZero, e.amountZero),
+        .refine((v) => !isMoney(v) || isAboveZero(v), e.amountZero),
       method: z.enum(paymentMethods),
       reference: z.string().trim().max(MAX_REFERENCE, e.referenceTooLong),
       notes: z.string().max(MAX_NOTES, e.notesTooLong),
