@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -15,14 +16,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { formatKg } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { useCommodityLookup } from "../hooks";
-import { commodityText, unitShortText } from "../text";
+import type { CommoditiesTranslator } from "../schemas";
 import type { CommodityLookupItem } from "../types";
 import { CommodityName } from "./commodity-name";
-
-const t = commodityText.combobox;
 
 /** Typing waits this long before asking the server. */
 export const COMMODITY_SEARCH_DEBOUNCE_MS = 250;
@@ -45,10 +44,14 @@ export interface CommodityComboboxProps {
 }
 
 /** "Bag · 100 kg bag" or "Maund". */
-function unitLine(item: CommodityLookupItem): string {
-  const unit = unitShortText[item.defaultUnit];
+function unitLine(
+  t: CommoditiesTranslator,
+  formatKg: (value: string) => string,
+  item: CommodityLookupItem,
+): string {
+  const unit = t(`unitsShort.${item.defaultUnit}`);
   return item.bagWeightKg
-    ? `${unit} · ${commodityText.bagOf(formatKg(item.bagWeightKg))}`
+    ? `${unit} · ${t("bagOf", { weight: formatKg(item.bagWeightKg) })}`
     : unit;
 }
 
@@ -84,7 +87,7 @@ function unitLine(item: CommodityLookupItem): string {
 export function CommodityCombobox({
   value,
   onChange,
-  placeholder = t.placeholder,
+  placeholder,
   disabled = false,
   id,
   "aria-labelledby": labelledBy,
@@ -92,6 +95,8 @@ export function CommodityCombobox({
   "aria-invalid": invalid,
   className,
 }: CommodityComboboxProps) {
+  const t = useTranslations("commodities");
+  const { formatKg } = useFormat();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   // What the server was asked for: `search` after the pause.
@@ -147,7 +152,7 @@ export function CommodityCombobox({
             <CommodityName name={value.name} nameUr={value.nameUr} />
           ) : (
             <span className="text-muted-foreground truncate">
-              {placeholder}
+              {placeholder ?? t("combobox.placeholder")}
             </span>
           )}
           <ChevronsUpDown aria-hidden className="text-muted-foreground" />
@@ -157,28 +162,28 @@ export function CommodityCombobox({
         align="start"
         className="w-(--radix-popover-trigger-width) min-w-72 p-0"
       >
-        <Command shouldFilter={false} label={t.searchLabel}>
+        <Command shouldFilter={false} label={t("combobox.searchLabel")}>
           <CommandInput
             value={search}
             onValueChange={setSearch}
-            placeholder={t.searchPlaceholder}
-            aria-label={t.searchLabel}
+            placeholder={t("combobox.searchPlaceholder")}
+            aria-label={t("combobox.searchLabel")}
             dir="auto"
           />
-          <CommandList aria-label={t.results}>
+          <CommandList aria-label={t("combobox.results")}>
             {lookup.isError && !typing ? (
               <div
                 role="alert"
                 className="flex flex-col items-center gap-2 px-3 py-4 text-center text-sm"
               >
-                <span className="text-destructive">{t.error}</span>
+                <span className="text-destructive">{t("combobox.error")}</span>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => void lookup.refetch()}
                 >
-                  {t.retry}
+                  {t("combobox.retry")}
                 </Button>
               </div>
             ) : null}
@@ -187,7 +192,7 @@ export function CommodityCombobox({
                 role="status"
                 className="text-muted-foreground px-3 py-4 text-center text-sm"
               >
-                {t.loading}
+                {t("combobox.loading")}
               </p>
             ) : null}
             {items.length > 0 ? (
@@ -205,7 +210,7 @@ export function CommodityCombobox({
                     <div className="flex min-w-0 flex-1 flex-col">
                       <CommodityName name={item.name} nameUr={item.nameUr} />
                       <span className="text-muted-foreground text-xs tabular-nums">
-                        {unitLine(item)}
+                        {unitLine(t, formatKg, item)}
                       </span>
                     </div>
                   </CommandItem>
@@ -217,7 +222,11 @@ export function CommodityCombobox({
                 role="status"
                 className="text-muted-foreground px-3 py-4 text-center text-sm"
               >
-                <bdi dir="auto">{t.empty(q)}</bdi>
+                <bdi dir="auto">
+                  {q
+                    ? t("combobox.empty", { query: q })
+                    : t("combobox.emptyAll")}
+                </bdi>
               </p>
             ) : null}
           </CommandList>

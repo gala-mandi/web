@@ -23,7 +23,7 @@ export function TraderName({
   return (
     <bdi
       dir="auto"
-      lang={urdu ? "ur" : undefined}
+      lang={urdu ? "ur" : "en"}
       className={cn(urdu && "font-urdu leading-loose", className)}
     >
       {name}

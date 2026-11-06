@@ -1,6 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useFormat } from "@/lib/use-format";
+import { categoryLabel, suggestedCategories } from "../categories";
+import type { CommoditiesTranslator } from "../schemas";
 import { Plus, Search, Wheat } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -27,7 +30,6 @@ import {
   commodityListFilters,
   commodityStatuses,
 } from "../search-params";
-import { categoryLabel, commodityText, suggestedCategories } from "../text";
 import {
   type Commodity,
   type CommodityListQuery,
@@ -41,19 +43,18 @@ import {
 } from "./commodity-dialogs";
 import { CommodityFormSheet } from "./commodity-form-sheet";
 
-const t = commodityText.list;
-
-const statusOptions = commodityStatuses.map((status) => ({
-  value: status,
-  label: status === "active" ? commodityText.active : commodityText.inactive,
-  dotClassName: status === "active" ? "bg-success" : "bg-muted-foreground",
-}));
+const statusOptions = (t: CommoditiesTranslator) =>
+  commodityStatuses.map((status) => ({
+    value: status,
+    label: status === "active" ? t("active") : t("inactive"),
+    dotClassName: status === "active" ? "bg-success" : "bg-muted-foreground",
+  }));
 
 /** The shop's starting categories, plus one from the URL that isn't among them. */
-function categoryOptions(current: string | null) {
+function categoryOptions(t: CommoditiesTranslator, current: string | null) {
   const values: string[] = [...suggestedCategories];
   if (current && !values.includes(current.toLowerCase())) values.push(current);
-  return values.map((value) => ({ value, label: categoryLabel(value) }));
+  return values.map((value) => ({ value, label: categoryLabel(t, value) }));
 }
 
 const getRowId = (row: Commodity) => row.id;
@@ -80,6 +81,8 @@ export function CommoditiesPage() {
  * (`?q=&status=&category=&page=&sort=`), so reload and Back keep the view.
  */
 function CommoditiesList() {
+  const format = useFormat();
+  const t = useTranslations("commodities");
   const section = useTranslations("panel.sections.commodities");
   const canManage = useCanWrite("commodity.manage");
   const canDelete = useCanWrite("commodity.delete");
@@ -111,7 +114,7 @@ function CommoditiesList() {
 
   const columns = useMemo(
     () =>
-      commodityColumns({
+      commodityColumns(t, format, {
         canManage,
         canDelete,
         onEdit: (commodity) => {
@@ -122,7 +125,7 @@ function CommoditiesList() {
           setDialog({ kind: "status", commodity, action }),
         onDelete: (commodity) => setDialog({ kind: "delete", commodity }),
       }),
-    [canManage, canDelete],
+    [canManage, canDelete, t, format],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -136,7 +139,7 @@ function CommoditiesList() {
       onClick={() => openForm(null)}
     >
       <Plus aria-hidden />
-      {t.addButton}
+      {t("list.addButton")}
     </Button>
   ) : null;
 
@@ -152,23 +155,23 @@ function CommoditiesList() {
         search={{
           value: list.search,
           onChange: list.setSearch,
-          label: t.searchLabel,
-          placeholder: t.searchPlaceholder,
+          label: t("list.searchLabel"),
+          placeholder: t("list.searchPlaceholder"),
         }}
         filters={
           <>
             <DataTableStatusFilter
-              label={t.statusLabel}
-              allLabel={t.statusAll}
+              label={t("list.statusLabel")}
+              allLabel={t("list.statusAll")}
               value={list.filters.status}
-              options={statusOptions}
+              options={statusOptions(t)}
               onChange={(value) => list.setFilter("status", value)}
             />
             <DataTableSelectFilter
-              label={t.categoryLabel}
-              allLabel={t.categoryAll}
+              label={t("list.categoryLabel")}
+              allLabel={t("list.categoryAll")}
               value={list.filters.category}
-              options={categoryOptions(list.filters.category)}
+              options={categoryOptions(t, list.filters.category)}
               onChange={(value) => list.setFilter("category", value)}
             />
           </>
@@ -183,7 +186,7 @@ function CommoditiesList() {
               onColumnVisibilityChange={onColumnVisibilityChange}
             />
             <DataTableExport
-              fileName={t.exportFileName}
+              fileName={t("list.exportFileName")}
               columns={columns}
               rows={rows}
               columnVisibility={columnVisibility}
@@ -193,7 +196,7 @@ function CommoditiesList() {
       />
 
       <DataTable
-        caption={t.caption}
+        caption={t("list.caption")}
         columns={columns}
         data={rows}
         getRowId={getRowId}
@@ -214,20 +217,20 @@ function CommoditiesList() {
           list.isFiltered ? (
             <EmptyState
               icon={Search}
-              title={t.noMatches.title}
-              body={t.noMatches.body}
+              title={t("list.noMatches.title")}
+              body={t("list.noMatches.body")}
               className="rounded-none border-0"
               action={
                 <Button variant="outline" onClick={list.clearAll}>
-                  {t.noMatches.clear}
+                  {t("list.noMatches.clear")}
                 </Button>
               }
             />
           ) : (
             <EmptyState
               icon={Wheat}
-              title={t.empty.title}
-              body={t.empty.body}
+              title={t("list.empty.title")}
+              body={t("list.empty.body")}
               className="rounded-none border-0"
               action={addButton}
             />

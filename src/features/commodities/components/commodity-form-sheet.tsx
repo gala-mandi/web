@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { categoryLabel, suggestedCategories } from "../categories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import {
@@ -51,7 +53,7 @@ import {
   type ConflictFields,
 } from "@/features/staff/form-errors";
 import { toApiError } from "@/lib/api-error";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import {
   useCreateCommodity,
@@ -62,6 +64,7 @@ import {
   type CommodityField,
   commodityFields,
   commodityFormSchema,
+  type CommoditiesTranslator,
   type CommodityFormValues,
   emptyCommodityValues,
   toCommodityFormValues,
@@ -69,25 +72,18 @@ import {
   toUpdateInput,
 } from "../schemas";
 import {
-  categoryLabel,
-  commodityText,
-  suggestedCategories,
-  unitText,
-} from "../text";
-import {
   type ChargeField,
   chargeFields,
   type Commodity,
   type EffectiveCharges,
 } from "../types";
 
-const t = commodityText.form;
 const inputClass = "rounded-field h-11 bg-card";
 
 /** 409 codes of the commodities API and the field they belong to. */
-const commodityConflicts: ConflictFields = {
-  NAME_TAKEN: { field: "name", message: commodityText.errors.nameTaken },
-};
+const commodityConflicts = (t: CommoditiesTranslator): ConflictFields => ({
+  NAME_TAKEN: { field: "name", message: t("errors.nameTaken") },
+});
 
 export interface CommodityFormSheetProps {
   open: boolean;
@@ -116,6 +112,7 @@ export function CommodityFormSheet({
   commodity = null,
   onSaved,
 }: CommodityFormSheetProps) {
+  const t = useTranslations("commodities");
   const [busy, setBusy] = useState(false);
 
   return (
@@ -132,10 +129,12 @@ export function CommodityFormSheet({
       >
         <SheetHeader className="border-b px-5 py-4 pe-12">
           <SheetTitle className="font-heading text-lg font-bold">
-            {commodity ? t.editTitle(commodity.name) : t.addTitle}
+            {commodity
+              ? t("form.editTitle", { name: commodity.name })
+              : t("form.addTitle")}
           </SheetTitle>
           <SheetDescription>
-            {commodity ? t.editDescription : t.addDescription}
+            {commodity ? t("form.editDescription") : t("form.addDescription")}
           </SheetDescription>
         </SheetHeader>
         {open ? (
@@ -165,6 +164,7 @@ function CommodityForm({
   onCancel: () => void;
   onSaved: (commodity: Commodity) => void;
 }) {
+  const t = useTranslations("commodities");
   const [formError, setFormError] = useState<string | null>(null);
   const create = useCreateCommodity();
   const update = useUpdateCommodity();
@@ -172,7 +172,7 @@ function CommodityForm({
   const inFlight = useRef(false);
 
   const form = useForm<CommodityFormValues>({
-    resolver: zodResolver(commodityFormSchema),
+    resolver: zodResolver(commodityFormSchema(t)),
     defaultValues: commodity
       ? toCommodityFormValues(commodity)
       : emptyCommodityValues(),
@@ -187,29 +187,29 @@ function CommodityForm({
       if (commodity) {
         const input = toUpdateInput(values, form.formState.dirtyFields);
         if (Object.keys(input).length === 0) {
-          toast.info(t.nothingChanged);
+          toast.info(t("form.nothingChanged"));
           onCancel();
           return;
         }
         saved = await update.mutateAsync({ id: commodity.id, input });
-        toast.success(t.saved(saved.name));
+        toast.success(t("form.saved", { name: saved.name }));
       } else {
         saved = await create.mutateAsync(toCreateInput(values));
-        toast.success(t.added(saved.name));
+        toast.success(t("form.added", { name: saved.name }));
       }
       onSaved(saved);
     } catch (error) {
       const e = toApiError(error);
       if (
         !applyServerErrors(e, form.setError, commodityFields, {
-          conflicts: commodityConflicts,
-          fallback: commodityText.errors.generic,
+          conflicts: commodityConflicts(t),
+          fallback: t("errors.generic"),
         })
       ) {
         setFormError(
           e.status === 0
-            ? commodityText.errors.network
-            : (e.message ?? commodityText.errors.generic),
+            ? t("errors.network")
+            : (e.message ?? t("errors.generic")),
         );
       }
     }
@@ -251,13 +251,13 @@ function CommodityForm({
           </div>
         ) : null}
 
-        <Section title={t.sections.basic}>
+        <Section title={t("form.sections.basic")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField
               control={form.control}
               name="name"
-              label={t.name}
-              placeholder={t.namePlaceholder}
+              label={t("form.name")}
+              placeholder={t("form.namePlaceholder")}
               dir="auto"
               autoComplete="off"
               autoFocus
@@ -265,9 +265,9 @@ function CommodityForm({
             <TextField
               control={form.control}
               name="nameUr"
-              label={t.nameUr}
+              label={t("form.nameUr")}
               optional
-              placeholder={t.nameUrPlaceholder}
+              placeholder={t("form.nameUrPlaceholder")}
               dir="rtl"
               lang="ur"
               autoComplete="off"
@@ -277,10 +277,10 @@ function CommodityForm({
           <TextField
             control={form.control}
             name="category"
-            label={t.category}
-            hint={t.categoryHint}
+            label={t("form.category")}
+            hint={t("form.categoryHint")}
             optional
-            placeholder={t.categoryPlaceholder}
+            placeholder={t("form.categoryPlaceholder")}
             dir="auto"
             autoComplete="off"
             list="commodity-category-suggestions"
@@ -288,31 +288,34 @@ function CommodityForm({
           <datalist id="commodity-category-suggestions">
             {suggestedCategories.map((category) => (
               <option key={category} value={category}>
-                {categoryLabel(category)}
+                {categoryLabel(t, category)}
               </option>
             ))}
           </datalist>
           {commodity ? <ActiveField control={form.control} /> : null}
         </Section>
 
-        <Section title={t.sections.units}>
+        <Section title={t("form.sections.units")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <UnitField control={form.control} />
             <TextField
               control={form.control}
               name="bagWeightKg"
-              label={t.bagWeightKg}
-              hint={t.bagWeightHint}
+              label={t("form.bagWeightKg")}
+              hint={t("form.bagWeightHint")}
               optional
               inputMode="decimal"
               dir="ltr"
-              placeholder={t.bagWeightPlaceholder}
-              suffix={t.kg}
+              placeholder={t("form.bagWeightPlaceholder")}
+              suffix={t("form.kg")}
             />
           </div>
         </Section>
 
-        <Section title={t.sections.charges} description={t.chargesHint}>
+        <Section
+          title={t("form.sections.charges")}
+          description={t("form.chargesHint")}
+        >
           <div className="grid gap-4 sm:grid-cols-3">
             {chargeFields.map((field) => (
               <ChargeInput
@@ -336,7 +339,7 @@ function CommodityForm({
           disabled={busy}
           onClick={onCancel}
         >
-          {t.cancel}
+          {t("form.cancel")}
         </Button>
         <Button
           type="submit"
@@ -347,7 +350,11 @@ function CommodityForm({
           {busy ? (
             <Loader2 aria-hidden className="size-4 animate-spin" />
           ) : null}
-          {busy ? t.saving : commodity ? t.submitEdit : t.submitAdd}
+          {busy
+            ? t("form.saving")
+            : commodity
+              ? t("form.submitEdit")
+              : t("form.submitAdd")}
         </Button>
       </SheetFooter>
     </form>
@@ -377,9 +384,10 @@ function Section({
 }
 
 function OptionalMark() {
+  const t = useTranslations("commodities");
   return (
     <span className="text-muted-foreground text-xs font-normal">
-      ({t.optional})
+      ({t("form.optional")})
     </span>
   );
 }
@@ -469,10 +477,13 @@ function TextField({
 }
 
 /** "2.50%" or "Rs 15.00", as the shop default is shown. */
-function shopDefaultText(field: ChargeField, value: string): string {
-  return field === "labourPerBag"
-    ? formatRs(value)
-    : commodityText.percent(value);
+function shopDefaultText(
+  t: CommoditiesTranslator,
+  formatRs: (value: string) => string,
+  field: ChargeField,
+  value: string,
+): string {
+  return field === "labourPerBag" ? formatRs(value) : t("percent", { value });
 }
 
 /**
@@ -493,9 +504,11 @@ function ChargeInput({
   name: ChargeField;
   shopCharges: EffectiveCharges | undefined;
 }) {
+  const t = useTranslations("commodities");
+  const { formatRs } = useFormat();
   const value = useWatch({ control, name });
   const fallback = shopCharges?.[name];
-  const label = t.charges[name];
+  const label = t(`form.charges.${name}`);
   const money = name === "labourPerBag";
   return (
     <TextField
@@ -505,14 +518,16 @@ function ChargeInput({
       optional
       hint={
         fallback
-          ? t.shopDefault(shopDefaultText(name, fallback))
-          : t.shopDefaultUnknown
+          ? t("form.shopDefault", {
+              value: shopDefaultText(t, formatRs, name, fallback),
+            })
+          : t("form.shopDefaultUnknown")
       }
       inputMode="decimal"
       dir="ltr"
       autoComplete="off"
       placeholder={fallback}
-      prefix={money ? t.currency : undefined}
+      prefix={money ? t("form.currency") : undefined}
       suffix={money ? undefined : "%"}
       end={
         value.trim() !== "" ? (
@@ -521,7 +536,7 @@ function ChargeInput({
             variant="ghost"
             size="sm"
             className="text-primary h-8 w-fit gap-1.5 px-2"
-            aria-label={t.useDefaultFor(label)}
+            aria-label={t("form.useDefaultFor", { label })}
             onClick={() => {
               setValue(name, "", {
                 shouldDirty: true,
@@ -532,7 +547,7 @@ function ChargeInput({
             }}
           >
             <X aria-hidden />
-            {t.useDefault}
+            {t("form.useDefault")}
           </Button>
         ) : null
       }
@@ -541,6 +556,7 @@ function ChargeInput({
 }
 
 function UnitField({ control }: { control: Control<CommodityFormValues> }) {
+  const t = useTranslations("commodities");
   const id = "commodity-defaultUnit";
   return (
     <Controller
@@ -549,7 +565,7 @@ function UnitField({ control }: { control: Control<CommodityFormValues> }) {
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid} className="gap-2">
           <FieldLabel id={`${id}-label`} htmlFor={id}>
-            {t.defaultUnit}
+            {t("form.defaultUnit")}
           </FieldLabel>
           <Select
             name={field.name}
@@ -570,13 +586,13 @@ function UnitField({ control }: { control: Control<CommodityFormValues> }) {
             <SelectContent position="popper">
               {units.map((unit) => (
                 <SelectItem key={unit} value={unit}>
-                  {unitText[unit]}
+                  {t(`units.${unit}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <FieldDescription id={`${id}-hint`}>
-            {t.defaultUnitHint}
+            {t("form.defaultUnitHint")}
           </FieldDescription>
           <FieldError id={`${id}-error`} errors={[fieldState.error]} />
         </Field>
@@ -586,6 +602,7 @@ function UnitField({ control }: { control: Control<CommodityFormValues> }) {
 }
 
 function ActiveField({ control }: { control: Control<CommodityFormValues> }) {
+  const t = useTranslations("commodities");
   return (
     <Controller
       name="isActive"
@@ -602,9 +619,11 @@ function ActiveField({ control }: { control: Control<CommodityFormValues> }) {
             aria-describedby="commodity-isActive-hint"
           />
           <FieldContent className="gap-0.5">
-            <FieldLabel htmlFor="commodity-isActive">{t.isActive}</FieldLabel>
+            <FieldLabel htmlFor="commodity-isActive">
+              {t("form.isActive")}
+            </FieldLabel>
             <FieldDescription id="commodity-isActive-hint">
-              {t.isActiveHint}
+              {t("form.isActiveHint")}
             </FieldDescription>
           </FieldContent>
         </Field>

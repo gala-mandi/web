@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
-  commodityFormSchema,
+  commodityFormSchema as makeCommodityFormSchema,
   type CommodityFormValues,
   emptyCommodityValues,
   toCommodityFormValues,
   toCreateInput,
   toUpdateInput,
 } from "./schemas";
+import { testTranslator } from "@/test/intl";
 import { commodity, kapas } from "./test-data";
+
+const commodityFormSchema = makeCommodityFormSchema(
+  testTranslator("commodities"),
+);
 
 function valid(overrides: Partial<CommodityFormValues> = {}) {
   return { ...emptyCommodityValues(), name: "Gandum", ...overrides };

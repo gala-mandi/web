@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import { TraderName } from "@/features/traders/components/trader-name";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +26,8 @@ export function UrduName({
 
 /**
  * English name with the Urdu name beside it ("Gandum گندم"). The English
- * name may itself be typed in Urdu, so it picks its own font too.
+ * name may itself be typed in Urdu, so it picks its own font too. On the
+ * Urdu interface the Urdu name leads (when the shop entered one).
  */
 export function CommodityName({
   name,
@@ -36,6 +38,15 @@ export function CommodityName({
   nameUr: string | null;
   className?: string;
 }) {
+  const urduFirst = useLocale() === "ur" && Boolean(nameUr);
+  if (urduFirst && nameUr) {
+    return (
+      <span className={cn("flex min-w-0 items-baseline gap-2", className)}>
+        <UrduName name={nameUr} className="truncate font-semibold" />
+        <TraderName name={name} className="text-muted-foreground truncate" />
+      </span>
+    );
+  }
   return (
     <span className={cn("flex min-w-0 items-baseline gap-2", className)}>
       <TraderName name={name} className="truncate font-semibold" />
