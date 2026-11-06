@@ -4,7 +4,7 @@ import type { CommodityLookupItem } from "@/features/commodities/types";
 import type { TraderLookupItem } from "@/features/traders/types";
 import { RATE_UNITS } from "@/lib/charges/calculate-transaction";
 import { maundToKg } from "@/lib/units";
-import { purchaseText } from "./text";
+import type { Translator } from "@/i18n/types";
 import type {
   CreatePurchaseInput,
   Purchase,
@@ -13,7 +13,23 @@ import type {
   RateUnit,
 } from "./types";
 
-const e = purchaseText.errors;
+/** Messages come from the `purchases` messages of the interface language. */
+export type PurchasesTranslator = Translator<"purchases">;
+
+/** A row error, by its key under `purchases.errors`. */
+type ItemError =
+  | "commodityRequired"
+  | "bags"
+  | "bagsTooMany"
+  | "bagsForBagRate"
+  | "weightRequired"
+  | "weightKg"
+  | "weightMaund"
+  | "weightZero"
+  | "weightTooLarge"
+  | "rateRequired"
+  | "rate"
+  | "rateZero";
 
 /** Most items one parchi may carry (server `MAX_ITEMS`). */
 export const MAX_ITEMS = 100;
@@ -100,31 +116,32 @@ function bagsOf(item: PurchaseItemFormValues): number | null {
 
 /** Errors of one row, by field; empty for a blank or valid row. */
 function itemIssues(item: PurchaseItemFormValues) {
-  const issues: { field: keyof PurchaseItemFormValues; message: string }[] = [];
+  const issues: { field: keyof PurchaseItemFormValues; error: ItemError }[] =
+    [];
   if (isBlankItem(item)) return issues;
-  const add = (field: keyof PurchaseItemFormValues, message: string) =>
-    issues.push({ field, message });
+  const add = (field: keyof PurchaseItemFormValues, error: ItemError) =>
+    issues.push({ field, error });
 
-  if (!item.commodity) add("commodity", e.commodityRequired);
+  if (!item.commodity) add("commodity", "commodityRequired");
 
   const bags = item.bags.trim();
-  if (bags && !BAGS.test(bags)) add("bags", e.bags);
-  else if (bags && Number(bags) > MAX_BAGS) add("bags", e.bagsTooMany);
+  if (bags && !BAGS.test(bags)) add("bags", "bags");
+  else if (bags && Number(bags) > MAX_BAGS) add("bags", "bagsTooMany");
   else if (item.rateUnit === "bag" && !hasDigit(bags)) {
-    add("bags", e.bagsForBagRate);
+    add("bags", "bagsForBagRate");
   }
 
   const weight = item.weight.trim();
-  if (!weight) add("weight", e.weightRequired);
+  if (!weight) add("weight", "weightRequired");
   else if (!(item.weightUnit === "kg" ? KG : MAUND).test(weight)) {
-    add("weight", item.weightUnit === "kg" ? e.weightKg : e.weightMaund);
-  } else if (!hasDigit(weight)) add("weight", e.weightZero);
-  else if (!itemWeightKg(item)) add("weight", e.weightTooLarge);
+    add("weight", item.weightUnit === "kg" ? "weightKg" : "weightMaund");
+  } else if (!hasDigit(weight)) add("weight", "weightZero");
+  else if (!itemWeightKg(item)) add("weight", "weightTooLarge");
 
   const rate = item.rate.trim();
-  if (!rate) add("rate", e.rateRequired);
-  else if (!MONEY.test(rate)) add("rate", e.rate);
-  else if (!hasDigit(rate)) add("rate", e.rateZero);
+  if (!rate) add("rate", "rateRequired");
+  else if (!MONEY.test(rate)) add("rate", "rate");
+  else if (!hasDigit(rate)) add("rate", "rateZero");
   return issues;
 }
 
@@ -144,36 +161,41 @@ export const itemFormShape = {
 };
 
 /** Adds the errors of one row (see `itemIssues`) to its fields. */
-export function checkItem(item: PurchaseItemFormValues, ctx: z.RefinementCtx) {
-  for (const { field, message } of itemIssues(item)) {
-    ctx.addIssue({ code: "custom", path: [field], message });
-  }
-}
-
-const itemSchema = z.object(itemFormShape).superRefine(checkItem);
+export const checkItem =
+  (t: PurchasesTranslator) =>
+  (item: PurchaseItemFormValues, ctx: z.RefinementCtx) => {
+    for (const { field, error } of itemIssues(item)) {
+      ctx.addIssue({
+        code: "custom",
+        path: [field],
+        message: t(`errors.${error}`),
+      });
+    }
+  };
 
 /** The form's schema; `today` (Asia/Karachi) is the latest date allowed. */
-export function purchaseFormSchema(today: string) {
+export function purchaseFormSchema(today: string, t: PurchasesTranslator) {
+  const itemSchema = z.object(itemFormShape).superRefine(checkItem(t));
   return z.object({
     purchaseDate: z
       .string()
       .trim()
-      .regex(DATE, e.dateRequired)
-      .refine((v) => v <= today, e.dateInFuture),
+      .regex(DATE, t("errors.dateRequired"))
+      .refine((v) => v <= today, t("errors.dateInFuture")),
     trader: z
       .custom<TraderLookupItem | null>()
-      .refine(Boolean, e.traderRequired),
-    notes: z.string().max(MAX_NOTES, e.notesTooLong),
+      .refine(Boolean, t("errors.traderRequired")),
+    notes: z.string().max(MAX_NOTES, t("errors.notesTooLong")),
     items: z
       .array(itemSchema)
       .refine(
         (items) => items.some((item) => !isBlankItem(item)),
-        e.itemsRequired,
+        t("errors.itemsRequired"),
       )
       .refine(
         (items) =>
           items.filter((item) => !isBlankItem(item)).length <= MAX_ITEMS,
-        e.tooManyItems,
+        t("errors.tooManyItems"),
       ),
   });
 }

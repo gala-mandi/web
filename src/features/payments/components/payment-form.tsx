@@ -187,6 +187,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
         e.errors,
         (field) => toPaymentFormField(field, billIds),
         form.setError,
+        paymentText.errors.generic,
       );
       if (placed > 0 && unplaced.length === 0) return;
       const message = unplaced.length ? unplaced.join(" ") : generalMessage(e);

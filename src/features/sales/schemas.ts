@@ -11,12 +11,14 @@ import {
   toItemFormValues,
   toItemInput,
   type WeightUnit,
+  type PurchasesTranslator,
 } from "@/features/purchases/schemas";
 import type { TraderLookupItem } from "@/features/traders/types";
-import { saleText } from "./text";
+import type { Translator } from "@/i18n/types";
 import type { CreateSaleInput, Sale, SaleItemInput } from "./types";
 
-const e = saleText.errors;
+/** Messages come from the `sales` messages of the interface language. */
+export type SalesTranslator = Translator<"sales">;
 const MAX_NOTES = 1000;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -48,30 +50,36 @@ export function emptySaleValues(today: string): SaleFormValues {
   return { saleDate: today, buyer: null, notes: "", items: [emptySaleItem()] };
 }
 
-const itemSchema = z
-  .object({ ...itemFormShape, lot: z.custom<SaleLot | null>() })
-  .superRefine(checkItem);
-
 /** The form's schema; `today` (Asia/Karachi) is the latest date allowed. */
-export function saleFormSchema(today: string) {
+export function saleFormSchema(
+  today: string,
+  t: SalesTranslator,
+  tp: PurchasesTranslator,
+) {
+  // The item rows check like a purchase's (same words).
+  const itemSchema = z
+    .object({ ...itemFormShape, lot: z.custom<SaleLot | null>() })
+    .superRefine(checkItem(tp));
   return z.object({
     saleDate: z
       .string()
       .trim()
-      .regex(DATE, e.dateRequired)
-      .refine((v) => v <= today, e.dateInFuture),
-    buyer: z.custom<TraderLookupItem | null>().refine(Boolean, e.buyerRequired),
-    notes: z.string().max(MAX_NOTES, e.notesTooLong),
+      .regex(DATE, t("errors.dateRequired"))
+      .refine((v) => v <= today, t("errors.dateInFuture")),
+    buyer: z
+      .custom<TraderLookupItem | null>()
+      .refine(Boolean, t("errors.buyerRequired")),
+    notes: z.string().max(MAX_NOTES, t("errors.notesTooLong")),
     items: z
       .array(itemSchema)
       .refine(
         (items) => items.some((item) => !isBlankItem(item)),
-        e.itemsRequired,
+        t("errors.itemsRequired"),
       )
       .refine(
         (items) =>
           items.filter((item) => !isBlankItem(item)).length <= MAX_ITEMS,
-        e.tooManyItems,
+        t("errors.tooManyItems"),
       ),
   });
 }

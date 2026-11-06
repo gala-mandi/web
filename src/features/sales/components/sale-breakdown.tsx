@@ -1,14 +1,12 @@
+import { useTranslations } from "next-intl";
 import {
   BreakdownLine,
   rateText,
   signedRs,
 } from "@/features/purchases/components/breakdown-lines";
 import type { ChargeLine } from "@/lib/charges/calculate-transaction";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
-import { saleText } from "../text";
-
-const t = saleText.breakdown;
 
 export interface SaleBreakdownValues {
   grossAmount: string;
@@ -32,6 +30,9 @@ export function SaleBreakdownLines({
   values: SaleBreakdownValues;
   className?: string;
 }) {
+  const { formatRs } = useFormat();
+  const tp = useTranslations("purchases");
+  const t = useTranslations("sales");
   const received = values.receivedAmount && /[1-9]/.test(values.receivedAmount);
   return (
     <dl
@@ -39,36 +40,37 @@ export function SaleBreakdownLines({
       className={cn("flex flex-col gap-1.5 text-sm", className)}
     >
       <BreakdownLine
-        label={t.gross}
+        label={t("breakdown.gross")}
         value={formatRs(values.grossAmount)}
         strong
       />
       {values.charges.map((charge) => (
         <BreakdownLine
           key={`${charge.type}|${charge.basis}|${charge.value}`}
-          label={t.charge(
-            charge.type,
-            charge.basis,
-            charge.basis === "percent"
-              ? rateText(charge.value)
-              : formatRs(charge.value),
-          )}
+          label={t("breakdown.charge", {
+            label: tp(`chargeTypes.${charge.type}`),
+            basis: charge.basis,
+            value:
+              charge.basis === "percent"
+                ? rateText(charge.value)
+                : formatRs(charge.value),
+          })}
           value={`+${formatRs(charge.amount)}`}
           muted
         />
       ))}
       <BreakdownLine
-        label={t.totalCharges}
+        label={t("breakdown.totalCharges")}
         value={`+${formatRs(values.totalCharges)}`}
         className="border-t pt-1.5"
       />
       <BreakdownLine
-        label={t.rounding}
-        value={signedRs(values.rounding)}
+        label={t("breakdown.rounding")}
+        value={signedRs(values.rounding, formatRs)}
         muted
       />
       <BreakdownLine
-        label={t.net}
+        label={t("breakdown.net")}
         value={formatRs(values.netAmount)}
         strong
         className="font-heading border-t pt-2 text-base"
@@ -76,7 +78,7 @@ export function SaleBreakdownLines({
       />
       {received ? (
         <BreakdownLine
-          label={t.received}
+          label={t("breakdown.received")}
           value={formatRs(values.receivedAmount)}
           muted
         />

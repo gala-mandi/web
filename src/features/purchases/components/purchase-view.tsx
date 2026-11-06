@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ArrowLeft, CircleAlert, Pencil, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -17,16 +18,12 @@ import { BillParchi } from "@/features/parchi/components/bill-parchi";
 import { purchaseParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
 import { useCanWrite } from "@/features/subscription/hooks";
-import { formatDate, formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { purchaseRoutes, traderRoutes } from "@/lib/routes";
 import { usePurchase } from "../hooks";
-import { purchaseText } from "../text";
 import type { Purchase } from "../types";
 import { PurchaseStatusBadge } from "./badges";
 import { CancelPurchaseDialog } from "./cancel-purchase-dialog";
-
-const t = purchaseText.view;
-const a = purchaseText.actions;
 
 /** `/purchases/:id`: everyone with `purchase.view`. `?print=1` prints it. */
 export function PurchaseDetailPage({ id }: { id: string }) {
@@ -38,6 +35,7 @@ export function PurchaseDetailPage({ id }: { id: string }) {
 }
 
 function PurchaseDetail({ id }: { id: string }) {
+  const t = useTranslations("purchases");
   const query = usePurchase(id);
 
   if (query.isPending) return <PurchaseSkeleton />;
@@ -50,12 +48,12 @@ function PurchaseDetail({ id }: { id: string }) {
       <EmptyState
         role="alert"
         icon={CircleAlert}
-        title={t.error.title}
-        body={t.error.body}
+        title={t("view.error.title")}
+        body={t("view.error.body")}
         headingLevel="h1"
         action={
           <Button variant="outline" onClick={() => void query.refetch()}>
-            {t.error.retry}
+            {t("view.error.retry")}
           </Button>
         }
       />
@@ -65,10 +63,11 @@ function PurchaseDetail({ id }: { id: string }) {
 }
 
 export function PurchaseSkeleton() {
+  const t = useTranslations("purchases");
   return (
     <div className="flex flex-col gap-6" aria-busy>
       <span role="status" className="sr-only">
-        {t.loading}
+        {t("view.loading")}
       </span>
       <Skeleton className="h-9 w-64" />
       <Skeleton className="rounded-card h-96" />
@@ -77,6 +76,8 @@ export function PurchaseSkeleton() {
 }
 
 function PurchaseView({ purchase }: { purchase: Purchase }) {
+  const { formatDate, formatRs } = useFormat();
+  const t = useTranslations("purchases");
   const canEdit = useCanWrite("purchase.edit");
   const canCancel = useCanWrite("purchase.delete");
   const canOpenTrader = useCan("trader.manage");
@@ -90,18 +91,18 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-semibold outline-none focus-visible:ring-3"
       >
         <ArrowLeft aria-hidden className="size-4 rtl:rotate-180" />
-        {t.back}
+        {t("view.back")}
       </Link>
 
       <PageHeader
-        title={purchaseText.billOf(purchase.billNo)}
+        title={t("billOf", { billNo: purchase.billNo })}
         description={
           <span className="flex flex-wrap items-center gap-2">
             <PurchaseStatusBadge status={purchase.status} />
             <span>{formatDate(purchase.purchaseDate)}</span>
             {active ? (
               <span data-testid="bill-outstanding">
-                {t.outstanding}:{" "}
+                {t("view.outstanding")}:{" "}
                 <span dir="ltr" className="text-foreground font-semibold">
                   {formatRs(purchase.outstanding)}
                 </span>
@@ -120,7 +121,7 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
               >
                 <Link href={purchaseRoutes.edit(purchase.id)}>
                   <Pencil aria-hidden />
-                  {a.edit}
+                  {t("actions.edit")}
                 </Link>
               </Button>
             ) : null}
@@ -132,7 +133,7 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
                 onClick={() => setCancelling(true)}
               >
                 <XCircle aria-hidden />
-                {a.cancel}
+                {t("actions.cancel")}
               </Button>
             ) : null}
           </>
@@ -141,7 +142,7 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
 
       {active ? null : (
         <p role="note" className="text-destructive text-sm font-semibold">
-          {t.cancelledNote}
+          {t("view.cancelledNote")}
         </p>
       )}
 
@@ -153,7 +154,7 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
               href={traderRoutes.detail(purchase.trader.id)}
               className="text-primary focus-visible:ring-ring/50 rounded-sm text-sm font-semibold outline-none hover:underline focus-visible:ring-3"
             >
-              {t.khataLink}
+              {t("view.khataLink")}
             </Link>
           ) : null
         }

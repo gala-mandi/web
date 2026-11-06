@@ -1,11 +1,14 @@
+import { testTranslator } from "@/test/intl";
 import { describe, expect, it } from "vitest";
 import { emptySaleItem } from "./schemas";
 import { gandumItem } from "./test-data";
 import { creditWarning, liveSaleTotals } from "./totals";
 
+const tr = testTranslator("sales");
+
 describe("liveSaleTotals", () => {
   it("adds the charges to the gross: 100,000 + 2,700 = 102,700", () => {
-    const live = liveSaleTotals([
+    const live = liveSaleTotals(tr, [
       {
         ...emptySaleItem(),
         commodity: gandumItem,
@@ -27,6 +30,8 @@ describe("liveSaleTotals", () => {
 
   it("uses an edit's saved rates over the commodity's", () => {
     const live = liveSaleTotals(
+      tr,
+
       [
         {
           ...emptySaleItem(),
@@ -41,7 +46,7 @@ describe("liveSaleTotals", () => {
   });
 
   it("says why a bill can't be totalled", () => {
-    const live = liveSaleTotals([
+    const live = liveSaleTotals(tr, [
       {
         ...emptySaleItem(),
         commodity: {

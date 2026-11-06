@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Decimal from "decimal.js";
 import { Plus, TriangleAlert } from "lucide-react";
@@ -34,7 +36,6 @@ import {
   type SaveIntent,
 } from "@/features/purchases/components/parchi-form";
 import { isBlankItem } from "@/features/purchases/schemas";
-import { purchaseText } from "@/features/purchases/text";
 import { savedItemCharges, savedRates } from "@/features/purchases/totals";
 import { useTodayRates } from "@/features/rates/hooks";
 import { readBalance } from "@/features/traders/balance";
@@ -43,7 +44,7 @@ import { useTrader } from "@/features/traders/hooks";
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 import { type ApiError, toApiError } from "@/lib/api-error";
 import { useCan } from "@/lib/can";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { newIdempotencyKey } from "@/lib/idempotency";
 import { saleRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -57,7 +58,6 @@ import {
   toSaleFormValues,
   toSaleInput,
 } from "../schemas";
-import { saleText } from "../text";
 import { creditWarning, liveSaleTotals } from "../totals";
 import {
   CREDIT_LIMIT_EXCEEDED,
@@ -66,9 +66,7 @@ import {
 } from "../types";
 import { SaleBreakdownLines } from "./sale-breakdown";
 
-const t = saleText.form;
 /** Labels, hints and buttons shared with the purchase form. */
-const p = purchaseText.form;
 const ID_PREFIX = "sale";
 const BUYER_ID = "sale-buyer";
 const BALANCE_ID = "sale-buyer-balance";
@@ -76,20 +74,19 @@ const itemId = (index: number, field: string) =>
   itemCellId(ID_PREFIX, index, field);
 
 /** Message for an error that no form field shows. */
-function generalMessage(error: ApiError): string {
-  const e = saleText.errors;
-  if (error.status === 0) return e.network;
-  if (error.code === "DAY_CLOSED") return e.dayClosed;
-  if (error.code === "SALE_CANCELLED") return e.cancelled;
-  if (error.status === 403) return e.forbidden;
-  return error.message ?? e.generic;
+function generalMessage(t: Translator<"sales">, error: ApiError): string {
+  if (error.status === 0) return t("errors.network");
+  if (error.code === "DAY_CLOSED") return t("errors.dayClosed");
+  if (error.code === "SALE_CANCELLED") return t("errors.cancelled");
+  if (error.status === 403) return t("errors.forbidden");
+  return error.message ?? t("errors.generic");
 }
 
 /** The server saved over the limit (shop setting "warn"): say so. */
-function showWarnings(sale: SaleWithWarnings) {
+function showWarnings(t: Translator<"sales">, sale: SaleWithWarnings) {
   for (const warning of sale.warnings ?? []) {
     if (warning.code === CREDIT_LIMIT_EXCEEDED) {
-      toast.warning(saleText.credit.savedOver, {
+      toast.warning(t("credit.savedOver"), {
         description: warning.message,
       });
     }
@@ -115,6 +112,8 @@ export interface SaleFormProps {
  * the save succeeds, so a retry never makes a second sale.
  */
 export function SaleForm({ today, sale }: SaleFormProps) {
+  const tp = useTranslations("purchases");
+  const t = useTranslations("sales");
   const router = useRouter();
   const editing = Boolean(sale);
   const canSeeRates = useCan("rate.view");
@@ -130,7 +129,7 @@ export function SaleForm({ today, sale }: SaleFormProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
 
-  const schema = useMemo(() => saleFormSchema(today), [today]);
+  const schema = useMemo(() => saleFormSchema(today, t, tp), [today, t, tp]);
   const defaultValues = useMemo(
     () =>
       sale
@@ -152,12 +151,15 @@ export function SaleForm({ today, sale }: SaleFormProps) {
   });
   const items = useWatch({ control: form.control, name: "items" });
   const buyer = useWatch({ control: form.control, name: "buyer" });
-  const live = useMemo(() => liveSaleTotals(items, manual), [items, manual]);
+  const live = useMemo(
+    () => liveSaleTotals(t, items, manual),
+    [t, items, manual],
+  );
   const { isDirty, errors } = form.formState;
   const busy =
     form.formState.isSubmitting || create.isPending || update.isPending;
 
-  useUnsavedChangesWarning(isDirty && !leaving, t.leaveWarning);
+  useUnsavedChangesWarning(isDirty && !leaving, t("form.leaveWarning"));
 
   // Focus the new row's commodity once it is on the page.
   useEffect(() => {
@@ -183,12 +185,12 @@ export function SaleForm({ today, sale }: SaleFormProps) {
           input,
           oldBuyerId: sale.buyer.id,
         });
-        toast.success(t.updated(saved.billNo));
+        toast.success(t("form.updated", { billNo: saved.billNo }));
       } else {
         ({ sale: saved } = await create.mutateAsync({ input, idempotencyKey }));
-        toast.success(t.saved(saved.billNo));
+        toast.success(t("form.saved", { billNo: saved.billNo }));
       }
-      showWarnings(saved);
+      showWarnings(t, saved);
 
       if (intent === "new") {
         // A new bill gets a new key; the date stays for the next bill.
@@ -211,9 +213,12 @@ export function SaleForm({ today, sale }: SaleFormProps) {
         e.errors,
         (field) => toSaleFormField(field, rowIndexes),
         form.setError,
+        t("errors.generic"),
       );
       if (placed > 0 && unplaced.length === 0) return;
-      const message = unplaced.length ? unplaced.join(" ") : generalMessage(e);
+      const message = unplaced.length
+        ? unplaced.join(" ")
+        : generalMessage(t, e);
       setFormError(message);
       toast.error(message);
     }
@@ -281,11 +286,11 @@ export function SaleForm({ today, sale }: SaleFormProps) {
           className="rounded-card bg-card flex flex-col gap-4 border p-4 sm:p-5"
         >
           <h2 id="sale-header-title" className="font-heading text-lg font-bold">
-            {p.header}
+            {tp("form.header")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)]">
             <Field data-invalid={Boolean(errors.saleDate) || undefined}>
-              <FieldLabel htmlFor="sale-date">{p.date}</FieldLabel>
+              <FieldLabel htmlFor="sale-date">{tp("form.date")}</FieldLabel>
               <Input
                 id="sale-date"
                 type="date"
@@ -302,7 +307,7 @@ export function SaleForm({ today, sale }: SaleFormProps) {
               name="buyer"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid || undefined}>
-                  <FieldLabel htmlFor={BUYER_ID}>{t.buyer}</FieldLabel>
+                  <FieldLabel htmlFor={BUYER_ID}>{t("form.buyer")}</FieldLabel>
                   <TraderCombobox
                     id={BUYER_ID}
                     type="beopari"
@@ -311,7 +316,7 @@ export function SaleForm({ today, sale }: SaleFormProps) {
                       field.onChange(trader);
                       field.onBlur();
                     }}
-                    placeholder={t.buyerPlaceholder}
+                    placeholder={t("form.buyerPlaceholder")}
                     aria-describedby={field.value ? BALANCE_ID : undefined}
                     aria-invalid={fieldState.invalid}
                   />
@@ -324,12 +329,12 @@ export function SaleForm({ today, sale }: SaleFormProps) {
             />
           </div>
           <Field data-invalid={Boolean(errors.notes) || undefined}>
-            <FieldLabel htmlFor="sale-notes">{p.notes}</FieldLabel>
+            <FieldLabel htmlFor="sale-notes">{tp("form.notes")}</FieldLabel>
             <Textarea
               id="sale-notes"
               rows={1}
               dir="auto"
-              placeholder={p.notesPlaceholder}
+              placeholder={tp("form.notesPlaceholder")}
               aria-invalid={Boolean(errors.notes) || undefined}
               className="rounded-field bg-card min-h-11"
               {...form.register("notes")}
@@ -347,9 +352,11 @@ export function SaleForm({ today, sale }: SaleFormProps) {
               id="sale-items-title"
               className="font-heading text-lg font-bold"
             >
-              {p.items}
+              {tp("form.items")}
             </h2>
-            <p className="text-muted-foreground text-xs">{p.keyboardHint}</p>
+            <p className="text-muted-foreground text-xs">
+              {tp("form.keyboardHint")}
+            </p>
           </div>
           <div onKeyDown={onItemsKeyDown} className="flex flex-col gap-3">
             {fields.map((row, index) => (
@@ -378,7 +385,7 @@ export function SaleForm({ today, sale }: SaleFormProps) {
             onClick={addItem}
           >
             <Plus aria-hidden />
-            {p.addItem}
+            {tp("form.addItem")}
           </Button>
         </section>
       </div>
@@ -388,7 +395,7 @@ export function SaleForm({ today, sale }: SaleFormProps) {
         className="rounded-card bg-card flex flex-col gap-4 border p-4 sm:p-5 lg:sticky lg:top-20"
       >
         <h2 id="sale-total-title" className="font-heading text-lg font-bold">
-          {saleText.breakdown.title}
+          {t("breakdown.title")}
         </h2>
         <div aria-live="polite">
           {live.totals ? (
@@ -400,12 +407,12 @@ export function SaleForm({ today, sale }: SaleFormProps) {
                 live.error ? "text-destructive" : "text-muted-foreground",
               )}
             >
-              {live.error ?? saleText.breakdown.empty}
+              {live.error ?? t("breakdown.empty")}
             </p>
           )}
         </div>
         <p className="text-muted-foreground text-xs">
-          {saleText.breakdown.preview}
+          {t("breakdown.preview")}
         </p>
         {buyer && live.totals ? (
           <CreditLimitWarning
@@ -442,20 +449,21 @@ const balanceTone = {
  * (`GET /traders/:id`, which every role may read).
  */
 function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
-  const b = saleText.buyer;
+  const { formatRs } = useFormat();
+  const t = useTranslations("sales");
   const trader = useTrader(buyerId);
 
   if (trader.isPending) {
     return (
       <p id={id} className="text-muted-foreground text-xs">
-        {b.loading}
+        {t("buyer.loading")}
       </p>
     );
   }
   if (trader.isError) {
     return (
       <p id={id} className="text-muted-foreground text-xs">
-        {b.error}
+        {t("buyer.error")}
       </p>
     );
   }
@@ -468,7 +476,7 @@ function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
       className="text-muted-foreground flex flex-wrap gap-x-4 gap-y-0.5 text-xs"
     >
       <span>
-        {b.balance}:{" "}
+        {t("buyer.balance")}:{" "}
         <span
           dir="ltr"
           data-testid="sale-buyer-balance-amount"
@@ -476,16 +484,16 @@ function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
         >
           {formatRs(amount)}
         </span>{" "}
-        {b[kind]}
+        {t(`buyer.${kind}`)}
       </span>{" "}
       <span>
-        {b.creditLimit}:{" "}
+        {t("buyer.creditLimit")}:{" "}
         <span
           dir="ltr"
           data-testid="sale-buyer-credit-limit"
           className="text-foreground font-semibold tabular-nums"
         >
-          {limit === null ? b.noLimit : formatRs(limit)}
+          {limit === null ? t("buyer.noLimit") : formatRs(limit)}
         </span>
       </span>
     </p>
@@ -509,6 +517,8 @@ function CreditLimitWarning({
   receivedAmount: string;
   alreadyInBalance: string;
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("sales");
   const trader = useTrader(buyerId);
   if (!trader.data) return null;
   const warning = creditWarning({
@@ -527,14 +537,14 @@ function CreditLimitWarning({
     >
       <TriangleAlert aria-hidden className="mt-px size-4 flex-none" />
       <div className="flex flex-col gap-0.5">
-        <p className="font-semibold">{saleText.credit.title}</p>
+        <p className="font-semibold">{t("credit.title")}</p>
         <p>
           <bdi dir="auto">
-            {saleText.credit.body(
-              buyerName,
-              formatRs(warning.owed),
-              formatRs(warning.creditLimit),
-            )}
+            {t("credit.body", {
+              name: buyerName,
+              owed: formatRs(warning.owed),
+              limit: formatRs(warning.creditLimit),
+            })}
           </bdi>
         </p>
       </div>

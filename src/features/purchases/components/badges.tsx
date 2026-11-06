@@ -1,6 +1,6 @@
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { purchaseStatusText } from "../text";
 import type { PurchaseStatus } from "../types";
 
 const tone: Record<PurchaseStatus, string> = {
@@ -11,6 +11,7 @@ const tone: Record<PurchaseStatus, string> = {
 
 /** The word is always shown, not only the colour. */
 export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
+  const t = useTranslations("purchases");
   return (
     <Badge
       variant="outline"
@@ -18,7 +19,7 @@ export function PurchaseStatusBadge({ status }: { status: PurchaseStatus }) {
       className={cn("border-transparent font-semibold", tone[status])}
     >
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
-      {purchaseStatusText[status]}
+      {t(`statuses.${status}`)}
     </Badge>
   );
 }

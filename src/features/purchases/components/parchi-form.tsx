@@ -1,14 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { AlertCircle, Loader2, Plus, Printer } from "lucide-react";
 import type { FieldValues, Path, UseFormSetError } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import type { FieldError } from "@/lib/api-error";
-import { purchaseText } from "../text";
 
 /** Pieces both parchi forms (purchase and sale) use. */
-
-const t = purchaseText.form;
 
 /** What happens after a successful save. */
 export type SaveIntent = "save" | "print" | "new";
@@ -21,6 +19,7 @@ export function placeServerErrors<T extends FieldValues>(
   errors: readonly FieldError[],
   toFormField: (field: string) => string | null,
   setError: UseFormSetError<T>,
+  fallback: string,
 ): { placed: number; unplaced: string[] } {
   const unplaced: string[] = [];
   let placed = 0;
@@ -32,7 +31,7 @@ export function placeServerErrors<T extends FieldValues>(
     }
     setError(
       name as Path<T>,
-      { type: "server", message: message || purchaseText.errors.generic },
+      { type: "server", message: message || fallback },
       { shouldFocus: placed === 0 },
     );
     placed += 1;
@@ -71,6 +70,7 @@ export function SaveButtons({
   showNew: boolean;
   onSubmit: (intent: Exclude<SaveIntent, "save">) => void;
 }) {
+  const t = useTranslations("purchases");
   return (
     <div className="flex flex-col gap-2 border-t pt-4">
       <Button
@@ -79,7 +79,7 @@ export function SaveButtons({
         className="h-11 gap-2 font-semibold"
       >
         {busy ? <Loader2 aria-hidden className="animate-spin" /> : null}
-        {busy ? t.saving : t.save}
+        {busy ? t("form.saving") : t("form.save")}
         <kbd aria-hidden className="ms-auto text-xs opacity-70">
           Ctrl S
         </kbd>
@@ -92,7 +92,7 @@ export function SaveButtons({
         onClick={() => onSubmit("print")}
       >
         <Printer aria-hidden />
-        {t.saveAndPrint}
+        {t("form.saveAndPrint")}
         <kbd aria-hidden className="text-muted-foreground ms-auto text-xs">
           Ctrl P
         </kbd>
@@ -106,7 +106,7 @@ export function SaveButtons({
           onClick={() => onSubmit("new")}
         >
           <Plus aria-hidden />
-          {t.saveAndNew}
+          {t("form.saveAndNew")}
         </Button>
       ) : null}
     </div>

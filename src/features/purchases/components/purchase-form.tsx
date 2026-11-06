@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -36,7 +38,6 @@ import {
   toPurchaseFormValues,
   toPurchaseInput,
 } from "../schemas";
-import { purchaseText } from "../text";
 import { liveTotals, savedItemCharges, savedRates } from "../totals";
 import type { Purchase } from "../types";
 import { BreakdownLines } from "./breakdown-lines";
@@ -49,20 +50,18 @@ import {
   type SaveIntent,
 } from "./parchi-form";
 
-const t = purchaseText.form;
 const ID_PREFIX = "purchase";
 const TRADER_ID = "purchase-trader";
 const itemId = (index: number, field: string) =>
   itemCellId(ID_PREFIX, index, field);
 
 /** Message for an error that no form field shows. */
-function generalMessage(error: ApiError): string {
-  const e = purchaseText.errors;
-  if (error.status === 0) return e.network;
-  if (error.code === "DAY_CLOSED") return e.dayClosed;
-  if (error.code === "PURCHASE_CANCELLED") return e.cancelled;
-  if (error.status === 403) return e.forbidden;
-  return error.message ?? e.generic;
+function generalMessage(t: Translator<"purchases">, error: ApiError): string {
+  if (error.status === 0) return t("errors.network");
+  if (error.code === "DAY_CLOSED") return t("errors.dayClosed");
+  if (error.code === "PURCHASE_CANCELLED") return t("errors.cancelled");
+  if (error.status === 403) return t("errors.forbidden");
+  return error.message ?? t("errors.generic");
 }
 
 export interface PurchaseFormProps {
@@ -84,6 +83,7 @@ export interface PurchaseFormProps {
  * connection never makes a second purchase.
  */
 export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
+  const t = useTranslations("purchases");
   const router = useRouter();
   const editing = Boolean(purchase);
   const canSeeRates = useCan("rate.view");
@@ -99,7 +99,7 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
 
-  const schema = useMemo(() => purchaseFormSchema(today), [today]);
+  const schema = useMemo(() => purchaseFormSchema(today, t), [today, t]);
   const defaultValues = useMemo(
     () =>
       purchase
@@ -123,12 +123,12 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
     name: "items",
   });
   const items = useWatch({ control: form.control, name: "items" });
-  const live = useMemo(() => liveTotals(items, manual), [items, manual]);
+  const live = useMemo(() => liveTotals(t, items, manual), [t, items, manual]);
   const { isDirty, errors } = form.formState;
   const busy =
     form.formState.isSubmitting || create.isPending || update.isPending;
 
-  useUnsavedChangesWarning(isDirty && !leaving, t.leaveWarning);
+  useUnsavedChangesWarning(isDirty && !leaving, t("form.leaveWarning"));
 
   // Focus the new row's commodity once it is on the page.
   useEffect(() => {
@@ -154,13 +154,13 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
           input,
           oldTraderId: purchase.trader.id,
         });
-        toast.success(t.updated(saved.billNo));
+        toast.success(t("form.updated", { billNo: saved.billNo }));
       } else {
         ({ purchase: saved } = await create.mutateAsync({
           input,
           idempotencyKey,
         }));
-        toast.success(t.saved(saved.billNo));
+        toast.success(t("form.saved", { billNo: saved.billNo }));
       }
 
       if (intent === "new") {
@@ -182,9 +182,12 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
         e.errors,
         (field) => toFormField(field, rowIndexes),
         form.setError,
+        t("errors.generic"),
       );
       if (placed > 0 && unplaced.length === 0) return;
-      const message = unplaced.length ? unplaced.join(" ") : generalMessage(e);
+      const message = unplaced.length
+        ? unplaced.join(" ")
+        : generalMessage(t, e);
       setFormError(message);
       toast.error(message);
     }
@@ -249,11 +252,11 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
             id="purchase-header-title"
             className="font-heading text-lg font-bold"
           >
-            {t.header}
+            {t("form.header")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)]">
             <Field data-invalid={Boolean(errors.purchaseDate) || undefined}>
-              <FieldLabel htmlFor="purchase-date">{t.date}</FieldLabel>
+              <FieldLabel htmlFor="purchase-date">{t("form.date")}</FieldLabel>
               <Input
                 id="purchase-date"
                 type="date"
@@ -270,7 +273,9 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
               name="trader"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid || undefined}>
-                  <FieldLabel htmlFor={TRADER_ID}>{t.trader}</FieldLabel>
+                  <FieldLabel htmlFor={TRADER_ID}>
+                    {t("form.trader")}
+                  </FieldLabel>
                   <TraderCombobox
                     id={TRADER_ID}
                     type="kissan"
@@ -279,7 +284,7 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
                       field.onChange(trader);
                       field.onBlur();
                     }}
-                    placeholder={t.traderPlaceholder}
+                    placeholder={t("form.traderPlaceholder")}
                     aria-invalid={fieldState.invalid}
                   />
                   <FieldError errors={[fieldState.error]} />
@@ -288,12 +293,12 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
             />
           </div>
           <Field data-invalid={Boolean(errors.notes) || undefined}>
-            <FieldLabel htmlFor="purchase-notes">{t.notes}</FieldLabel>
+            <FieldLabel htmlFor="purchase-notes">{t("form.notes")}</FieldLabel>
             <Textarea
               id="purchase-notes"
               rows={1}
               dir="auto"
-              placeholder={t.notesPlaceholder}
+              placeholder={t("form.notesPlaceholder")}
               aria-invalid={Boolean(errors.notes) || undefined}
               className="rounded-field bg-card min-h-11"
               {...form.register("notes")}
@@ -311,9 +316,11 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
               id="purchase-items-title"
               className="font-heading text-lg font-bold"
             >
-              {t.items}
+              {t("form.items")}
             </h2>
-            <p className="text-muted-foreground text-xs">{t.keyboardHint}</p>
+            <p className="text-muted-foreground text-xs">
+              {t("form.keyboardHint")}
+            </p>
           </div>
           <div onKeyDown={onItemsKeyDown} className="flex flex-col gap-3">
             {fields.map((row, index) => (
@@ -342,7 +349,7 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
             onClick={addItem}
           >
             <Plus aria-hidden />
-            {t.addItem}
+            {t("form.addItem")}
           </Button>
         </section>
       </div>
@@ -355,7 +362,7 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
           id="purchase-total-title"
           className="font-heading text-lg font-bold"
         >
-          {purchaseText.breakdown.title}
+          {t("breakdown.title")}
         </h2>
         <div aria-live="polite">
           {live.totals ? (
@@ -367,12 +374,12 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
                 live.error ? "text-destructive" : "text-muted-foreground",
               )}
             >
-              {live.error ?? purchaseText.breakdown.empty}
+              {live.error ?? t("breakdown.empty")}
             </p>
           )}
         </div>
         <p className="text-muted-foreground text-xs">
-          {purchaseText.breakdown.preview}
+          {t("breakdown.preview")}
         </p>
         <SaveButtons
           busy={busy}

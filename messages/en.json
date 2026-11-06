@@ -1277,5 +1277,296 @@
         "sale": "New sale"
       }
     }
+  },
+  "purchases": {
+    "statuses": {
+      "draft": "Draft",
+      "posted": "Saved",
+      "cancelled": "Cancelled"
+    },
+    "perUnit": {
+      "maund": "per maund",
+      "kg": "per kg",
+      "bag": "per bag"
+    },
+    "units": {
+      "maund": "Maund",
+      "kg": "Kg",
+      "bag": "Bag"
+    },
+    "chargeTypes": {
+      "commission": "Commission",
+      "market_fee": "Market fee",
+      "labour": "Labour",
+      "other": "Other"
+    },
+    "none": "—",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server, so the purchase may not be saved. Check your internet and press Save again: it won’t be saved twice.",
+      "dayClosed": "This day is closed. Only the owner can change a purchase of a past day.",
+      "cancelled": "This purchase is cancelled and can’t be changed.",
+      "alreadyCancelled": "This purchase was already cancelled.",
+      "forbidden": "You don’t have permission to do this.",
+      "traderRequired": "Choose a kissan",
+      "dateRequired": "Enter the date",
+      "dateInFuture": "A purchase can’t be dated in the future",
+      "notesTooLong": "Use at most 1,000 characters",
+      "itemsRequired": "Add at least one item",
+      "tooManyItems": "Use at most 100 items",
+      "commodityRequired": "Choose a commodity",
+      "bags": "Enter a whole number of bags",
+      "bagsTooMany": "Enter at most 1,000,000 bags",
+      "bagsForBagRate": "Enter the bags for a per-bag rate",
+      "weightRequired": "Enter the weight",
+      "weightKg": "Enter the weight in kg (up to 3 decimals)",
+      "weightMaund": "Enter the weight in maund (up to 6 decimals)",
+      "weightZero": "Enter a weight above 0",
+      "weightTooLarge": "The weight is too large",
+      "rateRequired": "Enter the rate",
+      "rate": "Enter the rate in rupees (up to 2 decimals)",
+      "rateZero": "Enter a rate above 0"
+    },
+    "billOf": "Bill {billNo}",
+    "list": {
+      "newButton": "New purchase",
+      "caption": "Purchases",
+      "searchLabel": "Search purchases",
+      "searchPlaceholder": "Bill number, kissan name or phone…",
+      "dateLabel": "Date",
+      "traderLabel": "Kissan",
+      "traderAll": "All kissans",
+      "commodityLabel": "Commodity",
+      "commodityAll": "All commodities",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "exportFileName": "purchases",
+      "columns": {
+        "billNo": "Bill no",
+        "purchaseDate": "Date",
+        "trader": "Kissan",
+        "grossAmount": "Gross",
+        "totalDeductions": "Deductions",
+        "netAmount": "Net",
+        "outstanding": "Outstanding",
+        "status": "Status"
+      },
+      "empty": {
+        "title": "No purchases yet",
+        "body": "Purchases from kissans show here once they’re saved."
+      },
+      "noMatches": {
+        "title": "No purchases match",
+        "body": "Try another search or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "cancel": "Cancel purchase",
+      "reprint": "Reprint"
+    },
+    "form": {
+      "newTitle": "New purchase",
+      "newDescription": "Grain bought from a kissan. The total updates as you type.",
+      "editTitle": "Edit {billNo}",
+      "editDescription": "Changing the items recalculates the bill and corrects the kissan’s khata.",
+      "header": "Bill",
+      "date": "Date",
+      "trader": "Kissan",
+      "traderPlaceholder": "Choose a kissan…",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional, e.g. truck number",
+      "items": "Items",
+      "itemLabel": "Item {n, number}",
+      "commodity": "Commodity",
+      "commodityPlaceholder": "Choose…",
+      "bags": "Bags",
+      "weight": "Weight",
+      "weightUnit": "Weight unit",
+      "rate": "Rate",
+      "rateUnit": "Rate per",
+      "amount": "Amount",
+      "weightIs": "= {kg} ({maund})",
+      "todaysRate": "Today’s rate",
+      "rateChanged": "Today’s rate is {rate}",
+      "noRateToday": "No rate entered today",
+      "addItem": "Add item",
+      "removeItem": "Remove item {n, number}",
+      "keyboardHint": "Enter moves to the next box; Enter on the last rate adds an item. Ctrl+S saves, Ctrl+P saves and prints.",
+      "save": "Save",
+      "saveAndPrint": "Save & Print",
+      "saveAndNew": "Save & New",
+      "saving": "Saving…",
+      "cancelEdit": "Discard changes",
+      "saved": "Purchase saved: {billNo}",
+      "updated": "Purchase updated: {billNo}",
+      "leaveWarning": "This purchase isn’t saved. Leave and lose it?"
+    },
+    "breakdown": {
+      "title": "Total",
+      "gross": "Gross amount",
+      "charge": "{basis, select, percent {{label} {value}%} per_bag {{label} {value} per bag} other {{label} {value}}}",
+      "totalDeductions": "Total deductions",
+      "rounding": "Rounding",
+      "net": "Net payable to kissan",
+      "paid": "Paid now",
+      "empty": "Add an item with weight and rate to see the total.",
+      "reasons": {
+        "itemChargesOverGross": "Can’t total this bill: the charges of item {n, number} are more than its amount.",
+        "deductionsOverGross": "Can’t total this bill: the deductions are more than the gross amount.",
+        "netZero": "Can’t total this bill: the net amount comes to Rs 0.",
+        "tooLarge": "Can’t total this bill: an amount is too large.",
+        "other": "Can’t total this bill. Check the weights and rates."
+      },
+      "preview": "Live preview; the saved bill is calculated by the server."
+    },
+    "view": {
+      "back": "All purchases",
+      "outstanding": "Outstanding",
+      "loading": "Loading purchase…",
+      "error": {
+        "title": "Couldn’t load this purchase",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "billNo": "Bill no",
+      "date": "Date",
+      "trader": "Kissan",
+      "status": "Status",
+      "notes": "Notes",
+      "items": "Items",
+      "cancelledNote": "This purchase is cancelled. Its khata entries were reversed.",
+      "khataLink": "Open kissan’s khata"
+    },
+    "cancel": {
+      "title": "Cancel {billNo}?",
+      "body": "The kissan’s khata entries are reversed. The bill number is kept and never used again. This can’t be undone.",
+      "keep": "Keep purchase",
+      "confirm": "Cancel purchase",
+      "pending": "Cancelling…",
+      "done": "{billNo} cancelled"
+    }
+  },
+  "sales": {
+    "none": "—",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server, so the sale may not be saved. Check your internet and press Save again: it won’t be saved twice.",
+      "dayClosed": "This day is closed. Only the owner can change a sale of a past day.",
+      "cancelled": "This sale is cancelled and can’t be changed.",
+      "alreadyCancelled": "This sale was already cancelled.",
+      "forbidden": "You don’t have permission to do this.",
+      "buyerRequired": "Choose a beopari",
+      "dateRequired": "Enter the date",
+      "dateInFuture": "A sale can’t be dated in the future",
+      "notesTooLong": "Use at most 1,000 characters",
+      "itemsRequired": "Add at least one item",
+      "tooManyItems": "Use at most 100 items"
+    },
+    "billOf": "Bill {billNo}",
+    "list": {
+      "newButton": "New sale",
+      "caption": "Sales",
+      "searchLabel": "Search sales",
+      "searchPlaceholder": "Bill number, beopari name or phone…",
+      "dateLabel": "Date",
+      "buyerLabel": "Beopari",
+      "buyerAll": "All beoparis",
+      "commodityLabel": "Commodity",
+      "commodityAll": "All commodities",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "exportFileName": "sales",
+      "columns": {
+        "billNo": "Bill no",
+        "saleDate": "Date",
+        "buyer": "Beopari",
+        "grossAmount": "Gross",
+        "totalCharges": "Charges",
+        "netAmount": "Net",
+        "outstanding": "Outstanding",
+        "status": "Status"
+      },
+      "empty": {
+        "title": "No sales yet",
+        "body": "Sales to beoparis show here once they’re saved."
+      },
+      "noMatches": {
+        "title": "No sales match",
+        "body": "Try another search or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "cancel": "Cancel sale",
+      "reprint": "Reprint"
+    },
+    "form": {
+      "newTitle": "New sale",
+      "newDescription": "Grain sold to a beopari. The total updates as you type.",
+      "editTitle": "Edit {billNo}",
+      "editDescription": "Changing the items recalculates the bill and corrects the beopari’s khata.",
+      "buyer": "Beopari",
+      "buyerPlaceholder": "Choose a beopari…",
+      "saved": "Sale saved: {billNo}",
+      "updated": "Sale updated: {billNo}",
+      "leaveWarning": "This sale isn’t saved. Leave and lose it?"
+    },
+    "buyer": {
+      "loading": "Loading balance…",
+      "error": "Couldn’t load the balance.",
+      "balance": "Balance",
+      "creditLimit": "Credit limit",
+      "noLimit": "No limit",
+      "receivable": "receivable",
+      "payable": "payable",
+      "settled": "settled"
+    },
+    "credit": {
+      "title": "Over the credit limit",
+      "body": "After this sale {name} would owe {owed}, above the credit limit of {limit}. You can still save if the shop allows it.",
+      "savedOver": "Saved over the credit limit"
+    },
+    "breakdown": {
+      "title": "Total",
+      "gross": "Gross amount",
+      "charge": "{basis, select, percent {{label} {value}%} per_bag {{label} {value} per bag} other {{label} {value}}}",
+      "totalCharges": "Total charges",
+      "rounding": "Rounding",
+      "net": "Net receivable from beopari",
+      "received": "Received now",
+      "empty": "Add an item with weight and rate to see the total.",
+      "reasons": {
+        "netZero": "Can’t total this bill: the net amount comes to Rs 0.",
+        "tooLarge": "Can’t total this bill: an amount is too large.",
+        "other": "Can’t total this bill. Check the weights and rates."
+      },
+      "preview": "Live preview; the saved bill is calculated by the server."
+    },
+    "view": {
+      "back": "All sales",
+      "outstanding": "Outstanding",
+      "loading": "Loading sale…",
+      "error": {
+        "title": "Couldn’t load this sale",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "buyer": "Beopari",
+      "cancelledNote": "This sale is cancelled. Its khata entries were reversed.",
+      "khataLink": "Open beopari’s khata"
+    },
+    "cancel": {
+      "title": "Cancel {billNo}?",
+      "body": "The beopari’s khata entries are reversed. The bill number is kept and never used again. This can’t be undone.",
+      "keep": "Keep sale",
+      "confirm": "Cancel sale",
+      "pending": "Cancelling…",
+      "done": "{billNo} cancelled"
+    }
   }
 }

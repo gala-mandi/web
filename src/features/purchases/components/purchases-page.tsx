@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
+import { useFormat } from "@/lib/use-format";
 import { Plus, ReceiptText, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,7 +39,6 @@ import {
   purchaseListFilters,
   purchaseListStatuses,
 } from "../search-params";
-import { purchaseStatusText, purchaseText } from "../text";
 import {
   type PurchaseListQuery,
   purchaseSortFields,
@@ -46,13 +47,12 @@ import {
 import { CancelPurchaseDialog } from "./cancel-purchase-dialog";
 import { purchaseColumns } from "./purchase-columns";
 
-const t = purchaseText.list;
-
-const statusOptions = purchaseListStatuses.map((status) => ({
-  value: status,
-  label: purchaseStatusText[status],
-  dotClassName: status === "posted" ? "bg-success" : "bg-destructive",
-}));
+const statusOptions = (t: Translator<"purchases">) =>
+  purchaseListStatuses.map((status) => ({
+    value: status,
+    label: t(`statuses.${status}`),
+    dotClassName: status === "posted" ? "bg-success" : "bg-destructive",
+  }));
 
 const getRowId = (row: PurchaseSummary) => row.id;
 const getRowLabel = (row: PurchaseSummary) => row.billNo;
@@ -72,6 +72,7 @@ export function PurchasesPage() {
  * cancel for the owner only.
  */
 function PurchasesList() {
+  const t = useTranslations("purchases");
   const router = useRouter();
   const section = useTranslations("panel.sections.purchases");
   const canCreate = useCanWrite("purchase.create");
@@ -99,15 +100,16 @@ function PurchasesList() {
   const query = usePurchases(listQuery);
   const rows = query.data?.data;
 
+  const format = useFormat();
   const columns = useMemo(
     () =>
-      purchaseColumns({
+      purchaseColumns(t, format, {
         canEdit,
         canCancel,
         onCancel: setCancelling,
         onReprint: (row) => void reprint(row.id),
       }),
-    [canEdit, canCancel, reprint],
+    [canEdit, canCancel, reprint, t, format],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -125,7 +127,7 @@ function PurchasesList() {
           type: "kissan",
           name:
             rows?.find((row) => row.trader.id === traderId)?.trader.name ??
-            t.traderLabel,
+            t("list.traderLabel"),
           fatherName: null,
           phone: null,
           village: null,
@@ -140,7 +142,7 @@ function PurchasesList() {
     <Button asChild size="lg" className="h-10 gap-2 px-4 font-semibold">
       <Link href={purchaseRoutes.new}>
         <Plus aria-hidden />
-        {t.newButton}
+        {t("list.newButton")}
       </Link>
     </Button>
   ) : null;
@@ -157,13 +159,13 @@ function PurchasesList() {
         search={{
           value: list.search,
           onChange: list.setSearch,
-          label: t.searchLabel,
-          placeholder: t.searchPlaceholder,
+          label: t("list.searchLabel"),
+          placeholder: t("list.searchPlaceholder"),
         }}
         filters={
           <>
             <DataTableDateRangeFilter
-              label={t.dateLabel}
+              label={t("list.dateLabel")}
               value={{ from: list.filters.from, to: list.filters.to }}
               onChange={({ from, to }) => list.setFilters({ from, to })}
             />
@@ -172,14 +174,14 @@ function PurchasesList() {
                 htmlFor="purchases-trader-filter"
                 className="text-[13px] font-semibold"
               >
-                {t.traderLabel}
+                {t("list.traderLabel")}
               </label>
               <TraderCombobox
                 id="purchases-trader-filter"
                 type="kissan"
                 allowQuickAdd={false}
                 value={traderValue}
-                placeholder={t.traderAll}
+                placeholder={t("list.traderAll")}
                 onChange={(trader) => {
                   setPickedTrader(trader);
                   list.setFilter("trader", trader?.id ?? null);
@@ -188,17 +190,17 @@ function PurchasesList() {
               />
             </div>
             <DataTableSelectFilter
-              label={t.commodityLabel}
-              allLabel={t.commodityAll}
+              label={t("list.commodityLabel")}
+              allLabel={t("list.commodityAll")}
               value={list.filters.commodity}
               options={commodityOptions}
               onChange={(value) => list.setFilter("commodity", value)}
             />
             <DataTableStatusFilter
-              label={t.statusLabel}
-              allLabel={t.statusAll}
+              label={t("list.statusLabel")}
+              allLabel={t("list.statusAll")}
               value={list.filters.status}
-              options={statusOptions}
+              options={statusOptions(t)}
               onChange={(value) => list.setFilter("status", value)}
             />
           </>
@@ -216,7 +218,7 @@ function PurchasesList() {
               onColumnVisibilityChange={onColumnVisibilityChange}
             />
             <DataTableExport
-              fileName={t.exportFileName}
+              fileName={t("list.exportFileName")}
               columns={columns}
               rows={rows}
               columnVisibility={columnVisibility}
@@ -226,7 +228,7 @@ function PurchasesList() {
       />
 
       <DataTable
-        caption={t.caption}
+        caption={t("list.caption")}
         columns={columns}
         data={rows}
         getRowId={getRowId}
@@ -247,8 +249,8 @@ function PurchasesList() {
           list.isFiltered ? (
             <EmptyState
               icon={Search}
-              title={t.noMatches.title}
-              body={t.noMatches.body}
+              title={t("list.noMatches.title")}
+              body={t("list.noMatches.body")}
               className="rounded-none border-0"
               action={
                 <Button
@@ -258,15 +260,15 @@ function PurchasesList() {
                     list.clearAll();
                   }}
                 >
-                  {t.noMatches.clear}
+                  {t("list.noMatches.clear")}
                 </Button>
               }
             />
           ) : (
             <EmptyState
               icon={ReceiptText}
-              title={t.empty.title}
-              body={t.empty.body}
+              title={t("list.empty.title")}
+              body={t("list.empty.body")}
               className="rounded-none border-0"
               action={newButton}
             />
