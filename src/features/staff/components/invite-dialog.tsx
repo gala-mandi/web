@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCanWrite, useSubscription } from "@/features/subscription/hooks";
+import { useReadOnly, useSubscription } from "@/features/subscription/hooks";
 import { USER_LIMIT_CODE } from "@/features/subscription/keys";
 import { subscriptionText } from "@/features/subscription/text";
 import { toApiError } from "@/lib/api-error";
@@ -59,8 +59,8 @@ export const inputClass = "rounded-field h-11 bg-card";
  * invite link or temporary password is shown once, then forgotten.
  */
 export function InviteDialog() {
-  const canInvite = useCanWrite("staff.manage");
-  return canInvite ? <InviteDialogInner /> : null;
+  // The page already needs `staff.manage`; a read-only shop can't invite.
+  return useReadOnly() ? null : <InviteDialogInner />;
 }
 
 /** "Your plan is full" with the plan's limit (403 `PLAN_USER_LIMIT`). */
