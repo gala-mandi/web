@@ -90,6 +90,17 @@ export function parchiSignedRs(value: string): string {
   return value.startsWith("-") || !/[1-9]/.test(value) ? shown : `+${shown}`;
 }
 
+const URDU_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
+/**
+ * True when text typed by the shop (a name, the footer, notes) has Urdu
+ * letters: it then prints in Nastaliq with room for its tall letters, on
+ * the English parchi too.
+ */
+export function hasUrduScript(text: string): boolean {
+  return URDU_SCRIPT.test(text);
+}
+
 /** True when an amount is above zero ("0.00" → false). */
 export function isNonZero(value: string | null | undefined): boolean {
   return /[1-9]/.test(value ?? "");

@@ -4,6 +4,7 @@ import { type ReactNode, type Ref, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   chargeSign,
+  hasUrduScript,
   isNonZero,
   parchiChargeLabel,
   parchiDateTime,
@@ -96,7 +97,7 @@ export function ParchiDocument({
         typeSize[paper][lang],
         // Urdu: Nastaliq for Urdu letters, Inter for Latin names and digits.
         lang === "ur"
-          ? "font-urdu-mixed leading-[1.85]"
+          ? "font-urdu-mixed leading-[2]"
           : "font-sans leading-[1.45]",
       )}
     >
@@ -131,6 +132,16 @@ function Ltr({
   );
 }
 
+/**
+ * Line height for text typed by the shop: Nastaliq's letters reach well
+ * above and below Latin ones, so a line with Urdu in it gets more room
+ * (on the English parchi too) and never touches the line above.
+ */
+// Nastaliq's letters span about 2.2 em, so 2.5 leaves a gap above and below
+// even next to a tight Latin line. An arbitrary property, so a text size
+// passed next to it can't drop it.
+const URDU_LINE = "font-urdu-mixed [line-height:2.5]";
+
 /** A name typed by the shop (any script): its own direction; a long word wraps. */
 function Typed({
   children,
@@ -140,9 +151,45 @@ function Typed({
   className?: string;
 }) {
   return (
-    <bdi dir="auto" className={cn("[overflow-wrap:break-word]", className)}>
+    <bdi
+      dir="auto"
+      className={cn(
+        "[overflow-wrap:break-word]",
+        hasUrduScript(children) && URDU_LINE,
+        className,
+      )}
+    >
       {children}
     </bdi>
+  );
+}
+
+/**
+ * Several lines typed by the shop (footer, notes), e.g. an English line
+ * over an Urdu one: each line is its own block with its own direction and
+ * the line height its script needs.
+ */
+function TypedLines({ text, className }: { text: string; className?: string }) {
+  return (
+    <>
+      {text
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line, i) => (
+          <span
+            key={i}
+            dir="auto"
+            className={cn(
+              "block [overflow-wrap:break-word]",
+              hasUrduScript(line) ? URDU_LINE : "[line-height:1.5]",
+              className,
+            )}
+          >
+            {line}
+          </span>
+        ))}
+    </>
   );
 }
 
@@ -263,7 +310,9 @@ function SheetLayout({ bill, shop, lang, w }: LayoutProps) {
         <div className="flex shrink-0 flex-col items-end gap-[0.5em]">
           <p
             className={cn(
-              "bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold",
+              "bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold",
+              // Nastaliq fills a taller line; the pill grows with it.
+              lang === "en" ? "py-[0.2em]" : "py-[0.1em] leading-[2.1]",
               labelCase(lang),
             )}
           >
@@ -515,8 +564,8 @@ function Notes({
   return (
     <div className={cn("mt-[0.5em]", className)} data-parchi-keep>
       <p className="text-ink-muted font-semibold">{w.notes}</p>
-      <p className="text-start whitespace-pre-line [overflow-wrap:break-word]">
-        <bdi dir="auto">{bill.notes.trim()}</bdi>
+      <p className="text-start">
+        <TypedLines text={bill.notes} className="text-start" />
       </p>
     </div>
   );
@@ -541,8 +590,8 @@ function Sums({
       data-parchi-keep
       className={cn(
         "flex flex-col gap-[0.25em]",
-        // One-line rows: Nastaliq can sit a little tighter here.
-        lang === "ur" && "leading-[1.7]",
+        // One-line rows: Nastaliq sits a little tighter than in text.
+        lang === "ur" && "leading-[1.9]",
         className,
       )}
     >
@@ -635,15 +684,11 @@ function Footer({
       )}
     >
       {shop.footer?.trim() ? (
-        <p
-          dir="auto"
-          data-testid="parchi-footer"
-          className="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
-        >
-          {shop.footer.trim()}
+        <p data-testid="parchi-footer" className="font-semibold">
+          <TypedLines text={shop.footer} />
         </p>
       ) : null}
-      <p className="text-ink-muted mt-[0.3em] text-[0.85em]">
+      <p className="text-ink-muted mt-[0.4em] text-[0.85em]">
         {w.printedOn}: {parchiDateTime(printedAt, lang)}
       </p>
     </footer>

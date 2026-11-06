@@ -93,9 +93,16 @@ describe("ParchiDocument", () => {
       "Rs 20,000.00",
     );
     expect(parchi).toHaveTextContent("NotesTruck LES-4521");
-    expect(screen.getByTestId("parchi-footer")).toHaveTextContent(
-      "Thank you for your business. Payments within 7 days.",
+    // An English and an Urdu footer line: each its own line, the Urdu one
+    // in Nastaliq with room for its tall letters.
+    const [english, urdu] = Array.from(
+      screen.getByTestId("parchi-footer").children,
     );
+    expect(english).toHaveTextContent("Thank you for your business.");
+    expect(english).toHaveClass("block", "[line-height:1.5]");
+    expect(urdu).toHaveTextContent("شکریہ — براہِ کرم پرچی چیک کر لیں۔");
+    expect(urdu).toHaveClass("block", "font-urdu-mixed", "[line-height:2.5]");
+    expect(urdu).toHaveAttribute("dir", "auto");
     expect(parchi).toHaveTextContent("Printed on: 6 Nov 2026, 10:30 am");
     expect(screen.queryByTestId("parchi-watermark")).toBeNull();
   });
@@ -186,6 +193,20 @@ describe("ParchiDocument", () => {
     expect(parchi.querySelector("thead")).not.toBeNull();
     const roll = renderParchi(longPurchaseBill, "thermal80", "ur");
     expect(within(roll).getAllByRole("listitem")).toHaveLength(30);
+  });
+
+  it("an Urdu name typed by the shop gets Nastaliq room on the English parchi", () => {
+    renderParchi({ ...purchaseBill, partyName: "رفیق احمد" }, "a4", "en", {
+      name: "المدینہ کمیشن شاپ",
+    });
+    expect(screen.getByText("رفیق احمد")).toHaveClass(
+      "font-urdu-mixed",
+      "[line-height:2.5]",
+    );
+    expect(screen.getByText("المدینہ کمیشن شاپ")).toHaveClass(
+      "font-urdu-mixed",
+    );
+    expect(screen.getByText("Gandum")).not.toHaveClass("font-urdu-mixed");
   });
 
   it("leaves out what the shop hasn't set, and a logo that fails to load", () => {

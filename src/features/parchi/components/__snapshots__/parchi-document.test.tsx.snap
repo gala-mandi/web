@@ -3,7 +3,7 @@
 exports[`ParchiDocument snapshots > cancelled sale, 80 mm, Urdu 1`] = `
 <article
   aria-label="فروخت کی پرچی SAL-2026-27-000002"
-  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[1.85]"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[2]"
   data-parchi="thermal80"
   data-parchi-lang="ur"
   dir="rtl"
@@ -276,7 +276,7 @@ exports[`ParchiDocument snapshots > cancelled sale, 80 mm, Urdu 1`] = `
     class="border-ink my-[0.5em] border-t border-dashed"
   />
   <dl
-    class="flex flex-col gap-[0.25em] leading-[1.7]"
+    class="flex flex-col gap-[0.25em] leading-[1.9]"
     data-parchi-keep="true"
     data-testid="parchi-sums"
   >
@@ -439,15 +439,24 @@ exports[`ParchiDocument snapshots > cancelled sale, 80 mm, Urdu 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       پرنٹ کی تاریخ
       : 
@@ -527,7 +536,7 @@ exports[`ParchiDocument snapshots > cancelled sale, A4, English 1`] = `
       class="flex shrink-0 flex-col items-end gap-[0.5em]"
     >
       <p
-        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold uppercase tracking-[0.06em]"
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
       >
         Sale parchi
       </p>
@@ -984,15 +993,24 @@ exports[`ParchiDocument snapshots > cancelled sale, A4, English 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       Printed on
       : 
@@ -1442,13 +1460,14 @@ exports[`ParchiDocument snapshots > purchase, 80 mm, English 1`] = `
       Notes
     </p>
     <p
-      class="text-start whitespace-pre-line [overflow-wrap:break-word]"
+      class="text-start"
     >
-      <bdi
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
         dir="auto"
       >
         Truck LES-4521
-      </bdi>
+      </span>
     </p>
   </div>
   <footer
@@ -1456,15 +1475,24 @@ exports[`ParchiDocument snapshots > purchase, 80 mm, English 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       Printed on
       : 
@@ -1533,7 +1561,7 @@ exports[`ParchiDocument snapshots > purchase, A4, English 1`] = `
       class="flex shrink-0 flex-col items-end gap-[0.5em]"
     >
       <p
-        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold uppercase tracking-[0.06em]"
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
       >
         Purchase parchi
       </p>
@@ -1828,13 +1856,14 @@ exports[`ParchiDocument snapshots > purchase, A4, English 1`] = `
           Notes
         </p>
         <p
-          class="text-start whitespace-pre-line [overflow-wrap:break-word]"
+          class="text-start"
         >
-          <bdi
+          <span
+            class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
             dir="auto"
           >
             Truck LES-4521
-          </bdi>
+          </span>
         </p>
       </div>
     </div>
@@ -2020,15 +2049,24 @@ exports[`ParchiDocument snapshots > purchase, A4, English 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       Printed on
       : 
@@ -2041,7 +2079,7 @@ Payments within 7 days.
 exports[`ParchiDocument snapshots > purchase, A4, Urdu 1`] = `
 <article
   aria-label="خرید کی پرچی PUR-2026-27-000001"
-  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0 text-[13px] font-urdu-mixed leading-[1.85]"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0 text-[13px] font-urdu-mixed leading-[2]"
   data-parchi="a4"
   data-parchi-lang="ur"
   dir="rtl"
@@ -2097,7 +2135,7 @@ exports[`ParchiDocument snapshots > purchase, A4, Urdu 1`] = `
       class="flex shrink-0 flex-col items-end gap-[0.5em]"
     >
       <p
-        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold"
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.1em] leading-[2.1]"
       >
         خرید کی پرچی
       </p>
@@ -2392,18 +2430,19 @@ exports[`ParchiDocument snapshots > purchase, A4, Urdu 1`] = `
           نوٹ
         </p>
         <p
-          class="text-start whitespace-pre-line [overflow-wrap:break-word]"
+          class="text-start"
         >
-          <bdi
+          <span
+            class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
             dir="auto"
           >
             Truck LES-4521
-          </bdi>
+          </span>
         </p>
       </div>
     </div>
     <dl
-      class="flex flex-col gap-[0.25em] leading-[1.7] w-[48%]"
+      class="flex flex-col gap-[0.25em] leading-[1.9] w-[48%]"
       data-parchi-keep="true"
       data-testid="parchi-sums"
     >
@@ -2584,15 +2623,24 @@ exports[`ParchiDocument snapshots > purchase, A4, Urdu 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       پرنٹ کی تاریخ
       : 
@@ -2605,7 +2653,7 @@ Payments within 7 days.
 exports[`ParchiDocument snapshots > sale, 80 mm, Urdu 1`] = `
 <article
   aria-label="فروخت کی پرچی SAL-2026-27-000001"
-  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[1.85]"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[2]"
   data-parchi="thermal80"
   data-parchi-lang="ur"
   dir="rtl"
@@ -2857,7 +2905,7 @@ exports[`ParchiDocument snapshots > sale, 80 mm, Urdu 1`] = `
     class="border-ink my-[0.5em] border-t border-dashed"
   />
   <dl
-    class="flex flex-col gap-[0.25em] leading-[1.7]"
+    class="flex flex-col gap-[0.25em] leading-[1.9]"
     data-parchi-keep="true"
     data-testid="parchi-sums"
   >
@@ -3037,15 +3085,24 @@ exports[`ParchiDocument snapshots > sale, 80 mm, Urdu 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       پرنٹ کی تاریخ
       : 
@@ -3114,7 +3171,7 @@ exports[`ParchiDocument snapshots > sale, A5, English 1`] = `
       class="flex shrink-0 flex-col items-end gap-[0.5em]"
     >
       <p
-        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold uppercase tracking-[0.06em]"
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
       >
         Sale parchi
       </p>
@@ -3582,15 +3639,24 @@ exports[`ParchiDocument snapshots > sale, A5, English 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       Printed on
       : 
@@ -3603,7 +3669,7 @@ Payments within 7 days.
 exports[`ParchiDocument snapshots > sale, A5, Urdu 1`] = `
 <article
   aria-label="فروخت کی پرچی SAL-2026-27-000001"
-  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0 text-[11px] font-urdu-mixed leading-[1.85]"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0 text-[11px] font-urdu-mixed leading-[2]"
   data-parchi="a5"
   data-parchi-lang="ur"
   dir="rtl"
@@ -3659,7 +3725,7 @@ exports[`ParchiDocument snapshots > sale, A5, Urdu 1`] = `
       class="flex shrink-0 flex-col items-end gap-[0.5em]"
     >
       <p
-        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] py-[0.2em] text-[1.05em] font-bold"
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.1em] leading-[2.1]"
       >
         فروخت کی پرچی
       </p>
@@ -3946,7 +4012,7 @@ exports[`ParchiDocument snapshots > sale, A5, Urdu 1`] = `
       </p>
     </div>
     <dl
-      class="flex flex-col gap-[0.25em] leading-[1.7] w-[48%]"
+      class="flex flex-col gap-[0.25em] leading-[1.9] w-[48%]"
       data-parchi-keep="true"
       data-testid="parchi-sums"
     >
@@ -4127,15 +4193,24 @@ exports[`ParchiDocument snapshots > sale, A5, Urdu 1`] = `
     data-parchi-keep="true"
   >
     <p
-      class="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
+      class="font-semibold"
       data-testid="parchi-footer"
-      dir="auto"
     >
-      Thank you for your business.
-Payments within 7 days.
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
     </p>
     <p
-      class="text-ink-muted mt-[0.3em] text-[0.85em]"
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
     >
       پرنٹ کی تاریخ
       : 

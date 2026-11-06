@@ -19,7 +19,7 @@ export const shop: ParchiShop = {
   logoUrl: "http://localhost:4000/uploads/t1/logo.png",
   address: "Shop 12, New Grain Market, Okara",
   phone: "0300-1234567",
-  footer: "Thank you for your business.\nPayments within 7 days.",
+  footer: "Thank you for your business.\nشکریہ — براہِ کرم پرچی چیک کر لیں۔",
   maundKg: "40.000",
   language: "en",
 };
