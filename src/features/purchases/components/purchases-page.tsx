@@ -25,10 +25,13 @@ import { useEveryCommodity } from "@/features/rates/hooks";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import type { TraderLookupItem } from "@/features/traders/types";
 import { toApiError } from "@/lib/api-error";
+import { ReprintOutlet } from "@/features/parchi/components/reprint-outlet";
+import { useReprint } from "@/features/parchi/hooks";
+import { purchaseParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
 import { toListSearchParams } from "@/lib/list-query";
 import { purchaseRoutes } from "@/lib/routes";
-import { usePurchases } from "../hooks";
+import { usePurchaseLoader, usePurchases } from "../hooks";
 import {
   PURCHASES_TABLE_ID,
   purchaseListFilters,
@@ -75,6 +78,9 @@ function PurchasesList() {
   const canEdit = useCan("purchase.edit");
   const canCancel = useCan("purchase.delete");
   const [cancelling, setCancelling] = useState<PurchaseSummary | null>(null);
+  const load = usePurchaseLoader();
+  const reprinter = useReprint(async (id) => purchaseParchi(await load(id)));
+  const reprint = reprinter.reprint;
   // The picked kissan as the picker shows it (the URL keeps only the id).
   const [pickedTrader, setPickedTrader] = useState<TraderLookupItem | null>(
     null,
@@ -94,8 +100,14 @@ function PurchasesList() {
   const rows = query.data?.data;
 
   const columns = useMemo(
-    () => purchaseColumns({ canEdit, canCancel, onCancel: setCancelling }),
-    [canEdit, canCancel],
+    () =>
+      purchaseColumns({
+        canEdit,
+        canCancel,
+        onCancel: setCancelling,
+        onReprint: (row) => void reprint(row.id),
+      }),
+    [canEdit, canCancel, reprint],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -261,6 +273,8 @@ function PurchasesList() {
           )
         }
       />
+
+      <ReprintOutlet reprint={reprinter} />
 
       {cancelling ? (
         <CancelPurchaseDialog

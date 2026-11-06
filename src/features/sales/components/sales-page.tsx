@@ -25,11 +25,14 @@ import { useEveryCommodity } from "@/features/rates/hooks";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import type { TraderLookupItem } from "@/features/traders/types";
 import { toApiError } from "@/lib/api-error";
+import { ReprintOutlet } from "@/features/parchi/components/reprint-outlet";
+import { useReprint } from "@/features/parchi/hooks";
+import { saleParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
 import { toListSearchParams } from "@/lib/list-query";
 import { saleRoutes } from "@/lib/routes";
 import { purchaseStatusText } from "@/features/purchases/text";
-import { useSales } from "../hooks";
+import { useSaleLoader, useSales } from "../hooks";
 import {
   SALES_TABLE_ID,
   saleListFilters,
@@ -72,6 +75,9 @@ function SalesList() {
   const canEdit = useCan("sale.edit");
   const canCancel = useCan("sale.delete");
   const [cancelling, setCancelling] = useState<SaleSummary | null>(null);
+  const load = useSaleLoader();
+  const reprinter = useReprint(async (id) => saleParchi(await load(id)));
+  const reprint = reprinter.reprint;
   // The picked beopari as the picker shows it (the URL keeps only the id).
   const [pickedBuyer, setPickedBuyer] = useState<TraderLookupItem | null>(null);
 
@@ -89,8 +95,14 @@ function SalesList() {
   const rows = query.data?.data;
 
   const columns = useMemo(
-    () => saleColumns({ canEdit, canCancel, onCancel: setCancelling }),
-    [canEdit, canCancel],
+    () =>
+      saleColumns({
+        canEdit,
+        canCancel,
+        onCancel: setCancelling,
+        onReprint: (row) => void reprint(row.id),
+      }),
+    [canEdit, canCancel, reprint],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -256,6 +268,8 @@ function SalesList() {
           )
         }
       />
+
+      <ReprintOutlet reprint={reprinter} />
 
       {cancelling ? (
         <CancelSaleDialog

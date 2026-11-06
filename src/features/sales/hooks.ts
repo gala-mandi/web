@@ -44,6 +44,20 @@ export function useSale(id: string) {
 }
 
 /**
+ * Loads one whole bill for a list action (e.g. Reprint), from the cache
+ * when it is fresh, through the same detail query as the bill's page.
+ */
+export function useSaleLoader() {
+  const queryClient = useQueryClient();
+  return (id: string): Promise<Sale> =>
+    queryClient.fetchQuery({
+      queryKey: saleKeys.detail(id),
+      queryFn: ({ signal }) => getSale(id, signal),
+      staleTime: 30_000,
+    });
+}
+
+/**
  * A saved sale goes into the detail cache at once (the view opens without a
  * request, `warnings` left out); lists and the beopari's balance (khata)
  * refresh in the background.

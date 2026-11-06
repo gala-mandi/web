@@ -4,6 +4,7 @@ import { type ReactNode, useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useMe } from "@/features/auth/hooks";
 import { useSessionStore } from "@/stores/session";
+import { useParchiPrefs } from "@/stores/parchi";
 import { useUiStore } from "@/stores/ui";
 import { panelText } from "../text";
 import { AppSidebar } from "./app-sidebar";
@@ -20,9 +21,11 @@ export function PanelShell({ children }: { children: ReactNode }) {
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUiStore((s) => s.setSidebarOpen);
 
-  // Saved sidebar choice is read after mount, so server and client HTML match.
+  // Saved sidebar and parchi choices are read after mount, so server and
+  // client HTML match.
   useEffect(() => {
     void useUiStore.persist.rehydrate();
+    void useParchiPrefs.persist.rehydrate();
   }, []);
   usePaletteShortcut();
 

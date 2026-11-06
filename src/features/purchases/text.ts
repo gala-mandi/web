@@ -66,8 +66,6 @@ const errors = {
 export const purchaseText = {
   none: "—",
   errors,
-  /** Under the shop name on the printed bill. */
-  sectionTitle: "Purchase bill (parchi)",
   /** "PUR-2026-27-000123" with the kissan, for toasts and dialogs. */
   billOf: (billNo: string) => `Bill ${billNo}`,
   list: {
@@ -106,7 +104,7 @@ export const purchaseText = {
     view: "View",
     edit: "Edit",
     cancel: "Cancel purchase",
-    print: "Print",
+    reprint: "Reprint",
   },
   form: {
     newTitle: "New purchase",
