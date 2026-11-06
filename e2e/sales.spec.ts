@@ -76,6 +76,8 @@ interface Body {
 }
 
 async function signedIn(page: Page, context: BrowserContext, user: ShopUser) {
+  // The mocked rates and bills are for TODAY, so the browser's clock is too.
+  await page.clock.setFixedTime(new Date(`${TODAY}T05:30:00.000Z`));
   await setRefreshCookie(context);
   await mockEndpoint(page, "POST", "/auth/refresh", () => ({
     status: 200,

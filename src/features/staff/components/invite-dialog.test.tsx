@@ -248,3 +248,65 @@ describe("InviteDialog", () => {
     ).toBeVisible();
   });
 });
+
+describe("InviteDialog and the plan's user limit", () => {
+  beforeEach(() => {
+    vi.mocked(createInvitation).mockReset();
+  });
+
+  it("PLAN_USER_LIMIT shows the upgrade message with the plan's limit", async () => {
+    vi.mocked(createInvitation).mockRejectedValue(
+      httpError(undefined, 403, {
+        code: "PLAN_USER_LIMIT",
+        message:
+          "Your plan allows 3 users. Upgrade your plan to add more staff.",
+      }),
+    );
+    const client = testQueryClient();
+    client.setQueryData(["subscription"], {
+      today: "2026-11-07",
+      state: "active",
+      subscription: {
+        plan: {
+          id: "p",
+          name: "Trial",
+          maxUsers: 3,
+          maxBranches: 1,
+          priceMonthly: "0.00",
+        },
+      },
+    });
+    render(
+      <TestProviders client={client}>
+        <InviteDialog />
+      </TestProviders>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Invite staff" }));
+    typePhone("0300 1234567");
+    fireEvent.click(submitButton());
+
+    const alert = await screen.findByTestId("plan-limit-alert");
+    expect(alert).toHaveTextContent("Your plan is full");
+    expect(alert).toHaveTextContent("Your Trial plan allows 3 users");
+    expect(alert).toHaveTextContent("upgrade your plan");
+    // The dialog stays open so the owner can read it.
+    expect(screen.getByRole("dialog")).toBeVisible();
+  });
+
+  it("read-only shop: no Invite staff button", () => {
+    const client = testQueryClient();
+    client.setQueryData(["subscription"], {
+      today: "2026-11-07",
+      state: "read_only",
+      subscription: null,
+    });
+    render(
+      <TestProviders client={client}>
+        <InviteDialog />
+      </TestProviders>,
+    );
+    expect(
+      screen.queryByRole("button", { name: "Invite staff" }),
+    ).not.toBeInTheDocument();
+  });
+});

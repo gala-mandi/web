@@ -21,7 +21,7 @@ export function NewSalePage() {
   // Read once: a form left open past midnight keeps its own day.
   const [today] = useState(() => karachiToday());
   return (
-    <RequirePermission permission="sale.create">
+    <RequirePermission permission="sale.create" write>
       <div className="flex flex-col gap-6">
         <PageHeader title={t.newTitle} description={t.newDescription} />
         <SaleForm today={today} />
@@ -33,7 +33,7 @@ export function NewSalePage() {
 /** `/sales/:id/edit`: `sale.edit` (owner, manager). */
 export function EditSalePage({ id }: { id: string }) {
   return (
-    <RequirePermission permission="sale.edit">
+    <RequirePermission permission="sale.edit" write>
       <EditSale id={id} />
     </RequirePermission>
   );

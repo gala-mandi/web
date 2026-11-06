@@ -16,6 +16,7 @@ import { ParchiDesk } from "@/features/parchi/components/parchi-desk";
 import { PurchaseStatusBadge } from "@/features/purchases/components/badges";
 import { toApiError } from "@/lib/api-error";
 import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { formatDate } from "@/lib/format";
 import { ledgerRoutes, paymentRoutes } from "@/lib/routes";
 import { usePayment } from "../hooks";
@@ -75,7 +76,7 @@ function PaymentDetail({ id }: { id: string }) {
 
 /** The voucher as it prints, with Print, Cancel (owner) and the khata link. */
 function PaymentView({ payment }: { payment: Payment }) {
-  const canCancel = useCan("payment.delete");
+  const canCancel = useCanWrite("payment.delete");
   const canOpenKhata = useCan("ledger.view");
   const [cancelling, setCancelling] = useState(false);
   const active = payment.status !== "cancelled";

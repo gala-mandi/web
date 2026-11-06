@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
+import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
 import { formatDate, formatDateTime, formatRelative } from "@/lib/format";
 import { generalErrorMessage } from "../form-errors";
@@ -231,6 +232,12 @@ export function InvitationsTable() {
       }),
     [resendingId, sendAgain],
   );
+  // Read-only shop: no role, activate or cancel buttons (the server refuses).
+  const readOnly = useReadOnly();
+  const visibleColumns = useMemo(
+    () => (readOnly ? columns.filter((c) => c.id !== "actions") : columns),
+    [columns, readOnly],
+  );
 
   if (query.isError && toApiError(query.error).status === 403) {
     return <ForbiddenState />;
@@ -240,7 +247,7 @@ export function InvitationsTable() {
     <>
       <DataTable<Invitation>
         caption={t.caption}
-        columns={columns}
+        columns={visibleColumns}
         data={paged.page}
         getRowId={(row) => row.id}
         rowCount={paged.rowCount}

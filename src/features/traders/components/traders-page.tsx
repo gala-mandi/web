@@ -20,7 +20,7 @@ import { RequirePermission } from "@/features/panel/components/require-permissio
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { panelText } from "@/features/panel/text";
 import { toApiError } from "@/lib/api-error";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
 import { traderRoutes } from "@/lib/routes";
 import { useTraders } from "../hooks";
@@ -77,9 +77,9 @@ export function TradersPage() {
 function TradersList() {
   const router = useRouter();
   const section = panelText.sections.traders;
-  const canCreate = useCan("trader.create");
-  const canManage = useCan("trader.manage");
-  const canDelete = useCan("trader.delete");
+  const canCreate = useCanWrite("trader.create");
+  const canManage = useCanWrite("trader.manage");
+  const canDelete = useCanWrite("trader.delete");
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
   // Kept while the sheet closes, so its content doesn't jump.
   const [formTrader, setFormTrader] = useState<Trader | null>(null);

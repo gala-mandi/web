@@ -28,7 +28,7 @@ export function NewPaymentPage() {
   const [today] = useState(() => karachiToday());
   const [direction] = useQueryState("direction", directionParser);
   return (
-    <RequirePermission permission="payment.create">
+    <RequirePermission permission="payment.create" write>
       <div className="flex flex-col gap-6">
         <PageHeader
           title={t.newTitle[direction]}
