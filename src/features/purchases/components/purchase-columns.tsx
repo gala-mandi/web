@@ -77,7 +77,7 @@ function RowActions({
 }
 
 const money = (
-  key: "grossAmount" | "totalDeductions" | "netAmount",
+  key: "grossAmount" | "totalDeductions" | "netAmount" | "outstanding",
   header: string,
 ) =>
   col.accessor(key, {
@@ -139,6 +139,7 @@ export function purchaseColumns(
     money("grossAmount", t.grossAmount),
     money("totalDeductions", t.totalDeductions),
     money("netAmount", t.netAmount),
+    money("outstanding", t.outstanding),
     col.accessor("status", {
       header: t.status,
       enableSorting: false,

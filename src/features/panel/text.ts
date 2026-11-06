@@ -60,7 +60,8 @@ export const panelText = {
     },
     payments: {
       label: "Payments",
-      description: "Money paid to kissans and received from beoparis.",
+      description:
+        "Money paid to kissans and received from beoparis, and the daily cash book.",
     },
     reports: {
       label: "Reports",
@@ -85,6 +86,8 @@ export const panelText = {
     sale: "Sale",
     editSale: "Edit sale",
     balances: "Balances",
+    newVoucher: "New voucher",
+    voucher: "Voucher",
   },
   comingSoon: {
     title: "Nothing here yet",

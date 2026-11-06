@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { SectionPlaceholder } from "@/features/panel/components/section-placeholder";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { CashBookPage } from "@/features/payments/components/cash-book-page";
+import { pageTitle } from "@/features/panel/text";
+import { paymentText } from "@/features/payments/text";
 
 export const metadata: Metadata = {
-  title: pageTitle(panelText.sections.payments.label),
+  title: pageTitle(paymentText.cashBook.title),
 };
 
-/** Placeholder until the Payments ticket builds this screen. */
-export default function PaymentsPage() {
-  return <SectionPlaceholder section="payments" />;
+/** The Payments section opens on the cash book (today by default). */
+export default function Page() {
+  return <CashBookPage />;
 }

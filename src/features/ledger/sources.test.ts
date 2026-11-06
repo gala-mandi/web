@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { sourceHref } from "./sources";
 
-const all = { purchases: true, sales: true };
+const all = { purchases: true, sales: true, payments: true };
 const id = "abc";
 
 describe("sourceHref", () => {
@@ -50,13 +50,30 @@ describe("sourceHref", () => {
     ).toBeNull();
   });
 
+  it("opens the voucher behind a payment or receipt, and of its reversal", () => {
+    for (const sourceType of ["payment", "receipt"] as const) {
+      expect(
+        sourceHref({ sourceType, sourceId: id, narration: null }, all),
+      ).toBe("/payments/abc");
+    }
+    for (const narration of [
+      "Payment PAY-2026-27-000001 cancelled",
+      "Receipt RCT-2026-27-000001 cancelled",
+    ]) {
+      expect(
+        sourceHref({ sourceType: "reversal", sourceId: id, narration }, all),
+      ).toBe("/payments/abc");
+    }
+    expect(
+      sourceHref(
+        { sourceType: "receipt", sourceId: id, narration: null },
+        { ...all, payments: false },
+      ),
+    ).toBeNull();
+  });
+
   it("links nothing without a page or without access", () => {
-    for (const sourceType of [
-      "payment",
-      "receipt",
-      "opening",
-      "adjustment",
-    ] as const) {
+    for (const sourceType of ["opening", "adjustment"] as const) {
       expect(
         sourceHref({ sourceType, sourceId: id, narration: null }, all),
       ).toBeNull();
@@ -70,7 +87,7 @@ describe("sourceHref", () => {
     expect(
       sourceHref(
         { sourceType: "sale", sourceId: id, narration: null },
-        { purchases: true, sales: false },
+        { purchases: true, sales: false, payments: true },
       ),
     ).toBeNull();
   });

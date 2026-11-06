@@ -74,6 +74,13 @@ const detailCrumbs: Partial<
     panelText.crumbs.sale,
     panelText.crumbs.editSale,
   ),
+  // Vouchers are never edited (cancel instead): `new` and `:id` only.
+  payments: (parts) =>
+    parts.length === 1
+      ? parts[0] === "new"
+        ? panelText.crumbs.newVoucher
+        : panelText.crumbs.voucher
+      : null,
 };
 
 /** `/traders/abc` → "Trader profile"; null for the section page itself. */

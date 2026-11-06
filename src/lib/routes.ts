@@ -74,6 +74,24 @@ export const ledgerRoutes = {
   balances: `${panelRoutes.ledger}/balances`,
 } as const;
 
+/**
+ * Pages of the Payments section. The section's own page is the cash book
+ * (`?from=&to=`, default today); a voucher is a payment (paid to a kissan)
+ * or a receipt (received from a beopari).
+ */
+export const paymentRoutes = {
+  cashBook: panelRoutes.payments,
+  /** The cash book of one day. */
+  cashBookOf: (day: string) =>
+    `${panelRoutes.payments}?from=${encodeURIComponent(day)}&to=${encodeURIComponent(day)}`,
+  new: (direction: "paid" | "received") =>
+    `${panelRoutes.payments}/new?direction=${direction}`,
+  detail: (id: string) => `${panelRoutes.payments}/${encodeURIComponent(id)}`,
+  /** The voucher, opening the print dialog once it has loaded. */
+  print: (id: string) =>
+    `${panelRoutes.payments}/${encodeURIComponent(id)}?print=1`,
+} as const;
+
 export const panelSections = Object.keys(panelRoutes) as PanelSection[];
 
 /**

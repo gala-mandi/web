@@ -122,16 +122,23 @@ export function useParchiPrint({
   paper,
   lang,
   billNo,
+  documentTitle,
+  numberLabel,
 }: {
   contentRef: RefObject<HTMLElement | null>;
   paper: PaperSize;
   lang: ParchiLanguage;
   billNo: string | null;
+  /** "Save as PDF" file name; default `parchi-<billNo>`. */
+  documentTitle?: string;
+  /** Before the number at the top of later sheets; default "Bill no". */
+  numberLabel?: string;
 }) {
   return useReactToPrint({
     contentRef,
-    documentTitle: billNo ? parchiDocumentTitle(billNo) : "parchi",
-    pageStyle: parchiPageStyle(paper, lang, billNo ?? ""),
+    documentTitle:
+      documentTitle ?? (billNo ? parchiDocumentTitle(billNo) : "parchi"),
+    pageStyle: parchiPageStyle(paper, lang, billNo ?? "", numberLabel),
     // The fonts are CSS variables on <html>; the print iframe needs them too.
     bodyClass:
       typeof document === "undefined"
