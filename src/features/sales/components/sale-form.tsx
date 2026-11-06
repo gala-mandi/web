@@ -477,7 +477,7 @@ function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
           {formatRs(amount)}
         </span>{" "}
         {b[kind]}
-      </span>
+      </span>{" "}
       <span>
         {b.creditLimit}:{" "}
         <span
