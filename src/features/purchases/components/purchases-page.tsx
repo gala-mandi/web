@@ -162,20 +162,18 @@ function PurchasesList() {
               >
                 {t.traderLabel}
               </label>
-              <div className="flex gap-1">
-                <TraderCombobox
-                  id="purchases-trader-filter"
-                  type="kissan"
-                  allowQuickAdd={false}
-                  value={traderValue}
-                  placeholder={t.traderAll}
-                  onChange={(trader) => {
-                    setPickedTrader(trader);
-                    list.setFilter("trader", trader?.id ?? null);
-                  }}
-                  className="h-10"
-                />
-              </div>
+              <TraderCombobox
+                id="purchases-trader-filter"
+                type="kissan"
+                allowQuickAdd={false}
+                value={traderValue}
+                placeholder={t.traderAll}
+                onChange={(trader) => {
+                  setPickedTrader(trader);
+                  list.setFilter("trader", trader?.id ?? null);
+                }}
+                className="h-10"
+              />
             </div>
             <DataTableSelectFilter
               label={t.commodityLabel}
