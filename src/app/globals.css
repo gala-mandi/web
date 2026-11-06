@@ -39,6 +39,7 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+  --color-chart-grid: var(--chart-grid);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -98,11 +99,16 @@
   --border: #dcd8e6;
   --input: #dcd8e6;
   --ring: #6d28d9;
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Chart palette: categorical slots in fixed order (never cycled), brand
+     violet first; the same validated slots as the admin panel. Slots 3–5 are
+     under 3:1 on white, so every chart that uses them also has labels. */
+  --chart-1: #6d28d9;
+  --chart-2: #eb6834;
+  --chart-3: #1baf7a;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  /* Chart split lines: lighter than --border so the grid stays quiet. */
+  --chart-grid: #ece9f2;
   --radius: 0.75rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #1e1b2e;
@@ -132,37 +138,50 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark theme in the violet brand (the admin panel's dark tokens). Text
+     pairs keep at least 4.5:1 contrast. */
+  color-scheme: dark;
+  --background: #0f0d16;
+  --foreground: #f4f2fa;
+  --card: #1c1926;
+  --card-foreground: #f4f2fa;
+  --popover: #1c1926;
+  --popover-foreground: #f4f2fa;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #2a2538;
+  --secondary-foreground: #ede9fe;
+  --muted: #2a2538;
+  --muted-foreground: #b7b2c6;
+  --accent: #2a2538;
+  --accent-foreground: #ede9fe;
+  --destructive: #fb7185;
+  --border: #3a3549;
+  --input: #3a3549;
+  --ring: #8b5cf6;
+  /* Same hues stepped for the dark card (all at least 3:1). */
+  --chart-1: #9f67fa;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-grid: #2c2839;
+  --sidebar: #15121e;
+  --sidebar-foreground: #f4f2fa;
+  --sidebar-primary: #7c3aed;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #3b2a63;
+  --sidebar-accent-foreground: #ede9fe;
+  --sidebar-border: #3a3549;
+  --sidebar-ring: #8b5cf6;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --warning-soft: rgb(251 191 36 / 0.1);
+  --destructive-soft: rgb(251 113 133 / 0.1);
+  --destructive-border: rgb(251 113 133 / 0.3);
+  --notice: #fdba74;
+  --notice-soft: rgb(253 186 116 / 0.1);
+  --surface-muted: #2a2538;
 }
 
 @layer base {
@@ -174,6 +193,13 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Dashboard list bars grow from the start edge to their length. */
+@keyframes dash-grow {
+  from {
+    inline-size: 0;
   }
 }
 

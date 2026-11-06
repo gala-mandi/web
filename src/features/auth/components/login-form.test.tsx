@@ -117,14 +117,14 @@ describe("LoginForm", () => {
     await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard?x=1"));
   });
 
-  it("sends an operator (no dashboard) to Daily rates", async () => {
+  it("sends an operator to the (simpler) dashboard", async () => {
     vi.mocked(login).mockResolvedValue(sessionFor(operator));
     render(<LoginForm />);
     fill("bilal@shop.pk", "secret");
 
     submit();
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/rates"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard"));
   });
 
   it("ignores a ?next= page the user may not open", async () => {
@@ -134,7 +134,7 @@ describe("LoginForm", () => {
 
     submit();
 
-    await waitFor(() => expect(replace).toHaveBeenCalledWith("/rates"));
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/dashboard"));
   });
 
   it("sends only one request on a double click", async () => {

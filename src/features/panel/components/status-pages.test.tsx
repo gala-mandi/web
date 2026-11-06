@@ -2,8 +2,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useSessionStore } from "@/stores/session";
 import { manager, operator, owner, sessionFor } from "@/test/fake-api";
-import { TestProviders } from "@/test/render-panel";
-import { DashboardHome } from "./dashboard-home";
 import { RequirePermission } from "./require-permission";
 import { SectionPlaceholder } from "./section-placeholder";
 import { ErrorState, ForbiddenState, NotFoundState } from "./status-pages";
@@ -33,8 +31,8 @@ describe("status pages", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("403")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Back to Daily rates" }),
-    ).toHaveAttribute("href", "/rates");
+      screen.getByRole("link", { name: "Back to Dashboard" }),
+    ).toHaveAttribute("href", "/dashboard");
   });
 
   it("error state retries", () => {
@@ -81,17 +79,6 @@ describe("RequirePermission", () => {
       screen.getByRole("heading", { level: 1, name: "You don’t have access" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Settings" })).toBeNull();
-  });
-
-  it("an operator opening the dashboard gets the 403 page", () => {
-    useSessionStore.getState().setSession(sessionFor(operator));
-    render(
-      <TestProviders>
-        <DashboardHome />
-      </TestProviders>,
-    );
-
-    expect(screen.getByText("403")).toBeInTheDocument();
   });
 
   it("a placeholder page shows its title and the coming-soon state", () => {

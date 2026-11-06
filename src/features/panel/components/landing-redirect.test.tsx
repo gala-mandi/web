@@ -18,11 +18,11 @@ describe("LandingRedirect (/home)", () => {
     expect(replace).toHaveBeenCalledWith("/dashboard");
   });
 
-  it("sends an operator to Daily rates", () => {
+  it("sends an operator to the (simpler) dashboard", () => {
     useSessionStore.getState().setSession(sessionFor(operator));
     render(<LandingRedirect next={null} />);
 
-    expect(replace).toHaveBeenCalledWith("/rates");
+    expect(replace).toHaveBeenCalledWith("/dashboard");
   });
 
   it("follows ?next= only to a page the user may open", () => {
@@ -32,6 +32,6 @@ describe("LandingRedirect (/home)", () => {
     unmount();
 
     render(<LandingRedirect next="/staff" />);
-    expect(replace).toHaveBeenLastCalledWith("/rates");
+    expect(replace).toHaveBeenLastCalledWith("/dashboard");
   });
 });

@@ -62,8 +62,8 @@ export const menuItems: readonly MenuItem[] = (
 
 /**
  * The menu for this user: only items whose permission the server gave them.
- * Owner: all 11. Manager: no Staff, Settings. Operator: Daily rates,
- * Purchases, Sales, Payments.
+ * Owner: all 11. Manager: no Staff, Settings. Operator: Dashboard, Daily
+ * rates, Purchases, Sales, Payments.
  */
 export function menuFor(
   user: Pick<User, "permissions"> | null | undefined,

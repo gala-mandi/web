@@ -86,6 +86,7 @@ describe("CommandPalette", () => {
     pressCtrlK();
 
     expect(pageOptions()).toEqual([
+      "Dashboard",
       "Daily rates",
       "Purchases",
       "Sales",
@@ -114,7 +115,7 @@ describe("CommandPalette", () => {
     fireEvent.keyDown(input, { key: "ArrowDown" });
     fireEvent.keyDown(input, { key: "Enter" });
 
-    expect(push).toHaveBeenCalledWith("/purchases");
+    expect(push).toHaveBeenCalledWith("/rates");
   });
 
   it("navigates on click", () => {

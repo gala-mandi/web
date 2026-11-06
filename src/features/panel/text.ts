@@ -104,13 +104,6 @@ export const panelText = {
     traders: "Traders",
     tradersSoon: "Traders search comes with the Traders module",
   },
-  dashboard: {
-    welcome: (name: string) => `Welcome, ${name}`,
-    body: "Your shop’s daily rates, purchases and sales will show here.",
-    loading: "Loading…",
-    error: "Couldn’t load your account. Check your internet and try again.",
-    retry: "Try again",
-  },
   loading: "Loading page…",
   notFound: {
     metaTitle: "Page not found",

@@ -71,11 +71,12 @@ describe("AppSidebar", () => {
     expect(labels).not.toContain("Settings");
   });
 
-  it("shows an operator only Daily rates, Purchases, Sales and Payments", () => {
+  it("shows an operator only Dashboard, Daily rates, Purchases, Sales and Payments", () => {
     pathname.current = "/rates";
     signIn(operator);
 
     expect(menuLinks()).toEqual([
+      ["Dashboard", "/dashboard"],
       ["Daily rates", "/rates"],
       ["Purchases", "/purchases"],
       ["Sales", "/sales"],
@@ -90,7 +91,6 @@ describe("AppSidebar", () => {
     });
 
     expect(menuLinks().map(([label]) => label)).toEqual([
-      "Dashboard",
       "Commodities",
       "Reports",
     ]);
@@ -123,8 +123,8 @@ describe("AppSidebar", () => {
     signIn(operator);
 
     expect(
-      screen.getByRole("link", { name: "Galla Mandi — go to Daily rates" }),
-    ).toHaveAttribute("href", "/rates");
+      screen.getByRole("link", { name: "Galla Mandi — go to Dashboard" }),
+    ).toHaveAttribute("href", "/dashboard");
   });
 
   it("collapses to icons and expands again, remembering the choice", () => {
@@ -156,7 +156,7 @@ describe("AppSidebar", () => {
     fireEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
 
     const drawer = screen.getByRole("dialog");
-    expect(within(drawer).getAllByRole("link")).toHaveLength(5); // brand + 4
+    expect(within(drawer).getAllByRole("link")).toHaveLength(6); // brand + 5
     fireEvent.click(within(drawer).getByRole("link", { name: "Sales" }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

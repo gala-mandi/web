@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DashboardHome } from "@/features/panel/components/dashboard-home";
+import { Dashboard } from "@/features/dashboard/components/dashboard";
 import { pageTitle, panelText } from "@/features/panel/text";
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  return <DashboardHome />;
+  return <Dashboard />;
 }

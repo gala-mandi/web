@@ -97,11 +97,12 @@ export const panelSections = Object.keys(panelRoutes) as PanelSection[];
 /**
  * Server permission needed to see a section in the menu and open its page.
  * Traders needs `trader.manage`: operators may pick traders in a purchase
- * (`trader.view`) but don't get the Traders page. The dashboard shows shop
- * figures, so it needs `report.view`.
+ * (`trader.view`) but don't get the Traders page. The dashboard needs
+ * `dashboard.view` (every shop role); what it shows depends on `report.view`
+ * (operators get the simpler one).
  */
 export const sectionPermission = {
-  dashboard: "report.view",
+  dashboard: "dashboard.view",
   rates: "rate.view",
   purchases: "purchase.view",
   sales: "sale.view",
@@ -141,9 +142,9 @@ export function sectionsFor(user: WithPermissions): PanelSection[] {
 }
 
 /**
- * The first menu page the user may open: `/dashboard` for owners and
- * managers, `/rates` for operators (who have no dashboard). Users without any
- * section still get `/dashboard`, which then shows the 403 page.
+ * The first menu page the user may open: `/dashboard` for every shop role.
+ * Users without any section still get `/dashboard`, which then shows the 403
+ * page.
  */
 export function landingSectionFor(user: WithPermissions): PanelSection {
   return sectionsFor(user)[0] ?? "dashboard";
