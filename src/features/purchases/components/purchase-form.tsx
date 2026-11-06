@@ -581,12 +581,8 @@ function ItemRow({
       : t.noRateToday
     : null;
 
-  const label = (text: string) => (
-    <>
-      {text}
-      <span className="sr-only">, {t.itemLabel(n)}</span>
-    </>
-  );
+  // Visible labels say "Bags"; screen readers hear "Bags, Item 2".
+  const name = (text: string) => `${text}, ${t.itemLabel(n)}`;
 
   return (
     <fieldset
@@ -604,10 +600,14 @@ function ItemRow({
             className="gap-1.5"
           >
             <FieldLabel htmlFor={itemId(index, "commodity")}>
-              {label(t.commodity)}
+              {t.commodity}
             </FieldLabel>
+            <span id={itemId(index, "commodity-name")} className="sr-only">
+              {name(t.commodity)}
+            </span>
             <CommodityCombobox
               id={itemId(index, "commodity")}
+              aria-labelledby={itemId(index, "commodity-name")}
               value={field.value}
               onChange={(commodity) => {
                 field.onChange(commodity);
@@ -626,9 +626,10 @@ function ItemRow({
         data-invalid={Boolean(errors?.bags) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={itemId(index, "bags")}>{label(t.bags)}</FieldLabel>
+        <FieldLabel htmlFor={itemId(index, "bags")}>{t.bags}</FieldLabel>
         <Input
           id={itemId(index, "bags")}
+          aria-label={name(t.bags)}
           inputMode="numeric"
           autoComplete="off"
           dir="ltr"
@@ -645,12 +646,11 @@ function ItemRow({
         data-invalid={Boolean(errors?.weight) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={itemId(index, "weight")}>
-          {label(t.weight)}
-        </FieldLabel>
+        <FieldLabel htmlFor={itemId(index, "weight")}>{t.weight}</FieldLabel>
         <div className="flex gap-1.5">
           <Input
             id={itemId(index, "weight")}
+            aria-label={name(t.weight)}
             inputMode="decimal"
             autoComplete="off"
             dir="ltr"
@@ -683,10 +683,11 @@ function ItemRow({
         data-invalid={Boolean(errors?.rate) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={itemId(index, "rate")}>{label(t.rate)}</FieldLabel>
+        <FieldLabel htmlFor={itemId(index, "rate")}>{t.rate}</FieldLabel>
         <div className="flex gap-1.5">
           <Input
             id={itemId(index, "rate")}
+            aria-label={name(t.rate)}
             inputMode="decimal"
             autoComplete="off"
             dir="ltr"
