@@ -41,6 +41,18 @@ export const traderRoutes = {
   detail: (id: string) => `${panelRoutes.traders}/${encodeURIComponent(id)}`,
 } as const;
 
+/** Pages of the Purchases section. */
+export const purchaseRoutes = {
+  list: panelRoutes.purchases,
+  new: `${panelRoutes.purchases}/new`,
+  detail: (id: string) => `${panelRoutes.purchases}/${encodeURIComponent(id)}`,
+  edit: (id: string) =>
+    `${panelRoutes.purchases}/${encodeURIComponent(id)}/edit`,
+  /** The view, opening the print dialog once it has loaded. */
+  print: (id: string) =>
+    `${panelRoutes.purchases}/${encodeURIComponent(id)}?print=1`,
+} as const;
+
 export const panelSections = Object.keys(panelRoutes) as PanelSection[];
 
 /**

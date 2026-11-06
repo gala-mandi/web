@@ -17,6 +17,18 @@ const dateOnly = new Intl.DateTimeFormat("en-PK", {
   year: "numeric",
 });
 
+const isoDay = new Intl.DateTimeFormat("en-CA", {
+  timeZone: SHOP_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/** Today's calendar day in Asia/Karachi, e.g. `2026-11-06`. */
+export function karachiToday(now: Date = new Date()): string {
+  return isoDay.format(now);
+}
+
 const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
 function toDate(value: string | Date): Date | null {
