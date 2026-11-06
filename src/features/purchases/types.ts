@@ -30,6 +30,11 @@ export interface PurchaseSummary {
   netAmount: string;
   /** Paid on the same save (debited back in the khata). */
   paidAmount: string;
+  /**
+   * Still to pay the kissan: net − paid on save − live payment vouchers;
+   * "0.00" when cancelled.
+   */
+  outstanding: string;
   status: PurchaseStatus;
   notes: string | null;
   createdAt: string;

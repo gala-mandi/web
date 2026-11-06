@@ -57,6 +57,7 @@ function Khata() {
   const access = {
     purchases: useCan("purchase.view"),
     sales: useCan("sale.view"),
+    payments: useCan("payment.view"),
   };
   // The picked trader as the picker shows it (the URL keeps only the id).
   const [picked, setPicked] = useState<TraderLookupItem | null>(null);
@@ -75,10 +76,10 @@ function Khata() {
   });
   const statement = query.data?.trader.id === traderId ? query.data : null;
 
-  const { purchases, sales } = access;
+  const { purchases, sales, payments } = access;
   const columns = useMemo(
-    () => entryColumns({ purchases, sales }),
-    [purchases, sales],
+    () => entryColumns({ purchases, sales, payments }),
+    [purchases, sales, payments],
   );
 
   const error = query.isError ? toApiError(query.error).status : null;

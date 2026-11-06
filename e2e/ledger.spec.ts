@@ -37,7 +37,7 @@ interface Purchase {
   paidAmount: string;
 }
 
-/** A payment to the kissan (the Payments screens are a later ticket). */
+/** A payment to the kissan (its voucher page is in `payments.spec.ts`). */
 interface Payment {
   id: string;
   number: string;
@@ -270,8 +270,12 @@ test.describe("Ledger (khata)", () => {
     await expect(rows.nth(2)).toContainText("Rs 80,000.00 Cr");
     await expect(rows.nth(3)).toContainText("Payment PAY-2026-27-000001");
     await expect(rows.nth(3)).toContainText("Rs 30,000.00 Cr");
-    // Payments get their page in a later ticket: not linked yet.
-    await expect(rows.nth(3).getByRole("link")).toHaveCount(0);
+    // A payment line opens its voucher.
+    await expect(
+      rows
+        .nth(3)
+        .getByRole("link", { name: "Open Payment PAY-2026-27-000001" }),
+    ).toHaveAttribute("href", `/payments/${payment.id}`);
 
     // A narrower period carries the earlier lines into the opening balance.
     await page.getByRole("button", { name: /^Dates/ }).click();

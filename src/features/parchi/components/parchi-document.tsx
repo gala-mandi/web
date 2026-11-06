@@ -28,7 +28,7 @@ import type {
  * roll has no page margins, so it keeps its own 4 mm (inside the 72 mm a
  * thermal head prints). Every size inside is in `em` of these.
  */
-const sheetClass: Record<PaperSize, string> = {
+export const sheetClass: Record<PaperSize, string> = {
   a4: "w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0",
   a5: "w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0",
   // Thermal heads print black only: muted text and rules print black too.
@@ -36,13 +36,13 @@ const sheetClass: Record<PaperSize, string> = {
     "w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)]",
 };
 
-const typeSize: Record<PaperSize, Record<ParchiLanguage, string>> = {
+export const typeSize: Record<PaperSize, Record<ParchiLanguage, string>> = {
   a4: { en: "text-[12px]", ur: "text-[13px]" },
   a5: { en: "text-[10.5px]", ur: "text-[11px]" },
   thermal80: { en: "text-[11px]", ur: "text-[12px]" },
 };
 
-const watermarkSize: Record<PaperSize, string> = {
+export const watermarkSize: Record<PaperSize, string> = {
   a4: "text-[7em]",
   a5: "text-[6.5em]",
   thermal80: "text-[3.4em]",
@@ -118,7 +118,7 @@ interface LayoutProps {
 }
 
 /** Numbers and codes: never split or reordered by the Urdu layout. */
-function Ltr({
+export function Ltr({
   children,
   className,
 }: {
@@ -140,10 +140,10 @@ function Ltr({
 // Nastaliq's letters span about 2.2 em, so 2.5 leaves a gap above and below
 // even next to a tight Latin line. An arbitrary property, so a text size
 // passed next to it can't drop it.
-const URDU_LINE = "font-urdu-mixed [line-height:2.5]";
+export const URDU_LINE = "font-urdu-mixed [line-height:2.5]";
 
 /** A name typed by the shop (any script): its own direction; a long word wraps. */
-function Typed({
+export function Typed({
   children,
   className,
 }: {
@@ -169,7 +169,13 @@ function Typed({
  * over an Urdu one: each line is its own block with its own direction and
  * the line height its script needs.
  */
-function TypedLines({ text, className }: { text: string; className?: string }) {
+export function TypedLines({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
   return (
     <>
       {text
@@ -194,11 +200,17 @@ function TypedLines({ text, className }: { text: string; className?: string }) {
 }
 
 /** Small caps-style labels in English; Urdu letters must not be spaced. */
-function labelCase(lang: ParchiLanguage) {
+export function labelCase(lang: ParchiLanguage) {
   return lang === "en" ? "uppercase tracking-[0.06em]" : undefined;
 }
 
-function Logo({ shop, className }: { shop: ParchiShop; className?: string }) {
+export function Logo({
+  shop,
+  className,
+}: {
+  shop: ParchiShop;
+  className?: string;
+}) {
   // A logo that fails to load is left out instead of printing a broken image.
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   if (!shop.logoUrl || failedUrl === shop.logoUrl) return null;
@@ -215,7 +227,7 @@ function Logo({ shop, className }: { shop: ParchiShop; className?: string }) {
   );
 }
 
-function ShopLines({ shop, w }: { shop: ParchiShop; w: ParchiWords }) {
+export function ShopLines({ shop, w }: { shop: ParchiShop; w: ParchiWords }) {
   return (
     <>
       {shop.address ? (
@@ -232,7 +244,7 @@ function ShopLines({ shop, w }: { shop: ParchiShop; w: ParchiWords }) {
   );
 }
 
-function Watermark({
+export function Watermark({
   text,
   paper,
   lang,
@@ -262,7 +274,7 @@ function Watermark({
   );
 }
 
-function CancelledStamp({
+export function CancelledStamp({
   w,
   className,
 }: {
@@ -660,7 +672,7 @@ function SumLine({
   );
 }
 
-function Footer({
+export function Footer({
   shop,
   lang,
   w,

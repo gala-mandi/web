@@ -67,4 +67,18 @@ describe("breadcrumbsFor", () => {
     expect(last("/sales/abc/edit")).toEqual({ label: "Edit sale", href: null });
     expect(last("/sales/new/edit")).toEqual({ label: "Sales", href: null });
   });
+
+  it("names the voucher pages below Payments", () => {
+    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
+    expect(breadcrumbsFor("/payments/new", owner)).toEqual([
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Payments", href: "/payments" },
+      { label: "New voucher", href: null },
+    ]);
+    expect(last("/payments/abc")).toEqual({ label: "Voucher", href: null });
+    expect(last("/payments/abc/edit")).toEqual({
+      label: "Payments",
+      href: null,
+    });
+  });
 });

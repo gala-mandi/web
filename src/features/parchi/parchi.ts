@@ -176,6 +176,8 @@ export function parchiPageStyle(
   paper: PaperSize,
   lang: ParchiLanguage,
   billNo: string,
+  /** Before the number on later sheets (a voucher's "Voucher no"). */
+  numberLabel: string = parchiWords[lang].billNo,
 ): string {
   const w = parchiWords[lang];
   const margins =
@@ -188,7 +190,7 @@ export function parchiPageStyle(
     color: #4a4656;
   }
   @top-${lang === "ur" ? "left" : "right"} {
-    content: ${cssString(`${w.billNo} ${billNo}`)};
+    content: ${cssString(`${numberLabel} ${billNo}`)};
     font: 8pt sans-serif;
     color: #4a4656;
   }`;
