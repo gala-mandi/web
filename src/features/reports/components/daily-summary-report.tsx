@@ -83,7 +83,7 @@ function DailySummaryReportView() {
           icon: HandCoins,
           tone: "violet",
           value: <CardFigure>{formatRs(s.commission.total)}</CardFigure>,
-          hint: t.cards.commissionHint,
+          hint: t.daily.commission.hint,
         },
         {
           id: "cash",
@@ -91,7 +91,7 @@ function DailySummaryReportView() {
           icon: Wallet,
           tone: "primary",
           value: <CardFigure>{formatRs(s.cash.closingCash)}</CardFigure>,
-          hint: t.daily.cash.title,
+          hint: t.daily.cash.hint,
         },
       ]
     : [];

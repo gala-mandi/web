@@ -272,6 +272,7 @@ export const reportText = {
     },
     commission: {
       title: "Commission",
+      hint: "The shop’s income for the day",
       onPurchases: "On purchases",
       onSales: "On sales",
       total: "Total",
@@ -289,6 +290,7 @@ export const reportText = {
       cashIn: "Cash in",
       cashOut: "Cash out",
       closing: "Cash in hand",
+      hint: "At the close of the day",
     },
     cancelled: {
       title: "Cancelled (left out of every total)",

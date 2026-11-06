@@ -98,7 +98,7 @@ function TraderFilter({
         : null;
   const label = kind === "purchases" ? t.filters.kissan : t.filters.beopari;
   return (
-    <div className="flex flex-col gap-1.5 sm:w-56">
+    <div className="flex w-full flex-col gap-1.5 sm:w-56">
       <span id={labelId} className="text-[13px] font-semibold">
         {label}
       </span>
@@ -106,6 +106,7 @@ function TraderFilter({
         value={value}
         type={kind === "purchases" ? "kissan" : "beopari"}
         allowQuickAdd={false}
+        className="h-10"
         placeholder={
           kind === "purchases" ? t.filters.allKissans : t.filters.allBeoparis
         }
