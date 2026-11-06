@@ -8,8 +8,8 @@ const tone: Record<SourceType, string> = {
   opening: "bg-surface-muted text-muted-foreground",
   purchase: "bg-secondary text-secondary-foreground",
   sale: "bg-secondary text-secondary-foreground",
-  payment: "bg-notice-soft text-notice",
-  receipt: "bg-notice-soft text-notice",
+  payment: "bg-secondary text-secondary-foreground",
+  receipt: "bg-secondary text-secondary-foreground",
   // The owner's manual corrections stand out from every other line.
   adjustment: "border-warning/50 bg-warning-soft text-warning",
   reversal: "bg-surface-muted text-muted-foreground",
