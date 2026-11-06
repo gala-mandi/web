@@ -91,17 +91,14 @@ export function MoneyFigure({
   if (!match) return <span className={className}>{text}</span>;
   const [, sign, whole, paisa] = match;
   return (
-    <span
-      className={cn("tabular-nums", className)}
-      aria-label={text}
-      data-amount={value}
-    >
-      <span aria-hidden className="text-muted-foreground me-1 text-[0.55em]">
-        {sign}Rs
-      </span>
-      <span aria-hidden>{whole}</span>
-      <span aria-hidden className="text-muted-foreground text-[0.6em]">
-        .{paisa}
+    <span className={cn("tabular-nums", className)} data-amount={value}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden>
+        <span className="text-muted-foreground me-1 text-[0.55em]">
+          {sign}Rs
+        </span>
+        {whole}
+        <span className="text-muted-foreground text-[0.6em]">.{paisa}</span>
       </span>
     </span>
   );

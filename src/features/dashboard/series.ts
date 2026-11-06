@@ -130,6 +130,7 @@ export function isEmptyShop(
  */
 export function barShare(amount: string, largest: string): number {
   const max = Number(largest);
-  if (!Number.isFinite(max) || max <= 0) return 0;
-  return Math.min(1, Math.max(0, Number(amount) / max));
+  const value = Number(amount);
+  if (!Number.isFinite(max) || max <= 0 || !Number.isFinite(value)) return 0;
+  return Math.min(1, Math.max(0, value / max));
 }
