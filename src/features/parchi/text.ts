@@ -75,10 +75,13 @@ function chargeLabel(
   basis: ChargeBasis,
   value: string,
   perBag: string,
+  rtl = false,
 ): string {
-  if (basis === "percent") return `${name} ${value}%`;
-  if (basis === "per_bag") return `${name} ${value} ${perBag}`;
-  return `${name} ${value}`;
+  const amount = `${value}${basis === "percent" ? "%" : ""}`;
+  // In Urdu the amount is isolated left to right: "2%", not "%2".
+  const shown = rtl ? `\u2066${amount}\u2069` : amount;
+  if (basis === "per_bag") return `${name} ${shown} ${perBag}`;
+  return `${name} ${shown}`;
 }
 
 const enCharges: Record<ChargeType, string> = {
@@ -149,7 +152,7 @@ const ur: ParchiWords = {
   gross: "کل رقم",
   charges: urCharges,
   charge: (type, basis, value) =>
-    chargeLabel(urCharges[type], basis, value, "فی بوری"),
+    chargeLabel(urCharges[type], basis, value, "فی بوری", true),
   totalCharges: { purchase: "کل کٹوتی", sale: "کل اخراجات" },
   rounding: "راؤنڈنگ",
   net: { purchase: "کسان کو قابلِ ادائیگی", sale: "قابلِ وصولی" },

@@ -131,7 +131,7 @@ export function useParchiPrint({
   return useReactToPrint({
     contentRef,
     documentTitle: billNo ? parchiDocumentTitle(billNo) : "parchi",
-    pageStyle: parchiPageStyle(paper, lang),
+    pageStyle: parchiPageStyle(paper, lang, billNo ?? ""),
     // The fonts are CSS variables on <html>; the print iframe needs them too.
     bodyClass:
       typeof document === "undefined"

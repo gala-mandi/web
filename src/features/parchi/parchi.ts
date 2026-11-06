@@ -97,20 +97,24 @@ export function isNonZero(value: string | null | undefined): boolean {
 
 /**
  * A weight as maund + kg and as kg, in the parchi's words:
- * `{ maund: "25 mn 10 kg", kg: "1,010 kg" }` / `{ maund: "25 من 10 کلو", … }`.
+ * `{ maund: "25 mn 10 kg", kg: "1,010 kg" }` / `{ maund: "25 من 10 کلو", … }`
+ * (each number and its unit joined by a no-break space).
  */
 export function parchiWeight(
   weightKg: string,
   maundKg: string,
   lang: ParchiLanguage,
 ): { maund: string; kg: string } {
-  const maund = formatMaund(weightKg, maundKg);
-  const kg = formatKg(weightKg);
-  if (lang === "en") return { maund, kg };
   const w = parchiWords[lang];
+  // A number keeps its unit (no-break space); "25 mn" and "10 kg" may wrap.
   const local = (text: string) =>
-    text.replace(/\bmn\b/g, w.maund).replace(/\bkg\b/g, w.kg);
-  return { maund: local(maund), kg: local(kg) };
+    text
+      .replace(/ mn\b/g, `\u00a0${w.maund}`)
+      .replace(/ kg\b/g, `\u00a0${w.kg}`);
+  return {
+    maund: local(formatMaund(weightKg, maundKg)),
+    kg: local(formatKg(weightKg)),
+  };
 }
 
 /** "Commission 2%", "Labour Rs 20.00 per bag" in the parchi's language. */
@@ -141,34 +145,54 @@ export function parchiDocumentTitle(billNo: string): string {
 /** Sheet margins (mm); the thermal roll has none, the parchi pads itself. */
 const pageRules: Record<PaperSize, string> = {
   a4: "size: A4 portrait; margin: 12mm 12mm 16mm;",
-  a5: "size: A5 portrait; margin: 9mm 9mm 13mm;",
+  a5: "size: A5 portrait; margin: 9mm 8mm 12mm;",
   // The height is set to the printed parchi's own (`thermalPageRule`).
   thermal80: "size: 80mm 297mm; margin: 0;",
 };
 
+/** A string inside a CSS `content: "…"`. */
+function cssString(text: string): string {
+  return `"${text.replace(/["\\\n]/g, " ")}"`;
+}
+
 /**
- * `@page` and print rules of one paper. A4 and A5 number their sheets;
- * the item table's headings repeat on each sheet and a row, the sums and
- * the footer are never split. The thermal roll prints as one long page.
+ * `@page` and print rules of one paper. A4 and A5 number their sheets and
+ * put the bill no at the top of every sheet after the first; the item
+ * table's headings repeat on each sheet, and a row, the sums and the
+ * footer are never split. The thermal roll prints as one long page.
  */
 export function parchiPageStyle(
   paper: PaperSize,
   lang: ParchiLanguage,
+  billNo: string,
 ): string {
   const w = parchiWords[lang];
-  const pageNumber =
+  const margins =
     paper === "thermal80"
       ? ""
       : `
   @bottom-center {
-    content: "${w.page} " counter(page) " ${w.of} " counter(pages);
-    font-size: 8pt;
+    content: ${cssString(`${w.page} `)} counter(page) ${cssString(` ${w.of} `)} counter(pages);
+    font: 8pt sans-serif;
+    color: #4a4656;
+  }
+  @top-${lang === "ur" ? "left" : "right"} {
+    content: ${cssString(`${w.billNo} ${billNo}`)};
+    font: 8pt sans-serif;
     color: #4a4656;
   }`;
+  const firstPage =
+    paper === "thermal80"
+      ? ""
+      : `
+@page :first {
+  @top-left { content: none; }
+  @top-right { content: none; }
+}`;
   return `
 @page {
-  ${pageRules[paper]}${pageNumber}
-}
+  ${pageRules[paper]}${margins}
+}${firstPage}
 @media print {
   html, body { background: #fff; margin: 0; padding: 0; }
   body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }

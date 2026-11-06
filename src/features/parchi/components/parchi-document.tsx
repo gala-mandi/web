@@ -29,7 +29,7 @@ import type {
  */
 const sheetClass: Record<PaperSize, string> = {
   a4: "w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0",
-  a5: "w-[148mm] min-h-[210mm] px-[9mm] pt-[9mm] pb-[13mm] print:w-auto print:min-h-0 print:p-0",
+  a5: "w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0",
   // Thermal heads print black only: muted text and rules print black too.
   thermal80:
     "w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)]",
@@ -37,7 +37,7 @@ const sheetClass: Record<PaperSize, string> = {
 
 const typeSize: Record<PaperSize, Record<ParchiLanguage, string>> = {
   a4: { en: "text-[12px]", ur: "text-[13px]" },
-  a5: { en: "text-[10.5px]", ur: "text-[11.5px]" },
+  a5: { en: "text-[10.5px]", ur: "text-[11px]" },
   thermal80: { en: "text-[11px]", ur: "text-[12px]" },
 };
 
@@ -94,7 +94,10 @@ export function ParchiDocument({
         "bg-paper text-ink relative isolate overflow-hidden print:overflow-visible",
         sheetClass[paper],
         typeSize[paper][lang],
-        lang === "ur" ? "font-urdu leading-[1.95]" : "font-sans leading-[1.45]",
+        // Urdu: Nastaliq for Urdu letters, Inter for Latin names and digits.
+        lang === "ur"
+          ? "font-urdu-mixed leading-[1.85]"
+          : "font-sans leading-[1.45]",
       )}
     >
       {cancelled ? (
@@ -113,7 +116,7 @@ interface LayoutProps {
   w: ParchiWords;
 }
 
-/** Bill text that must not be split or reordered by the Urdu layout. */
+/** Numbers and codes: never split or reordered by the Urdu layout. */
 function Ltr({
   children,
   className,
@@ -122,13 +125,13 @@ function Ltr({
   className?: string;
 }) {
   return (
-    <span dir="ltr" className={cn("tabular-nums", className)}>
+    <span dir="ltr" className={cn("tabular-nums whitespace-nowrap", className)}>
       {children}
     </span>
   );
 }
 
-/** A name typed by the shop (any script): its own direction, wraps anywhere. */
+/** A name typed by the shop (any script): its own direction; a long word wraps. */
 function Typed({
   children,
   className,
@@ -137,7 +140,7 @@ function Typed({
   className?: string;
 }) {
   return (
-    <bdi dir="auto" className={cn("[overflow-wrap:anywhere]", className)}>
+    <bdi dir="auto" className={cn("[overflow-wrap:break-word]", className)}>
       {children}
     </bdi>
   );
@@ -200,9 +203,10 @@ function Watermark({
     >
       <span
         className={cn(
-          "text-destructive/25 -rotate-[28deg] rounded-[0.12em] border-[0.07em] border-current px-[0.3em] font-black leading-[1.15] whitespace-nowrap",
+          "text-destructive/25 -rotate-[28deg] rounded-[0.12em] border-[0.07em] border-current px-[0.3em] font-black whitespace-nowrap",
           watermarkSize[paper],
-          lang === "en" && "tracking-[0.08em]",
+          // Nastaliq needs a taller line to stay inside its frame.
+          lang === "en" ? "leading-[1.15] tracking-[0.08em]" : "leading-[1.9]",
         )}
       >
         {text}
@@ -236,7 +240,9 @@ function SheetLayout({ bill, shop, lang, w }: LayoutProps) {
   const c = w.columns;
   const cancelled = bill.status === "cancelled";
   const th = cn("py-[0.55em] font-semibold", labelCase(lang));
-  const td = "py-[0.6em] align-top";
+  // Urdu cells are as tall as Nastaliq's letters, so a row's first lines
+  // line up when printed (a shorter line box shifts the Nastaliq ones).
+  const td = cn("py-[0.5em] align-top", lang === "ur" && "leading-[2.3]");
 
   return (
     <>
@@ -289,28 +295,37 @@ function SheetLayout({ bill, shop, lang, w }: LayoutProps) {
         </Typed>
       </section>
 
-      <table className="mt-[1.1em] w-full border-collapse">
+      {/*
+        Fixed columns: a long name or a big number wraps inside its column
+        and the table never runs off the sheet.
+      */}
+      <table className="mt-[1.1em] w-full table-fixed border-collapse">
+        <colgroup>
+          <col className="w-[5%]" />
+          <col className="w-[21%]" />
+          <col className="w-[8%]" />
+          <col className="w-[22%]" />
+          <col className="w-[21%]" />
+          <col className="w-[23%]" />
+        </colgroup>
         <thead>
           <tr className="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]">
-            <th
-              scope="col"
-              className={cn(th, "w-[2.6em] pe-[0.6em] text-start")}
-            >
+            <th scope="col" className={cn(th, "pe-[0.5em] text-start")}>
               {c.no}
             </th>
-            <th scope="col" className={cn(th, "pe-[0.6em] text-start")}>
+            <th scope="col" className={cn(th, "pe-[0.5em] text-start")}>
               {c.commodity}
             </th>
-            <th scope="col" className={cn(th, "px-[0.6em] text-end")}>
+            <th scope="col" className={cn(th, "px-[0.5em] text-end")}>
               {c.bags}
             </th>
-            <th scope="col" className={cn(th, "px-[0.6em] text-end")}>
+            <th scope="col" className={cn(th, "px-[0.5em] text-end")}>
               {c.weight}
             </th>
-            <th scope="col" className={cn(th, "px-[0.6em] text-end")}>
+            <th scope="col" className={cn(th, "px-[0.5em] text-end")}>
               {c.rate}
             </th>
-            <th scope="col" className={cn(th, "ps-[0.6em] text-end")}>
+            <th scope="col" className={cn(th, "ps-[0.5em] text-end")}>
               {c.amount}
             </th>
           </tr>
@@ -360,28 +375,34 @@ function SheetRow({
   td: string;
 }) {
   const weight = parchiWeight(item.weightKg, shop.maundKg, lang);
+  // The second line of a cell sits close under the first in English.
+  const sub = lang === "en" ? "leading-[1.3]" : undefined;
   return (
     <tr className="border-ink-rule border-b">
-      <td className={cn(td, "text-ink-muted pe-[0.6em]")}>
+      <td className={cn(td, "text-ink-muted pe-[0.5em]")}>
         <Ltr>{n}</Ltr>
       </td>
-      <td className={cn(td, "pe-[0.6em] font-semibold")}>
+      <td className={cn(td, "pe-[0.5em] font-semibold")}>
         <Typed>{item.commodityName}</Typed>
       </td>
-      <td className={cn(td, "px-[0.6em] text-end")}>
+      <td className={cn(td, "px-[0.5em] text-end")}>
         <Ltr>{item.bags ?? "—"}</Ltr>
       </td>
-      <td className={cn(td, "px-[0.6em] text-end whitespace-nowrap")}>
+      <td className={cn(td, "px-[0.5em] text-end")}>
         <span className="block font-semibold">{weight.maund}</span>
-        <span className="text-ink-muted block text-[0.85em]">{weight.kg}</span>
+        <span className={cn("text-ink-muted block text-[0.85em]", sub)}>
+          {weight.kg}
+        </span>
       </td>
-      <td className={cn(td, "px-[0.6em] text-end whitespace-nowrap")}>
-        <Ltr className="block">{parchiRs(item.rate)}</Ltr>
-        <span className="text-ink-muted block text-[0.85em]">
+      <td className={cn(td, "px-[0.5em] text-end")}>
+        <span className="block">
+          <Ltr>{parchiRs(item.rate)}</Ltr>
+        </span>
+        <span className={cn("text-ink-muted block text-[0.85em]", sub)}>
           {w.perUnit[item.rateUnit]}
         </span>
       </td>
-      <td className={cn(td, "ps-[0.6em] text-end font-bold whitespace-nowrap")}>
+      <td className={cn(td, "ps-[0.5em] text-end font-bold")}>
         <Ltr>{parchiRs(item.amount)}</Ltr>
       </td>
     </tr>
@@ -462,9 +483,7 @@ function RollLayout({ bill, shop, lang, w }: LayoutProps) {
                   {" · "}
                   <Ltr>{parchiRs(item.rate)}</Ltr> {w.perUnit[item.rateUnit]}
                 </span>
-                <Ltr className="ms-auto font-bold whitespace-nowrap">
-                  {parchiRs(item.amount)}
-                </Ltr>
+                <Ltr className="ms-auto font-bold">{parchiRs(item.amount)}</Ltr>
               </div>
             </li>
           );
@@ -495,8 +514,8 @@ function Notes({
   return (
     <div className={cn("mt-[0.5em]", className)} data-parchi-keep>
       <p className="text-ink-muted font-semibold">{w.notes}</p>
-      <p dir="auto" className="whitespace-pre-line [overflow-wrap:anywhere]">
-        {bill.notes.trim()}
+      <p className="text-start whitespace-pre-line [overflow-wrap:break-word]">
+        <bdi dir="auto">{bill.notes.trim()}</bdi>
       </p>
     </div>
   );
@@ -519,27 +538,35 @@ function Sums({
     <dl
       data-testid="parchi-sums"
       data-parchi-keep
-      className={cn("flex flex-col gap-[0.25em]", className)}
+      className={cn(
+        "flex flex-col gap-[0.25em]",
+        // One-line rows: Nastaliq can sit a little tighter here.
+        lang === "ur" && "leading-[1.7]",
+        className,
+      )}
     >
       <SumLine label={w.gross} value={parchiRs(bill.grossAmount)} strong />
-      {bill.charges.map((charge) => (
-        <SumLine
-          key={`${charge.type}|${charge.basis}|${charge.value}`}
-          label={parchiChargeLabel(charge, lang)}
-          value={`${sign}${parchiRs(charge.amount)}`}
-          muted
-        />
-      ))}
+      {/* A charge that came to Rs 0 (e.g. a 0% fee) is left off the paper. */}
+      {bill.charges
+        .filter((charge) => isNonZero(charge.amount))
+        .map((charge) => (
+          <SumLine
+            key={`${charge.type}|${charge.basis}|${charge.value}`}
+            label={parchiChargeLabel(charge, lang)}
+            value={`${sign}${parchiRs(charge.amount)}`}
+            muted
+          />
+        ))}
       <SumLine
         label={w.totalCharges[bill.kind]}
         value={`${sign}${parchiRs(bill.totalCharges)}`}
         className="border-ink-rule border-t pt-[0.25em]"
       />
       <SumLine label={w.rounding} value={parchiSignedRs(bill.rounding)} muted />
-      <div className="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.2em] font-extrabold">
+      <div className="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold">
         <dt>{w.net[bill.kind]}</dt>
         <dd data-testid="parchi-net">
-          <Ltr className="whitespace-nowrap">{parchiRs(bill.netAmount)}</Ltr>
+          <Ltr>{parchiRs(bill.netAmount)}</Ltr>
         </dd>
       </div>
       {isNonZero(bill.settledAmount) ? (
@@ -577,7 +604,7 @@ function SumLine({
     >
       <dt className="min-w-0">{label}</dt>
       <dd>
-        <Ltr className="whitespace-nowrap">{value}</Ltr>
+        <Ltr>{value}</Ltr>
       </dd>
     </div>
   );
@@ -603,14 +630,14 @@ function Footer({
         "text-center",
         roll
           ? "border-ink mt-[0.8em] border-t border-dashed pt-[0.6em]"
-          : "border-ink-rule mt-[2em] border-t pt-[0.9em]",
+          : "border-ink-rule mt-[1.6em] border-t pt-[0.8em]",
       )}
     >
       {shop.footer?.trim() ? (
         <p
           dir="auto"
           data-testid="parchi-footer"
-          className="font-semibold whitespace-pre-line [overflow-wrap:anywhere]"
+          className="font-semibold whitespace-pre-line [overflow-wrap:break-word]"
         >
           {shop.footer.trim()}
         </p>

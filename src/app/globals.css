@@ -10,6 +10,14 @@
   --font-sans: var(--font-inter);
   --font-heading: var(--font-jakarta);
   --font-urdu: var(--font-nastaliq);
+  /*
+   * Urdu text with Latin names and digits mixed in (the printed parchi):
+   * Inter's faces cover only Latin, so Latin letters and digits print in
+   * Inter and Urdu letters fall through to Nastaliq (whose own Latin is a
+   * serif). Family names as next/font declares them.
+   */
+  --font-urdu-mixed:
+    "Inter", "Noto Nastaliq Urdu", var(--font-nastaliq), sans-serif;
   --color-brand-from: var(--brand-from);
   --color-brand-to: var(--brand-to);
   --color-warning: var(--warning);
