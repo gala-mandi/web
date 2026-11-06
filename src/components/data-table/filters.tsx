@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CalendarDays } from "lucide-react";
 import { type ReactNode, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { dataTableText as t } from "./text";
 
 /** Radix Select can't have an empty value, so "All" uses this one. */
 const ALL = "__all__";
@@ -74,9 +74,10 @@ export function DataTableSelectFilter<TValue extends string>({
   value,
   options,
   onChange,
-  allLabel = t.toolbar.all,
+  allLabel,
   className,
 }: DataTableSelectFilterProps<TValue>) {
+  const t = useTranslations("dataTable");
   const labelId = useId();
   const triggerId = useId();
 
@@ -101,7 +102,7 @@ export function DataTableSelectFilter<TValue extends string>({
           <SelectValue />
         </SelectTrigger>
         <SelectContent position="popper">
-          <SelectItem value={ALL}>{allLabel}</SelectItem>
+          <SelectItem value={ALL}>{allLabel ?? t("toolbar.all")}</SelectItem>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.dotClassName ? (
@@ -149,6 +150,7 @@ function DateRangeForm({
   value: DateRangeValue;
   onApply: (value: DateRangeValue) => void;
 }) {
+  const t = useTranslations("dataTable");
   const fromId = useId();
   const toId = useId();
   const [from, setFrom] = useState(value.from ?? "");
@@ -166,7 +168,7 @@ function DateRangeForm({
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={fromId} className="text-[13px] font-semibold">
-            {t.dateRange.from}
+            {t("dateRange.from")}
           </label>
           <Input
             id={fromId}
@@ -179,7 +181,7 @@ function DateRangeForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor={toId} className="text-[13px] font-semibold">
-            {t.dateRange.to}
+            {t("dateRange.to")}
           </label>
           <Input
             id={toId}
@@ -193,7 +195,7 @@ function DateRangeForm({
       </div>
       {invalid ? (
         <p role="alert" className="text-destructive text-xs">
-          {t.dateRange.invalid}
+          {t("dateRange.invalid")}
         </p>
       ) : null}
       <div className="flex justify-end gap-2">
@@ -202,10 +204,10 @@ function DateRangeForm({
           variant="ghost"
           onClick={() => onApply({ from: null, to: null })}
         >
-          {t.dateRange.clear}
+          {t("dateRange.clear")}
         </Button>
         <Button type="submit" disabled={invalid}>
-          {t.dateRange.apply}
+          {t("dateRange.apply")}
         </Button>
       </div>
     </form>
@@ -222,16 +224,21 @@ export function DataTableDateRangeFilter({
   onChange,
   className,
 }: DataTableDateRangeFilterProps) {
+  const t = useTranslations("dataTable");
   const [open, setOpen] = useState(false);
   const labelId = useId();
   const triggerId = useId();
   const summary =
-    value.from || value.to
-      ? t.dateRange.summary(
-          value.from ? formatDate(value.from) : null,
-          value.to ? formatDate(value.to) : null,
-        )
-      : t.dateRange.any;
+    value.from && value.to
+      ? t("dateRange.summary", {
+          from: formatDate(value.from),
+          to: formatDate(value.to),
+        })
+      : value.from
+        ? t("dateRange.summaryFrom", { from: formatDate(value.from) })
+        : value.to
+          ? t("dateRange.summaryTo", { to: formatDate(value.to) })
+          : t("dateRange.any");
 
   return (
     <FilterField

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { ColumnVisibilityState, RowData } from "@tanstack/react-table";
 import { Download, Search, Settings2, X } from "lucide-react";
 import { type ReactNode, useId, useState } from "react";
@@ -21,7 +22,6 @@ import {
 import { cn } from "@/lib/utils";
 import { type DataTableColumn, getLabelledColumns } from "./columns";
 import { exportToExcel } from "./export";
-import { dataTableText as t } from "./text";
 
 export interface DataTableToolbarProps {
   /** Search box; leave out for a table without search. */
@@ -50,6 +50,7 @@ export function DataTableToolbar({
   actions,
   className,
 }: DataTableToolbarProps) {
+  const t = useTranslations("dataTable");
   const searchId = useId();
 
   return (
@@ -66,7 +67,7 @@ export function DataTableToolbar({
         {search ? (
           <div className="flex min-w-56 flex-1 flex-col gap-1.5">
             <label htmlFor={searchId} className="text-[13px] font-semibold">
-              {search.label ?? t.toolbar.search}
+              {search.label ?? t("toolbar.search")}
             </label>
             <InputGroup className="rounded-field bg-card h-10">
               <InputGroupAddon className="text-muted-foreground ps-3">
@@ -91,7 +92,7 @@ export function DataTableToolbar({
             onClick={onClearFilters}
           >
             <X aria-hidden />
-            {t.toolbar.clearFilters}
+            {t("toolbar.clearFilters")}
           </Button>
         ) : null}
       </div>
@@ -114,6 +115,7 @@ export function DataTableViewOptions<TData extends RowData>({
   columnVisibility,
   onColumnVisibilityChange,
 }: DataTableViewOptionsProps<TData>) {
+  const t = useTranslations("dataTable");
   const labelled = getLabelledColumns(columns);
   const shown = labelled.filter((c) => columnVisibility[c.id] !== false);
 
@@ -122,11 +124,11 @@ export function DataTableViewOptions<TData extends RowData>({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="h-10 gap-1.5 px-3">
           <Settings2 aria-hidden />
-          {t.view.button}
+          {t("view.button")}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
-        <DropdownMenuLabel>{t.view.title}</DropdownMenuLabel>
+        <DropdownMenuLabel>{t("view.title")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {labelled.map((column) => {
           const visible = columnVisibility[column.id] !== false;
@@ -168,6 +170,7 @@ export function DataTableExport<TData extends RowData>({
   rows,
   columnVisibility,
 }: DataTableExportProps<TData>) {
+  const t = useTranslations("dataTable");
   const [busy, setBusy] = useState(false);
 
   const onExport = async () => {
@@ -176,7 +179,7 @@ export function DataTableExport<TData extends RowData>({
     try {
       await exportToExcel({ fileName, columns, rows, columnVisibility });
     } catch {
-      toast.error(t.export.failed);
+      toast.error(t("export.failed"));
     } finally {
       setBusy(false);
     }
@@ -190,7 +193,7 @@ export function DataTableExport<TData extends RowData>({
       onClick={() => void onExport()}
     >
       <Download aria-hidden />
-      {busy ? t.export.busy : t.export.button}
+      {busy ? t("export.busy") : t("export.button")}
     </Button>
   );
 }

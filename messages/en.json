@@ -34,5 +34,58 @@
       "bodyUnknown": "Your plan has no room for more users. Ask Galla Mandi support to upgrade your plan, or free a place by cancelling an invite or turning off a staff member.",
       "usage": "{used, number} of {max, number} users on your {plan} plan"
     }
+  },
+  "dataTable": {
+    "loading": "Loading…",
+    "errorTitle": "Couldn’t load this list",
+    "errorBody": "Check your internet and try again.",
+    "retry": "Try again",
+    "emptyTitle": "Nothing here yet",
+    "results": "{total, plural, =0 {No results} one {# result} other {# results}}",
+    "sortHint": {
+      "none": "Not sorted. Select to sort.",
+      "asc": "Sorted A to Z / oldest first. Select to reverse.",
+      "desc": "Sorted Z to A / newest first. Select to reverse."
+    },
+    "pagination": {
+      "label": "Pages",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page, number} of {pages, number}",
+      "range": "{total, plural, =0 {No results} other {Showing {from, number}–{to, number} of {total, number}}}"
+    },
+    "selection": {
+      "selectPage": "Select all rows on this page",
+      "selectRow": "Select {name}",
+      "bar": "Selected rows",
+      "count": "{n, number} selected",
+      "clear": "Clear selection"
+    },
+    "rowActions": "Actions for {name}",
+    "toolbar": {
+      "search": "Search",
+      "clearFilters": "Clear filters",
+      "all": "All"
+    },
+    "dateRange": {
+      "any": "Any date",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "clear": "Clear",
+      "invalid": "The start date must be on or before the end date.",
+      "summary": "{from} – {to}",
+      "summaryFrom": "From {from}",
+      "summaryTo": "Until {to}"
+    },
+    "view": {
+      "button": "Columns",
+      "title": "Show columns"
+    },
+    "export": {
+      "button": "Export to Excel",
+      "busy": "Exporting…",
+      "failed": "Couldn’t export this list. Please try again."
+    }
   }
 }
