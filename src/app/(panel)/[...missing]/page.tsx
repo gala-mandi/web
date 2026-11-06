@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.notFound.metaTitle),
-};
+export const generateMetadata = pageMetadata("panel.notFound.metaTitle");
 
 /**
  * Any URL no other route matches lands here, so `(panel)/not-found.tsx`

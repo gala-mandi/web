@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/page-header";
 import { PageSkeleton } from "@/features/panel/components/page-skeleton";
 import { RequirePermission } from "@/features/panel/components/require-permission";
@@ -7,7 +8,6 @@ import {
   ErrorState,
   ForbiddenState,
 } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { toApiError } from "@/lib/api-error";
 import { useSettings } from "../hooks";
 import { SettingsForm } from "./settings-form";
@@ -22,7 +22,7 @@ export function SettingsPage() {
 }
 
 function SettingsContent() {
-  const section = panelText.sections.settings;
+  const section = useTranslations("panel.sections.settings");
   const query = useSettings();
 
   if (query.isPending) return <PageSkeleton />;
@@ -34,7 +34,10 @@ function SettingsContent() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={section.label} description={section.description} />
+      <PageHeader
+        title={section("label")}
+        description={section("description")}
+      />
       <SettingsForm settings={query.data} />
     </div>
   );

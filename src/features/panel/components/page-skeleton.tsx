@@ -1,8 +1,9 @@
+import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
-import { panelText } from "../text";
 
 /** Loading skeleton for a panel page (`loading.tsx`). */
 export function PageSkeleton() {
+  const t = useTranslations("panel");
   return (
     <div
       role="status"
@@ -10,7 +11,7 @@ export function PageSkeleton() {
       className="flex flex-col gap-6"
       data-testid="page-skeleton"
     >
-      <span className="sr-only">{panelText.loading}</span>
+      <span className="sr-only">{t("loading")}</span>
       <div className="flex flex-col gap-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72 max-w-full" />

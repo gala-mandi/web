@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
 import { Dashboard } from "@/features/dashboard/components/dashboard";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.sections.dashboard.label),
-};
+export const generateMetadata = pageMetadata("panel.sections.dashboard.label");
 
 export default function DashboardPage() {
   return <Dashboard />;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Plus, Search, Wheat } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -17,7 +18,6 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
@@ -80,7 +80,7 @@ export function CommoditiesPage() {
  * (`?q=&status=&category=&page=&sort=`), so reload and Back keep the view.
  */
 function CommoditiesList() {
-  const section = panelText.sections.commodities;
+  const section = useTranslations("panel.sections.commodities");
   const canManage = useCanWrite("commodity.manage");
   const canDelete = useCanWrite("commodity.delete");
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
@@ -143,8 +143,8 @@ function CommoditiesList() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={addButton}
       />
 

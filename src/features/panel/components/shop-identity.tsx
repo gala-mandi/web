@@ -1,12 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useShopInfo } from "../hooks";
-import { panelText } from "../text";
 import { ShopLogo } from "./shop-logo";
 
 /** Shop logo + name in the header, live from the `/auth/me` query. */
 export function ShopIdentity() {
+  const t = useTranslations("panel");
   const { shop, isLoading } = useShopInfo();
 
   if (isLoading) {
@@ -18,7 +19,7 @@ export function ShopIdentity() {
     );
   }
 
-  const name = shop?.name ?? panelText.shopFallback;
+  const name = shop?.name ?? t("shopFallback");
   return (
     // The shop name matters more than breadcrumbs or the search label, which
     // hide first on narrow screens; it never shrinks below logo + a few letters.

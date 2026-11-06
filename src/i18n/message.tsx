@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  type MessageKeys,
-  type Messages,
-  type NestedKeyOf,
-  useTranslations,
-} from "next-intl";
-
-export type MessageKey = MessageKeys<Messages, NestedKeyOf<Messages>>;
+import { useTranslations } from "next-intl";
+import type { MessageKey } from "./types";
 
 /**
  * One message by its full key, for text handed over from outside React

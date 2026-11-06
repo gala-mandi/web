@@ -1,7 +1,12 @@
-import { type Messages, NextIntlClientProvider } from "next-intl";
+import {
+  createTranslator,
+  type Messages,
+  NextIntlClientProvider,
+} from "next-intl";
 import { Direction } from "radix-ui";
 import type { ReactNode } from "react";
 import { type Locale, localeDirection } from "@/i18n/config";
+import type { Namespace, Translator } from "@/i18n/types";
 import { SHOP_TIME_ZONE } from "@/lib/format";
 import en from "../../messages/en.json";
 import ur from "../../messages/ur.json";
@@ -44,4 +49,20 @@ export function IntlProviders({
       </Direction.Provider>
     </NextIntlClientProvider>
   );
+}
+
+/**
+ * `t` for helpers that are handed one (menus, columns, schemas), outside
+ * React: e.g. `testTranslator("panel")`.
+ */
+export function testTranslator<NS extends Namespace>(
+  namespace: NS,
+  locale: Locale = "en",
+): Translator<NS> {
+  return createTranslator({
+    locale,
+    messages: testMessages[locale] as unknown as Messages,
+    namespace,
+    timeZone: SHOP_TIME_ZONE,
+  }) as unknown as Translator<NS>;
 }

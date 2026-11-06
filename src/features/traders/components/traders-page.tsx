@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Plus, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -18,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
@@ -76,7 +76,7 @@ export function TradersPage() {
  */
 function TradersList() {
   const router = useRouter();
-  const section = panelText.sections.traders;
+  const section = useTranslations("panel.sections.traders");
   const canCreate = useCanWrite("trader.create");
   const canManage = useCanWrite("trader.manage");
   const canDelete = useCanWrite("trader.delete");
@@ -141,8 +141,8 @@ function TradersList() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={addButton}
       />
 

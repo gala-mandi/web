@@ -1,9 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RequirePermission } from "@/features/panel/components/require-permission";
-import { panelText } from "@/features/panel/text";
 import { PlanUsage } from "@/features/subscription/components/plan-usage";
 import { staffText } from "../text";
 import { InvitationsTable } from "./invitations-table";
@@ -14,13 +14,13 @@ const t = staffText.tabs;
 
 /** Staff: the shop's users and their invitations (owners only). */
 export function StaffPage() {
-  const section = panelText.sections.staff;
+  const section = useTranslations("panel.sections.staff");
   return (
     <RequirePermission permission="staff.manage">
       <div className="flex flex-col gap-6">
         <PageHeader
-          title={section.label}
-          description={section.description}
+          title={section("label")}
+          description={section("description")}
           actions={<InviteDialog />}
         />
         <PlanUsage />

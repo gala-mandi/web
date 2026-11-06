@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 import { NewPaymentPage } from "@/features/payments/components/new-payment-page";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.crumbs.newVoucher),
-};
+export const generateMetadata = pageMetadata("panel.crumbs.newVoucher");
 
 export default function Page() {
   return <NewPaymentPage />;

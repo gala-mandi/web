@@ -1,8 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ShoppingCart, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { panelText } from "@/features/panel/text";
 import { formatDate, karachiToday } from "@/lib/format";
 import { panelRoutes, purchaseRoutes, saleRoutes } from "@/lib/routes";
 import {
@@ -20,7 +20,6 @@ import { OutstandingList } from "./outstanding-list";
 import { RefreshStatus } from "./refresh-status";
 import { SalesTrendChart } from "./sales-trend-chart";
 
-const section = panelText.sections.dashboard;
 const e = dashboardText.empty;
 
 const ownerSteps: EmptyStep[] = [
@@ -54,6 +53,7 @@ const ownerSteps: EmptyStep[] = [
  * refreshes itself every few minutes.
  */
 export function OwnerDashboard() {
+  const tPanel = useTranslations("panel");
   const today = karachiToday();
   const from = trendFrom(today);
   const summary = useDailySummary();
@@ -77,7 +77,7 @@ export function OwnerDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
+        title={tPanel("sections.dashboard.label")}
         description={dashboardText.today(
           formatDate(`${summary.data?.date ?? today}T12:00:00Z`),
         )}

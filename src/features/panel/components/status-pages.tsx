@@ -1,33 +1,34 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CircleAlert, FileQuestion, ShieldX } from "lucide-react";
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { useSessionStore } from "@/stores/session";
 import { landingItemFor } from "../menu";
-import { panelText } from "../text";
 
 /** Link to the user's landing page (Dashboard, or Daily rates for operators). */
 function BackHome() {
+  const tp = useTranslations("panel");
   const user = useSessionStore((s) => s.user);
-  const home = landingItemFor(user);
+  const home = landingItemFor(user, tp);
   return (
     <Button asChild size="lg">
-      <Link href={home.href}>{panelText.backTo(home.label)}</Link>
+      <Link href={home.href}>{tp("backTo", { page: home.label })}</Link>
     </Button>
   );
 }
 
 /** 404 inside the panel layout (unknown URL or `notFound()`). */
 export function NotFoundState() {
-  const t = panelText.notFound;
+  const t = useTranslations("panel.notFound");
   return (
     <EmptyState
       icon={FileQuestion}
-      eyebrow={t.code}
-      title={t.title}
-      body={t.body}
+      eyebrow={t("code")}
+      title={t("title")}
+      body={t("body")}
       headingLevel="h1"
       action={<BackHome />}
     />
@@ -36,13 +37,13 @@ export function NotFoundState() {
 
 /** 403: shown by `RequirePermission` when the user may not open a page. */
 export function ForbiddenState() {
-  const t = panelText.forbidden;
+  const t = useTranslations("panel.forbidden");
   return (
     <EmptyState
       icon={ShieldX}
-      eyebrow={t.code}
-      title={t.title}
-      body={t.body}
+      eyebrow={t("code")}
+      title={t("title")}
+      body={t("body")}
       headingLevel="h1"
       action={<BackHome />}
     />
@@ -57,24 +58,26 @@ export function ErrorState({
   retry: () => void;
   digest?: string;
 }) {
-  const t = panelText.error;
+  const t = useTranslations("panel.error");
   return (
     <EmptyState
       role="alert"
       icon={CircleAlert}
-      title={t.title}
+      title={t("title")}
       headingLevel="h1"
       body={
         <>
-          {t.body}
+          {t("body")}
           {digest ? (
-            <span className="mt-1 block text-xs">{t.reference(digest)}</span>
+            <span className="mt-1 block text-xs">
+              {t("reference", { digest })}
+            </span>
           ) : null}
         </>
       }
       action={
         <Button size="lg" variant="outline" onClick={retry}>
-          {t.retry}
+          {t("retry")}
         </Button>
       }
     />

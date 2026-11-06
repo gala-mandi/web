@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ShoppingCart, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -10,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { panelText } from "@/features/panel/text";
 import { useEveryCommodity } from "@/features/rates/hooks";
 import { formatDate, formatRs, karachiToday } from "@/lib/format";
 import { panelRoutes, purchaseRoutes, saleRoutes } from "@/lib/routes";
@@ -21,7 +21,6 @@ import { DashboardEmpty, type EmptyStep } from "./dashboard-empty";
 import { KpiTile } from "./kpi-tile";
 import { RefreshStatus } from "./refresh-status";
 
-const section = panelText.sections.dashboard;
 const t = dashboardText.operator;
 const r = dashboardText.rates;
 
@@ -56,6 +55,7 @@ const operatorSteps: EmptyStep[] = [
  * no money totals, which are report data.
  */
 export function OperatorDashboard() {
+  const tPanel = useTranslations("panel");
   const today = karachiToday();
   const bills = useDayBills(today);
   const rates = useLiveTodayRates();
@@ -73,7 +73,7 @@ export function OperatorDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
+        title={tPanel("sections.dashboard.label")}
         description={dashboardText.today(formatDate(`${today}T12:00:00Z`))}
         actions={
           <RefreshStatus

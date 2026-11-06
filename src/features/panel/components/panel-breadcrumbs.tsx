@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment } from "react";
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import type { User } from "@/features/auth/types";
 import { breadcrumbsFor } from "../breadcrumbs";
-import { panelText } from "../text";
 
 export function PanelBreadcrumbs({
   user,
@@ -22,10 +22,11 @@ export function PanelBreadcrumbs({
   user: Pick<User, "permissions"> | null;
   className?: string;
 }) {
-  const crumbs = breadcrumbsFor(usePathname(), user);
+  const t = useTranslations("panel");
+  const crumbs = breadcrumbsFor(usePathname(), user, t);
 
   return (
-    <Breadcrumb aria-label={panelText.breadcrumbLabel} className={className}>
+    <Breadcrumb aria-label={t("breadcrumbLabel")} className={className}>
       <BreadcrumbList className="flex-nowrap">
         {crumbs.map((crumb, i) => (
           <Fragment key={`${i}-${crumb.label}`}>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Plus, ReceiptText, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +21,6 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { useEveryCommodity } from "@/features/rates/hooks";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import type { TraderLookupItem } from "@/features/traders/types";
@@ -70,7 +70,7 @@ export function SalesPage() {
  */
 function SalesList() {
   const router = useRouter();
-  const section = panelText.sections.sales;
+  const section = useTranslations("panel.sections.sales");
   const canCreate = useCanWrite("sale.create");
   const canEdit = useCanWrite("sale.edit");
   const canCancel = useCanWrite("sale.delete");
@@ -143,8 +143,8 @@ function SalesList() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={newButton}
       />
 

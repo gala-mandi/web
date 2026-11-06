@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { BookOpenText, CircleAlert, Scale, UserX } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,6 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { TraderTypeBadge } from "@/features/traders/components/badges";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import { TraderName } from "@/features/traders/components/trader-name";
@@ -53,7 +53,7 @@ export function KhataPage() {
  */
 function Khata() {
   const router = useRouter();
-  const section = panelText.sections.ledger;
+  const section = useTranslations("panel.sections.ledger");
   const access = {
     purchases: useCan("purchase.view"),
     sales: useCan("sale.view"),
@@ -106,8 +106,8 @@ function Khata() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={
           <Button asChild variant="outline" className="h-10 gap-2">
             <Link href={ledgerRoutes.balances}>

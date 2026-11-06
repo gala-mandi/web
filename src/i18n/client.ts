@@ -1,4 +1,4 @@
-import { type Locale, localeDirection } from "./config";
+import type { Locale } from "./config";
 import {
   isSafeUserId,
   LAST_LOCALE_COOKIE,
@@ -72,10 +72,4 @@ export function saveLastLocale(locale: Locale): void {
 /** The language the cookies ask for right now (same rule as the server). */
 export function wantedLocale(): Locale {
   return resolveLocale(localeSources(readCookie));
-}
-
-/** Sets `<html lang dir>` straight away; the server render then agrees. */
-export function applyDocumentLocale(locale: Locale): void {
-  document.documentElement.lang = locale;
-  document.documentElement.dir = localeDirection[locale];
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Wheat } from "lucide-react";
 import Link from "next/link";
 import { parseAsString, useQueryState } from "nuqs";
@@ -12,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
@@ -42,7 +42,8 @@ export function RatesPage() {
  * picker; it lives in the URL (`?date=`), so reload keeps it.
  */
 function DailyRates() {
-  const section = panelText.sections.rates;
+  const tPanel = useTranslations("panel");
+  const section = useTranslations("panel.sections.rates");
   const canManage = useCanWrite("rate.manage");
   const canAddCommodities = useCanWrite("commodity.manage");
   const [dirty, setDirty] = useState(false);
@@ -111,13 +112,13 @@ function DailyRates() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
+        title={section("label")}
         description={
           date
             ? pastDate
               ? t.date.showing(formatDate(date))
               : t.date.today(formatDate(date))
-            : section.description
+            : section("description")
         }
         actions={datePicker}
       />
@@ -146,7 +147,7 @@ function DailyRates() {
       ) : !day.data || !commodities.data || !date ? (
         <div className="flex flex-col gap-2" aria-busy>
           <span className="sr-only" role="status">
-            {panelText.loading}
+            {tPanel("loading")}
           </span>
           {Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-12 w-full" />
