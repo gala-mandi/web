@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { SectionPlaceholder } from "@/features/panel/components/section-placeholder";
 import { pageTitle, panelText } from "@/features/panel/text";
+import { SalesPage } from "@/features/sales/components/sales-page";
 
 export const metadata: Metadata = {
   title: pageTitle(panelText.sections.sales.label),
 };
 
-/** Placeholder until the Sales ticket builds this screen. */
-export default function SalesPage() {
-  return <SectionPlaceholder section="sales" />;
+export default function Page() {
+  return <SalesPage />;
 }

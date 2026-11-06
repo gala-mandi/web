@@ -16,12 +16,12 @@ export interface BreakdownValues {
 }
 
 /** "2.00" → "2", "0.50" → "0.5": a charge rate as people say it. */
-function rateText(value: string): string {
+export function rateText(value: string): string {
   return value.includes(".") ? value.replace(/\.?0+$/, "") : value;
 }
 
 /** "-0.46" → "-Rs 0.46", "0.50" → "+Rs 0.50". */
-function signedRs(value: string): string {
+export function signedRs(value: string): string {
   const shown = formatRs(value);
   return value.startsWith("-") || !/[1-9]/.test(value) ? shown : `+${shown}`;
 }
@@ -44,9 +44,13 @@ export function BreakdownLines({
       data-testid="purchase-breakdown"
       className={cn("flex flex-col gap-1.5 text-sm", className)}
     >
-      <Line label={t.gross} value={formatRs(values.grossAmount)} strong />
+      <BreakdownLine
+        label={t.gross}
+        value={formatRs(values.grossAmount)}
+        strong
+      />
       {values.charges.map((charge) => (
-        <Line
+        <BreakdownLine
           key={`${charge.type}|${charge.basis}|${charge.value}`}
           label={t.charge(
             charge.type,
@@ -59,13 +63,17 @@ export function BreakdownLines({
           muted
         />
       ))}
-      <Line
+      <BreakdownLine
         label={t.totalDeductions}
         value={`-${formatRs(values.totalDeductions)}`}
         className="border-t pt-1.5"
       />
-      <Line label={t.rounding} value={signedRs(values.rounding)} muted />
-      <Line
+      <BreakdownLine
+        label={t.rounding}
+        value={signedRs(values.rounding)}
+        muted
+      />
+      <BreakdownLine
         label={t.net}
         value={formatRs(values.netAmount)}
         strong
@@ -73,13 +81,18 @@ export function BreakdownLines({
         testId="purchase-net"
       />
       {paid ? (
-        <Line label={t.paid} value={formatRs(values.paidAmount)} muted />
+        <BreakdownLine
+          label={t.paid}
+          value={formatRs(values.paidAmount)}
+          muted
+        />
       ) : null}
     </dl>
   );
 }
 
-function Line({
+/** One line of the sums (label and amount). */
+export function BreakdownLine({
   label,
   value,
   strong,
