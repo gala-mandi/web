@@ -118,18 +118,19 @@ export const commodities = [
 
 /** `?groupBy=commodity`: names A–Z; deductions and net are bill-level (null). */
 export const monthPurchasesByCommodity: PurchasesReport = (() => {
+  // Splits the month's day totals: 102 bills, 4,284 bags, 214,212.750 kg.
   const split = [
     [
       commodityIds.rice,
       "Chawal (Basmati)",
-      18,
-      756,
-      "37812.500",
-      "38421500.00",
+      30,
+      1260,
+      "63000.000",
+      "2618400.00",
     ],
-    [commodityIds.wheat, "Gandum", 41, 1722, "86104.250", "35612750.50"],
-    [commodityIds.cotton, "Kapas", 6, 180, "7200.000", "6480000.00"],
-    [commodityIds.maize, "Makai", 12, 504, "25200.750", "6451200.00"],
+    [commodityIds.wheat, "Gandum", 40, 1680, "84012.250", "1764322.50"],
+    [commodityIds.cotton, "Kapas", 12, 504, "25200.500", "432000.00"],
+    [commodityIds.maize, "Makai", 20, 840, "42000.000", "890000.00"],
   ] as const;
   const rows: BookRow<PurchaseMetrics>[] = split.map(
     ([key, label, bills, bags, weightKg, grossAmount]) => ({
