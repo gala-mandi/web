@@ -387,7 +387,7 @@ function DaysTable({ book }: { book: CashBook }) {
         className="w-full min-w-[36rem] border-collapse text-sm"
       >
         <caption className="sr-only">{c.caption}</caption>
-        <thead className="bg-surface-muted text-muted-foreground text-[13px]">
+        <thead className="bg-surface-muted text-muted-foreground text-xs tracking-wide uppercase">
           <tr>
             <th scope="col" className="px-4 py-2.5 text-start font-semibold">
               {c.date}

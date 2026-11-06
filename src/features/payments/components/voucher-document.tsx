@@ -451,13 +451,16 @@ function RollLayout({ payment, shop, lang, w }: LayoutProps) {
             <li
               key={a.id}
               data-parchi-keep
-              className="border-ink flex items-baseline justify-between gap-[0.6em] border-b border-dashed py-[0.3em] last:border-b-0"
+              className="border-ink flex items-start justify-between gap-[0.6em] border-b border-dashed py-[0.3em] last:border-b-0"
             >
               <span className="min-w-0">
-                <Ltr>{i + 1}.</Ltr> <Ltr className="font-bold">{a.billNo}</Ltr>{" "}
-                <span className="text-ink-muted">
-                  {parchiDay(a.billDate, lang)}
+                <span className="block">
+                  <Ltr>{i + 1}.</Ltr>{" "}
+                  <Ltr className="font-bold">{a.billNo}</Ltr>
                 </span>
+                <bdi className="text-ink-muted block text-[0.9em] whitespace-nowrap">
+                  {parchiDay(a.billDate, lang)}
+                </bdi>
               </span>
               <Ltr className="font-bold">{parchiRs(a.amount)}</Ltr>
             </li>

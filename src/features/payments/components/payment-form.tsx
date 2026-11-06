@@ -334,7 +334,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
                     {paymentMethods.map((value) => (
                       <label
                         key={value}
-                        className="rounded-field bg-card has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/[0.06] has-[:focus-visible]:ring-ring/50 flex h-14 cursor-pointer items-center gap-2 border px-3 text-sm font-semibold has-[:focus-visible]:ring-3"
+                        className="rounded-field bg-card has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/[0.06] has-[:focus-visible]:ring-ring/50 flex h-14 cursor-pointer items-center justify-center gap-2 border px-2 text-sm font-semibold has-[:focus-visible]:ring-3"
                       >
                         <RadioGroupItem value={value} />
                         {methodText[value]}

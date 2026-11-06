@@ -117,16 +117,14 @@ export function AllocationTable({
       </div>
 
       <div className="rounded-card overflow-x-auto border">
-        <table className="w-full min-w-[40rem] border-collapse text-sm">
+        <table className="w-full min-w-[38rem] border-collapse text-sm">
           <caption className="sr-only">{t.caption}</caption>
-          <thead className="bg-surface-muted text-muted-foreground text-[13px]">
+          <thead className="bg-surface-muted text-muted-foreground text-xs tracking-wide uppercase">
             <tr>
               <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {c.billNo}
+                {c.bill}
               </th>
-              <th scope="col" className="px-3 py-2.5 text-start font-semibold">
-                {c.date}
-              </th>
+
               <th scope="col" className="px-3 py-2.5 text-end font-semibold">
                 {c.net}
               </th>
@@ -135,7 +133,7 @@ export function AllocationTable({
               </th>
               <th
                 scope="col"
-                className="w-40 px-3 py-2.5 text-end font-semibold"
+                className="w-36 px-3 py-2.5 text-end font-semibold"
               >
                 {c.allocate}
               </th>
@@ -161,20 +159,19 @@ export function AllocationTable({
             <tr className="border-t-2 font-semibold">
               <th
                 scope="row"
-                colSpan={3}
+                colSpan={2}
                 className="px-4 py-3 text-start font-semibold"
               >
                 {t.total}
               </th>
-              <td className="px-3 py-3 text-end tabular-nums" dir="ltr">
-                {formatRs(totalOutstanding(bills))}
+              <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
+                <span dir="ltr">{formatRs(totalOutstanding(bills))}</span>
               </td>
               <td
-                className="px-3 py-3 text-end tabular-nums"
-                dir="ltr"
+                className="px-3 py-3 text-end whitespace-nowrap tabular-nums"
                 data-testid="allocation-total"
               >
-                {formatRs(totals.allocated)}
+                <span dir="ltr">{formatRs(totals.allocated)}</span>
               </td>
               <td />
             </tr>
@@ -217,19 +214,25 @@ function BillRow({
         takes && "bg-primary/[0.04]",
       )}
     >
-      <th scope="row" className="px-4 py-3 text-start font-semibold">
-        <span dir="ltr" className="tabular-nums">
+      <th
+        scope="row"
+        className="px-4 py-3 text-start font-semibold whitespace-nowrap"
+      >
+        <span dir="ltr" className="block tabular-nums">
           {bill.billNo}
         </span>
+        <time
+          dateTime={bill.date}
+          className="text-muted-foreground block text-xs font-normal"
+        >
+          {formatDate(bill.date)}
+        </time>
       </th>
-      <td className="text-muted-foreground px-3 py-3 whitespace-nowrap">
-        <time dateTime={bill.date}>{formatDate(bill.date)}</time>
+      <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
+        <span dir="ltr">{formatRs(bill.netAmount)}</span>
       </td>
-      <td className="px-3 py-3 text-end tabular-nums" dir="ltr">
-        {formatRs(bill.netAmount)}
-      </td>
-      <td className="px-3 py-3 text-end font-semibold tabular-nums" dir="ltr">
-        {formatRs(bill.outstanding)}
+      <td className="px-3 py-3 text-end font-semibold whitespace-nowrap tabular-nums">
+        <span dir="ltr">{formatRs(bill.outstanding)}</span>
       </td>
       <td className="px-3 py-2">
         <Input
@@ -256,7 +259,7 @@ function BillRow({
       </td>
       <td className="px-4 py-3 text-end">
         <span className="flex flex-col items-end gap-1">
-          <span dir="ltr" className="tabular-nums">
+          <span dir="ltr" className="whitespace-nowrap tabular-nums">
             {formatRs(left)}
           </span>
           {settled ? (

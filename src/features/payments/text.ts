@@ -80,7 +80,7 @@ export const paymentText = {
     method: "Paid by",
     methodReceived: "Received by",
     reference: "Reference",
-    referenceHint: "Cheque number, bank or transfer reference (optional)",
+    referenceHint: "Cheque no. or bank ref (optional)",
     notes: purchaseText.form.notes,
     notesPlaceholder: purchaseText.form.notesPlaceholder,
     saved: (direction: PaymentDirection, voucherNo: string) =>
@@ -118,8 +118,7 @@ export const paymentText = {
     more: "Showing the open bills among this trader’s latest 100.",
     caption: "Outstanding bills and the amount each one takes",
     columns: {
-      billNo: "Bill no",
-      date: "Date",
+      bill: "Bill",
       net: "Net",
       outstanding: "Outstanding",
       allocate: "Allocate",
