@@ -19,10 +19,20 @@ interface PrintJob {
   printedAt: Date;
 }
 
-/** Prints once the iframe's fonts (Nastaliq for Urdu names) have loaded. */
-async function printWhenReady(iframe: HTMLIFrameElement) {
+/**
+ * Prints once the iframe's fonts (Nastaliq for Urdu names) have loaded.
+ * react-to-print only applies `documentTitle` with its own print, so the
+ * title ("Save as PDF" suggests it as the file name) is set here.
+ */
+async function printWhenReady(iframe: HTMLIFrameElement, title: string) {
   await iframe.contentDocument?.fonts?.ready;
+  const page = iframe.ownerDocument;
+  const before = page.title;
+  page.title = title;
+  if (iframe.contentDocument) iframe.contentDocument.title = title;
+  // The print dialog blocks until it closes.
   iframe.contentWindow?.print();
+  page.title = before;
 }
 
 export interface ReportActionsProps {
@@ -47,16 +57,17 @@ export function ReportActions({
   const [job, setJob] = useState<PrintJob | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const title = job ? reportFileBase(job.sheet) : "report";
   const print = useReactToPrint({
     contentRef,
-    documentTitle: job ? reportFileBase(job.sheet) : "report",
+    documentTitle: title,
     pageStyle: reportPageStyle(),
     // The fonts are CSS variables on <html>; the print iframe needs them too.
     bodyClass:
       typeof document === "undefined"
         ? undefined
         : document.documentElement.className,
-    print: printWhenReady,
+    print: (iframe) => printWhenReady(iframe, title),
     onPrintError: () => toast.error(t.failed),
   });
 
