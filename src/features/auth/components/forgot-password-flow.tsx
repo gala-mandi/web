@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, MessageCircle, MessageSquare, Timer } from "lucide-react";
 import { type FormEvent, useState } from "react";
@@ -16,6 +17,7 @@ import { toApiError } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { forgotPassword, resetPassword } from "../api";
 import {
+  type AuthTranslator,
   type ForgotRequestValues,
   forgotRequestSchema,
   normalizePhone,
@@ -23,7 +25,6 @@ import {
   type SetPasswordValues,
   setPasswordSchema,
 } from "../schemas";
-import { forgotText, loginText, passwordChangedText } from "../text";
 import type { OtpChannel } from "../types";
 import { formatClock, useCountdown } from "../use-countdown";
 import {
@@ -39,8 +40,6 @@ import {
 import { NewPasswordFields } from "./new-password-fields";
 import { OtpInput } from "./otp-input";
 import { PasswordChanged } from "./password-changed";
-
-const t = forgotText;
 
 interface Sent {
   /** normalised, e.g. `03001234567` */
@@ -75,15 +74,16 @@ function FormMessage({ children }: { children: string }) {
   );
 }
 
-function errorMessage(error: unknown): string {
+function errorMessage(t: AuthTranslator, error: unknown): string {
   const e = toApiError(error);
-  if (e.status === 429) return t.errors.tooMany;
-  if (e.status === 0) return loginText.errors.network;
-  return e.message ?? loginText.errors.unknown;
+  if (e.status === 429) return t("forgot.errors.tooMany");
+  if (e.status === 0) return t("login.errors.network");
+  return e.message ?? t("login.errors.unknown");
 }
 
 /** 2.1 → 2.2 → 2.3 → 2.4. The code is kept here until `reset-password`. */
 export function ForgotPasswordFlow() {
+  const t = useTranslations("auth");
   const [step, setStep] = useState<Step>({
     name: "request",
     channel: "whatsapp",
@@ -162,8 +162,8 @@ export function ForgotPasswordFlow() {
           revokedSessions={step.revokedSessions}
           otherDevices={false}
           href="/login"
-          label={passwordChangedText.toSignIn}
-          labelUr={passwordChangedText.toSignInUr}
+          label={t("passwordChanged.toSignIn")}
+          labelSubline={t("passwordChanged.toSignInSubline")}
         />
       );
   }
@@ -185,9 +185,10 @@ function RequestStep({
   defaultPhone: string;
   onSent: OnSent;
 }) {
+  const t = useTranslations("auth");
   const [formError, setFormError] = useState<string | null>(null);
   const form = useForm<ForgotRequestValues>({
-    resolver: zodResolver(forgotRequestSchema),
+    resolver: zodResolver(forgotRequestSchema(t)),
     defaultValues: { phone: defaultPhone, channel: defaultChannel },
   });
 
@@ -203,19 +204,19 @@ function RequestStep({
       const phoneError = e.errors.find((f) => f.field === "phone");
       if (phoneError)
         form.setError("phone", { type: "server", message: phoneError.message });
-      else setFormError(errorMessage(error));
+      else setFormError(errorMessage(t, error));
     }
   });
 
   return (
     <AuthCard>
-      <BackLink href="/login">{t.backToSignIn}</BackLink>
-      <StepIndicator step={1} label={t.step(1)} />
+      <BackLink href="/login">{t("forgot.backToSignIn")}</BackLink>
+      <StepIndicator step={1} label={t("forgot.step", { n: 1 })} />
       <CardHeading
         size="md"
-        title={t.request.title}
-        description={t.request.body}
-        ur={t.request.ur}
+        title={t("forgot.request.title")}
+        description={t("forgot.request.body")}
+        subline={t("forgot.request.subline")}
       />
       {formError ? <FormMessage>{formError}</FormMessage> : null}
       <form
@@ -230,7 +231,7 @@ function RequestStep({
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="gap-2">
               <FieldLabel htmlFor="fp-phone" className={fieldLabelClass}>
-                {t.request.phoneLabel}
+                {t("forgot.request.phoneLabel")}
               </FieldLabel>
               <IconInput
                 {...field}
@@ -238,14 +239,14 @@ function RequestStep({
                 type="tel"
                 inputMode="numeric"
                 autoComplete="tel-national"
-                placeholder={t.request.phonePlaceholder}
+                placeholder={t("forgot.request.phonePlaceholder")}
                 dir="ltr"
                 icon={
                   <span className="text-foreground flex items-center gap-1.5 border-e pe-2.5 text-sm font-semibold">
                     <span className="text-muted-foreground text-[11px] font-bold">
-                      {t.request.country}
+                      {t("forgot.request.country")}
                     </span>
-                    {t.request.countryCode}
+                    {t("forgot.request.countryCode")}
                   </span>
                 }
                 aria-invalid={fieldState.invalid}
@@ -263,7 +264,7 @@ function RequestStep({
           render={({ field }) => (
             <FieldSet className="gap-2">
               <FieldLegend variant="label" className={fieldLabelClass}>
-                {t.request.channelLegend}
+                {t("forgot.request.channelLegend")}
               </FieldLegend>
               <RadioGroup
                 name={field.name}
@@ -289,7 +290,7 @@ function RequestStep({
                         aria-hidden
                         className="text-muted-foreground size-[18px]"
                       />
-                      {t.request[channel]}
+                      {t(`forgot.request.${channel}`)}
                     </FieldLabel>
                   );
                 })}
@@ -301,16 +302,19 @@ function RequestStep({
           type="submit"
           disabled={form.formState.isSubmitting}
           pending={form.formState.isSubmitting}
-          ur={t.request.submitUr}
+          subline={t("forgot.request.submitSubline")}
         >
           {form.formState.isSubmitting
-            ? t.request.submitting
-            : t.request.submit}
+            ? t("forgot.request.submitting")
+            : t("forgot.request.submit")}
         </PrimaryButton>
       </form>
       <p className="text-muted-foreground text-center text-[13px]">
-        {t.request.noPhone}{" "}
-        <strong className="text-foreground">{t.request.noPhonePath}</strong>.
+        {t("forgot.request.noPhone")}{" "}
+        <strong className="text-foreground">
+          {t("forgot.request.noPhonePath")}
+        </strong>
+        .
       </p>
     </AuthCard>
   );
@@ -331,12 +335,13 @@ function CodeStep({
   onResent: OnSent;
   onVerified: (code: string) => void;
 }) {
+  const t = useTranslations("auth");
   const [code, setCode] = useState(initialCode);
   const [error, setError] = useState<string | null>(serverError);
   const [resending, setResending] = useState(false);
   const expiresLeft = useCountdown(sent.expiresIn, sent.sentId);
   const resendLeft = useCountdown(sent.resendIn, sent.sentId);
-  const channelName = t.request[sent.channel];
+  const channelName = t(`forgot.request.${sent.channel}`);
   const otherChannel: OtpChannel =
     sent.channel === "whatsapp" ? "sms" : "whatsapp";
 
@@ -351,7 +356,7 @@ function CodeStep({
       setCode("");
       onResent(sent.phone, sent.channel, result.expiresIn, result.resendIn);
     } catch (e) {
-      setError(errorMessage(e));
+      setError(errorMessage(t, e));
     } finally {
       setResending(false);
     }
@@ -359,9 +364,11 @@ function CodeStep({
 
   const verify = (event: FormEvent) => {
     event.preventDefault();
-    const parsed = otpCodeSchema.safeParse(code);
+    const parsed = otpCodeSchema(t).safeParse(code);
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? t.errors.codeInvalid);
+      setError(
+        parsed.error.issues[0]?.message ?? t("forgot.errors.codeInvalid"),
+      );
       return;
     }
     onVerified(parsed.data);
@@ -370,15 +377,15 @@ function CodeStep({
   return (
     <AuthCard>
       <BackButton onClick={() => onChangeNumber(sent.channel)}>
-        {t.back}
+        {t("forgot.back")}
       </BackButton>
-      <StepIndicator step={2} label={t.step(2)} />
+      <StepIndicator step={2} label={t("forgot.step", { n: 2 })} />
       <CardHeading
         size="md"
-        title={t.code.title}
+        title={t("forgot.code.title")}
         description={
           <>
-            {t.code.sentTo(channelName)}{" "}
+            {t("forgot.code.sentTo", { channel: channelName })}{" "}
             <strong dir="ltr" className="text-foreground">
               {maskPhone(sent.phone)}
             </strong>
@@ -388,11 +395,13 @@ function CodeStep({
               onClick={() => onChangeNumber(sent.channel)}
               className="text-primary font-semibold hover:underline"
             >
-              {t.code.change}
+              {t("forgot.code.change")}
             </button>
           </>
         }
-        ur={sent.channel === "whatsapp" ? t.code.ur : undefined}
+        subline={
+          sent.channel === "whatsapp" ? t("forgot.code.subline") : undefined
+        }
       />
       <form
         method="post"
@@ -402,7 +411,7 @@ function CodeStep({
       >
         <fieldset className="flex flex-col gap-2">
           <legend className={cn(fieldLabelClass, "mb-2")}>
-            {t.code.legend}
+            {t("forgot.code.legend")}
           </legend>
           <OtpInput
             value={code}
@@ -411,7 +420,7 @@ function CodeStep({
               setError(null);
             }}
             invalid={error !== null}
-            label={t.code.digitLabel}
+            label={(i: number) => t("forgot.code.digitLabel", { i })}
             describedBy={error ? "otp-error" : undefined}
             autoFocus
           />
@@ -429,12 +438,12 @@ function CodeStep({
           <span className="text-muted-foreground inline-flex items-center gap-1.5">
             <Timer aria-hidden className="size-4" />
             {expiresLeft > 0
-              ? t.code.expiresIn(formatClock(expiresLeft))
-              : t.code.expired}
+              ? t("forgot.code.expiresIn", { time: formatClock(expiresLeft) })
+              : t("forgot.code.expired")}
           </span>
           {resendLeft > 0 ? (
             <span className="text-muted-foreground">
-              {t.code.resendIn}{" "}
+              {t("forgot.code.resendIn")}{" "}
               <strong className="tabular-nums">
                 {formatClock(resendLeft)}
               </strong>
@@ -446,26 +455,28 @@ function CodeStep({
               disabled={resending}
               className="text-primary font-semibold hover:underline disabled:opacity-60"
             >
-              {t.code.resend}
+              {t("forgot.code.resend")}
             </button>
           )}
         </div>
         <PrimaryButton
           type="submit"
-          ur={t.code.submitUr}
+          subline={t("forgot.code.submitSubline")}
           disabled={expiresLeft === 0}
         >
-          {t.code.submit}
+          {t("forgot.code.submit")}
         </PrimaryButton>
       </form>
       <p className="text-muted-foreground text-center text-[13px]">
-        {t.code.didntGet}{" "}
+        {t("forgot.code.didntGet")}{" "}
         <button
           type="button"
           onClick={() => onChangeNumber(otherChannel)}
           className="text-primary font-semibold hover:underline"
         >
-          {otherChannel === "sms" ? t.code.sendBySms : t.code.sendByWhatsapp}
+          {otherChannel === "sms"
+            ? t("forgot.code.sendBySms")
+            : t("forgot.code.sendByWhatsapp")}
         </button>
         .
       </p>
@@ -486,9 +497,10 @@ function PasswordStep({
   onInvalidCode: (message: string) => void;
   onDone: (revokedSessions: number) => void;
 }) {
+  const t = useTranslations("auth");
   const [formError, setFormError] = useState<string | null>(null);
   const form = useForm<SetPasswordValues>({
-    resolver: zodResolver(setPasswordSchema),
+    resolver: zodResolver(setPasswordSchema(t)),
     defaultValues: { newPassword: "", confirmPassword: "" },
   });
 
@@ -507,7 +519,7 @@ function PasswordStep({
         e.code === "INVALID_OTP" ||
         e.errors.some((f) => f.field === "code")
       ) {
-        onInvalidCode(t.errors.invalidOtp);
+        onInvalidCode(t("forgot.errors.invalidOtp"));
         return;
       }
       const fieldError = e.errors.find((f) => f.field === "newPassword");
@@ -516,18 +528,18 @@ function PasswordStep({
           type: "server",
           message: fieldError.message,
         });
-      else setFormError(errorMessage(error));
+      else setFormError(errorMessage(t, error));
     }
   });
 
   return (
     <AuthCard>
-      <BackButton onClick={onBack}>{t.back}</BackButton>
-      <StepIndicator step={3} label={t.step(3)} />
+      <BackButton onClick={onBack}>{t("forgot.back")}</BackButton>
+      <StepIndicator step={3} label={t("forgot.step", { n: 3 })} />
       <CardHeading
         size="md"
-        title={t.newPassword.title}
-        ur={t.newPassword.ur}
+        title={t("forgot.newPassword.title")}
+        subline={t("forgot.newPassword.subline")}
       />
       {formError ? <FormMessage>{formError}</FormMessage> : null}
       <FormProvider {...form}>
@@ -542,11 +554,11 @@ function PasswordStep({
             type="submit"
             disabled={form.formState.isSubmitting}
             pending={form.formState.isSubmitting}
-            ur={t.newPassword.submitUr}
+            subline={t("forgot.newPassword.submitSubline")}
           >
             {form.formState.isSubmitting
-              ? t.newPassword.submitting
-              : t.newPassword.submit}
+              ? t("forgot.newPassword.submitting")
+              : t("forgot.newPassword.submit")}
           </PrimaryButton>
         </form>
       </FormProvider>

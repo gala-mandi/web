@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { MoreHorizontal, UserCheck, UserCog, UserX, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -21,14 +22,12 @@ import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
 import { formatDateTime } from "@/lib/format";
 import { type StaffStatusAction, useStaff } from "../hooks";
-import { staffText } from "../text";
+import type { StaffTranslator } from "../schemas";
 import type { StaffMember } from "../types";
 import { ActiveBadge, RoleBadge } from "./badges";
 import { ChangeRoleDialog } from "./change-role-dialog";
 import { StatusDialog } from "./status-dialog";
 import { useClientPage } from "./use-client-page";
-
-const t = staffText.table;
 
 type OpenDialog =
   | { kind: "role"; member: StaffMember }
@@ -41,18 +40,22 @@ function RowActions({
   member: StaffMember;
   onOpen: (dialog: OpenDialog) => void;
 }) {
-  const a = staffText.actions;
+  const t = useTranslations("staff");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={a.menu(member.name)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={t("actions.menu", { name: member.name })}
+        >
           <MoreHorizontal aria-hidden />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-52">
         <DropdownMenuItem onSelect={() => onOpen({ kind: "role", member })}>
           <UserCog aria-hidden />
-          {a.changeRole}
+          {t("actions.changeRole")}
         </DropdownMenuItem>
         {member.isActive ? (
           member.isYou ? (
@@ -60,10 +63,10 @@ function RowActions({
             <DropdownMenuItem disabled className="flex-col items-start gap-0">
               <span className="flex items-center gap-2">
                 <UserX aria-hidden />
-                {a.deactivate}
+                {t("actions.deactivate")}
               </span>
               <span className="text-muted-foreground ps-6 text-xs">
-                {a.cantDeactivateSelf}
+                {t("actions.cantDeactivateSelf")}
               </span>
             </DropdownMenuItem>
           ) : (
@@ -74,7 +77,7 @@ function RowActions({
               }
             >
               <UserX aria-hidden />
-              {a.deactivate}
+              {t("actions.deactivate")}
             </DropdownMenuItem>
           )
         ) : (
@@ -84,7 +87,7 @@ function RowActions({
             }
           >
             <UserCheck aria-hidden />
-            {a.activate}
+            {t("actions.activate")}
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
@@ -95,24 +98,25 @@ function RowActions({
 const col = dataTableColumnHelper<StaffMember>();
 
 function staffColumns(
+  t: StaffTranslator,
   onOpen: (dialog: OpenDialog) => void,
 ): DataTableColumn<StaffMember>[] {
   return col.columns([
     col.accessor("name", {
-      header: t.name,
+      header: t("table.name"),
       cell: ({ row }) => (
         <span className="flex flex-wrap items-center gap-2 font-semibold">
           {row.original.name}
           {row.original.isYou ? (
             <Badge variant="secondary" className="font-semibold">
-              {t.you}
+              {t("table.you")}
             </Badge>
           ) : null}
         </span>
       ),
     }),
     col.accessor("phone", {
-      header: t.phone,
+      header: t("table.phone"),
       cell: ({ getValue }) => (
         <span dir="ltr" className="tabular-nums">
           {getValue()}
@@ -120,36 +124,36 @@ function staffColumns(
       ),
     }),
     col.accessor("role", {
-      header: t.role,
+      header: t("table.role"),
       cell: ({ getValue }) => <RoleBadge role={getValue()} />,
     }),
     col.accessor("isActive", {
-      header: t.status,
+      header: t("table.status"),
       cell: ({ row }) => (
         <span className="flex flex-col items-start gap-1">
           <ActiveBadge active={row.original.isActive} />
           {row.original.isActive && row.original.mustChangePassword ? (
             <span className="text-muted-foreground text-xs">
-              {t.mustChangePassword}
+              {t("table.mustChangePassword")}
             </span>
           ) : null}
         </span>
       ),
     }),
     col.accessor("lastLoginAt", {
-      header: t.lastLogin,
+      header: t("table.lastLogin"),
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? (
           <time dateTime={value}>{formatDateTime(value)}</time>
         ) : (
-          <span className="text-muted-foreground">{t.never}</span>
+          <span className="text-muted-foreground">{t("table.never")}</span>
         );
       },
     }),
     col.display({
       id: "actions",
-      header: () => <span className="sr-only">{t.actions}</span>,
+      header: () => <span className="sr-only">{t("table.actions")}</span>,
       cell: ({ row }) => <RowActions member={row.original} onOpen={onOpen} />,
       meta: { align: "end", className: "w-14" },
     }),
@@ -158,9 +162,10 @@ function staffColumns(
 
 /** Staff tab: everyone in the shop with role, status and last login. */
 export function StaffTable() {
+  const t = useTranslations("staff");
   const query = useStaff();
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
-  const columns = useMemo(() => staffColumns(setDialog), []);
+  const columns = useMemo(() => staffColumns(t, setDialog), [t]);
   // Read-only shop: no role, activate or cancel buttons (the server refuses).
   const readOnly = useReadOnly();
   const visibleColumns = useMemo(
@@ -178,7 +183,7 @@ export function StaffTable() {
   return (
     <>
       <DataTable<StaffMember>
-        caption={t.caption}
+        caption={t("table.caption")}
         columns={visibleColumns}
         data={paged.page}
         getRowId={(row) => row.id}
@@ -192,8 +197,8 @@ export function StaffTable() {
         empty={
           <EmptyState
             icon={Users}
-            title={t.emptyTitle}
-            body={t.emptyBody}
+            title={t("table.emptyTitle")}
+            body={t("table.emptyBody")}
             className="rounded-none border-0"
           />
         }

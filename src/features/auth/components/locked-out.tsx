@@ -1,8 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Clock, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
-import { lockedText } from "../text";
 import { formatClock, useCountdown } from "../use-countdown";
 import { AuthCard, PrimaryButton, TextLink, SubLine } from "./auth-ui";
 
@@ -17,6 +17,7 @@ interface LockedOutProps {
 
 /** 1.3 Too many attempts: countdown from `Retry-After`. */
 export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
+  const t = useTranslations("auth");
   const left = useCountdown(seconds, lockId);
   const progress = seconds > 0 ? left / seconds : 0;
 
@@ -36,7 +37,7 @@ export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
           <Clock aria-hidden className="size-[22px]" />
           <span
             role="timer"
-            aria-label={lockedText.timerLabel}
+            aria-label={t("locked.timerLabel")}
             className="font-heading text-2xl font-extrabold tabular-nums"
           >
             {formatClock(left, true)}
@@ -45,35 +46,35 @@ export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
       </div>
       <div className="flex flex-col gap-1.5">
         <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-          {lockedText.title}
+          {t("locked.title")}
         </h2>
         <p className="text-muted-foreground text-[15px]/relaxed">
-          {who ? lockedText.body(who) : lockedText.bodyGeneric}
+          {who ? t("locked.body", { who }) : t("locked.bodyGeneric")}
         </p>
-        <SubLine>{lockedText.ur}</SubLine>
+        <SubLine>{t("locked.subline")}</SubLine>
       </div>
       <div className="bg-background text-foreground/85 flex w-full gap-2.5 rounded-xl px-3.5 py-3 text-start text-[13px]/normal">
         <ShieldCheck
           aria-hidden
           className="text-primary size-[18px] flex-none"
         />
-        <span>{lockedText.note}</span>
+        <span>{t("locked.note")}</span>
       </div>
       <PrimaryButton
         type="button"
         disabled
         className="disabled:bg-surface-muted disabled:text-muted-foreground bg-none shadow-none disabled:opacity-100"
       >
-        {lockedText.button(formatClock(left))}
+        {t("locked.button", { time: formatClock(left) })}
       </PrimaryButton>
       <div className="flex w-full justify-between gap-3">
-        <TextLink href="/forgot-password">{lockedText.resetPassword}</TextLink>
+        <TextLink href="/forgot-password">{t("locked.resetPassword")}</TextLink>
         <button
           type="button"
           onClick={onUnlock}
           className="text-muted-foreground text-[13px] font-semibold hover:underline"
         >
-          {lockedText.backToSignIn}
+          {t("locked.backToSignIn")}
         </button>
       </div>
     </AuthCard>

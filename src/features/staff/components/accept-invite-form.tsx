@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { AlertCircle, Check, MailWarning, User } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useEffect, useRef, useState } from "react";
@@ -13,20 +14,16 @@ import {
   IconInput,
   PrimaryButton,
   TextLink,
+  OtherLanguage,
   SubLine,
 } from "@/features/auth/components/auth-ui";
 import { NewPasswordFields } from "@/features/auth/components/new-password-fields";
-import { blockedText, loginText } from "@/features/auth/text";
 import { toApiError } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { applyServerErrors } from "../form-errors";
 import { useAcceptInvite } from "../hooks";
 import { type AcceptInviteValues, acceptInviteSchema } from "../schemas";
-import {
-  acceptText as t,
-  type InviteErrorCode,
-  inviteErrorCodes,
-} from "../text";
+import { type InviteErrorCode, inviteErrorCodes } from "../types";
 import type { AcceptInviteResult } from "../types";
 
 function isInviteError(code: string | undefined): code is InviteErrorCode {
@@ -58,7 +55,7 @@ function useHideTokenFromUrl() {
 }
 
 function Joined({ result }: { result: AcceptInviteResult }) {
-  const s = t.success;
+  const s = useTranslations("staff.accept.success");
   const linkRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => linkRef.current?.focus(), []);
   return (
@@ -72,10 +69,10 @@ function Joined({ result }: { result: AcceptInviteResult }) {
       </div>
       <div role="status" className="flex flex-col gap-1.5">
         <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-          {s.title(result.shopName)}
+          {s("title", { shop: result.shopName })}
         </h2>
-        <p className="text-muted-foreground text-[15px]/relaxed">{s.body}</p>
-        <SubLine>{s.ur}</SubLine>
+        <p className="text-muted-foreground text-[15px]/relaxed">{s("body")}</p>
+        <SubLine>{s("subline")}</SubLine>
       </div>
       <Link
         ref={linkRef}
@@ -85,18 +82,18 @@ function Joined({ result }: { result: AcceptInviteResult }) {
           "focus-visible:ring-ring/15 focus-visible:ring-4 focus-visible:outline-none",
         )}
       >
-        {s.signIn}
+        {s("signIn")}
         <span aria-hidden>·</span>
-        <span lang="ur" className="font-urdu text-[15px] font-semibold">
-          {s.signInUr}
-        </span>
+        <OtherLanguage className="text-[15px] font-semibold">
+          {s("signInSubline")}
+        </OtherLanguage>
       </Link>
     </AuthCard>
   );
 }
 
 function CantUse({ failed }: { failed: Failed }) {
-  const f = t.failed;
+  const f = useTranslations("staff.accept.failed");
   return (
     <AuthCard>
       <div className="bg-destructive-soft text-destructive border-destructive-border flex size-[60px] items-center justify-center rounded-[18px] border">
@@ -104,7 +101,7 @@ function CantUse({ failed }: { failed: Failed }) {
       </div>
       <div className="flex flex-col gap-1.5">
         <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-          {failed.phoneTaken ? f.phoneTakenTitle : f.title}
+          {failed.phoneTaken ? f("phoneTakenTitle") : f("title")}
         </h2>
         <p
           role="alert"
@@ -114,12 +111,12 @@ function CantUse({ failed }: { failed: Failed }) {
         </p>
         {failed.phoneTaken ? null : (
           <p className="text-muted-foreground text-[14px]/relaxed">
-            {f.askOwner}
+            {f("askOwner")}
           </p>
         )}
       </div>
       <TextLink href="/login" className="self-start text-sm">
-        {f.toSignIn}
+        {f("toSignIn")}
       </TextLink>
     </AuthCard>
   );
@@ -130,6 +127,9 @@ function CantUse({ failed }: { failed: Failed }) {
  * in memory only and removed from the address bar at once.
  */
 export function AcceptInviteForm({ token }: { token: string | null }) {
+  const t = useTranslations("staff.accept");
+  const ts = useTranslations("staff");
+  const ta = useTranslations("auth");
   // Kept for this page view only: never written to storage or the URL.
   const [inviteToken] = useState(token);
   useHideTokenFromUrl();
@@ -139,7 +139,7 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
   const inFlight = useRef(false);
 
   const form = useForm<AcceptInviteValues>({
-    resolver: zodResolver(acceptInviteSchema),
+    resolver: zodResolver(acceptInviteSchema(ts, ta)),
     defaultValues: { name: "", newPassword: "", confirmPassword: "" },
   });
 
@@ -156,30 +156,31 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
       const e = toApiError(error);
       if (isInviteError(e.code)) {
         setFailed({
-          message: e.message ?? t.errors[e.code],
+          message: e.message ?? t(`errors.${e.code}`),
           phoneTaken: false,
         });
       } else if (e.code === "PHONE_TAKEN" || e.status === 409) {
-        setFailed({ message: t.errors.phoneTaken, phoneTaken: true });
+        setFailed({ message: t("errors.phoneTaken"), phoneTaken: true });
       } else if (e.code === "TENANT_SUSPENDED") {
-        setFormError(e.message ?? blockedText.shopSuspended.title(null));
+        setFormError(e.message ?? ta("blocked.shopSuspended.titleNoShop"));
       } else if (e.status === 429) {
-        setFormError(t.errors.tooMany);
+        setFormError(t("errors.tooMany"));
       } else if (
         !applyServerErrors(e, form.setError, ["name", "newPassword"], {
-          password: "newPassword",
+          rename: { password: "newPassword" },
+          fallback: ts("errors.generic"),
         })
       ) {
         if (e.errors.some((err) => err.field === "token")) {
           setFailed({
-            message: e.message ?? t.errors.INVITE_INVALID,
+            message: e.message ?? t("errors.INVITE_INVALID"),
             phoneTaken: false,
           });
         } else {
           setFormError(
             e.status === 0
-              ? loginText.errors.network
-              : (e.message ?? loginText.errors.unknown),
+              ? ta("login.errors.network")
+              : (e.message ?? ta("login.errors.unknown")),
           );
         }
       }
@@ -202,7 +203,9 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
   if (failed) return <CantUse failed={failed} />;
   if (!inviteToken) {
     return (
-      <CantUse failed={{ message: t.errors.missingToken, phoneTaken: false }} />
+      <CantUse
+        failed={{ message: t("errors.missingToken"), phoneTaken: false }}
+      />
     );
   }
 
@@ -210,7 +213,11 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
 
   return (
     <AuthCard>
-      <CardHeading title={t.title} description={t.body} ur={t.ur} />
+      <CardHeading
+        title={t("title")}
+        description={t("body")}
+        subline={t("subline")}
+      />
 
       {formError ? (
         <div
@@ -235,14 +242,14 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-2">
                 <FieldLabel htmlFor="ai-name" className={fieldLabelClass}>
-                  {t.name}
+                  {t("name")}
                 </FieldLabel>
                 <IconInput
                   {...field}
                   id="ai-name"
                   icon={<User />}
                   autoComplete="name"
-                  placeholder={t.namePlaceholder}
+                  placeholder={t("namePlaceholder")}
                   aria-invalid={fieldState.invalid}
                   aria-describedby={
                     fieldState.error ? "ai-name-error" : undefined
@@ -257,15 +264,15 @@ export function AcceptInviteForm({ token }: { token: string | null }) {
             type="submit"
             disabled={busy}
             pending={busy}
-            ur={t.submitUr}
+            subline={t("submitSubline")}
           >
-            {busy ? t.submitting : t.submit}
+            {busy ? t("submitting") : t("submit")}
           </PrimaryButton>
         </form>
       </FormProvider>
 
       <p className="text-muted-foreground text-center text-[13px]">
-        {t.footer} <TextLink href="/login">{t.ignore}</TextLink>
+        {t("footer")} <TextLink href="/login">{t("ignore")}</TextLink>
       </p>
     </AuthCard>
   );

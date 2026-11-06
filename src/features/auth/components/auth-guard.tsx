@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
@@ -7,7 +8,6 @@ import { ensureSession } from "@/lib/api";
 import { handleAuthFailure } from "@/lib/auth-session";
 import { isRedirecting } from "@/lib/navigation";
 import { useSessionStore } from "@/stores/session";
-import { guardText } from "../text";
 
 /**
  * Protected pages render only with a session. Without an access token (new
@@ -39,18 +39,15 @@ export function AuthGuard({
   return children;
 }
 
-export function FullPageLoading({
-  label = guardText.loading,
-}: {
-  label?: string;
-}) {
+export function FullPageLoading({ label }: { label?: string }) {
+  const t = useTranslations("auth");
   return (
     <div
       role="status"
       className="bg-background text-muted-foreground flex min-h-screen flex-1 items-center justify-center gap-3 text-sm"
     >
       <Loader2 aria-hidden className="text-primary size-5 animate-spin" />
-      {label}
+      {label ?? t("guard.loading")}
     </div>
   );
 }

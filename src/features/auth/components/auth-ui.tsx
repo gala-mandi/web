@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { localeDirection } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
@@ -13,7 +14,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
-import { passwordText } from "../text";
 
 /** The white card every auth screen sits in. */
 export function AuthCard({ className, ...props }: ComponentProps<"div">) {
@@ -31,13 +31,14 @@ export function AuthCard({ className, ...props }: ComponentProps<"div">) {
 export function CardHeading({
   title,
   description,
-  ur,
+  subline,
   id,
   size = "lg",
 }: {
   title: ReactNode;
   description?: ReactNode;
-  ur?: string;
+  /** The heading in the other language, under it. */
+  subline?: string;
   id?: string;
   size?: "lg" | "md";
 }) {
@@ -57,7 +58,7 @@ export function CardHeading({
           {description}
         </p>
       ) : null}
-      {ur ? <SubLine>{ur}</SubLine> : null}
+      {subline ? <SubLine>{subline}</SubLine> : null}
     </div>
   );
 }
@@ -90,14 +91,37 @@ export function SubLine({
   );
 }
 
-/** Big gradient button. `ur` adds the Urdu label after a dot, as in the designs. */
+/** Text in the other interface language (Urdu on English screens and back). */
+export function OtherLanguage({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const other = useLocale() === "ur" ? "en" : "ur";
+  return (
+    <span
+      lang={other}
+      dir={localeDirection[other]}
+      className={cn(other === "ur" ? "font-urdu" : "font-sans", className)}
+    >
+      {children}
+    </span>
+  );
+}
+
+/**
+ * Big gradient button. `subline` adds the label in the other language after
+ * a dot, as in the designs.
+ */
 export function PrimaryButton({
   children,
-  ur,
+  subline,
   pending,
   className,
   ...props
-}: ComponentProps<typeof Button> & { ur?: string; pending?: boolean }) {
+}: ComponentProps<typeof Button> & { subline?: string; pending?: boolean }) {
   return (
     <Button
       className={cn(
@@ -110,12 +134,12 @@ export function PrimaryButton({
     >
       {pending ? <Loader2 aria-hidden className="size-5 animate-spin" /> : null}
       {children}
-      {ur && !pending ? (
+      {subline && !pending ? (
         <>
           <span aria-hidden>·</span>
-          <span lang="ur" className="font-urdu text-[15px] font-semibold">
-            {ur}
-          </span>
+          <OtherLanguage className="text-[15px] font-semibold">
+            {subline}
+          </OtherLanguage>
         </>
       ) : null}
     </Button>
@@ -223,6 +247,7 @@ export function IconInput({
 
 /** Password input with a show/hide button. */
 export function PasswordInput(props: ComponentProps<typeof IconInput>) {
+  const t = useTranslations("auth");
   const [visible, setVisible] = useState(false);
   return (
     <IconInput
@@ -231,7 +256,7 @@ export function PasswordInput(props: ComponentProps<typeof IconInput>) {
       end={
         <InputGroupButton
           size="icon-sm"
-          aria-label={visible ? passwordText.hide : passwordText.show}
+          aria-label={visible ? t("password.hide") : t("password.show")}
           aria-pressed={visible}
           onClick={() => setVisible((v) => !v)}
           className="rounded-[10px]"

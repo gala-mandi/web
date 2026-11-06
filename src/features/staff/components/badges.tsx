@@ -1,6 +1,6 @@
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { invitationStatusText, roleText, staffText } from "../text";
 import type { InvitationStatus, StaffRole } from "../types";
 
 const roleTone: Record<StaffRole, string> = {
@@ -10,13 +10,14 @@ const roleTone: Record<StaffRole, string> = {
 };
 
 export function RoleBadge({ role }: { role: StaffRole }) {
+  const t = useTranslations("staff");
   return (
     <Badge
       variant="outline"
       data-role={role}
       className={cn("border-transparent font-semibold", roleTone[role])}
     >
-      {roleText[role]}
+      {t(`roles.${role}`)}
     </Badge>
   );
 }
@@ -34,6 +35,7 @@ export function InvitationStatusBadge({
 }: {
   status: InvitationStatus;
 }) {
+  const t = useTranslations("staff");
   return (
     <Badge
       variant="outline"
@@ -41,12 +43,13 @@ export function InvitationStatusBadge({
       className={cn("border-transparent font-semibold", invitationTone[status])}
     >
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
-      {invitationStatusText[status]}
+      {t(`invitationStatus.${status}`)}
     </Badge>
   );
 }
 
 export function ActiveBadge({ active }: { active: boolean }) {
+  const t = useTranslations("staff");
   return (
     <Badge
       variant="outline"
@@ -59,7 +62,7 @@ export function ActiveBadge({ active }: { active: boolean }) {
       )}
     >
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
-      {active ? staffText.table.active : staffText.table.disabled}
+      {active ? t("table.active") : t("table.disabled")}
     </Badge>
   );
 }

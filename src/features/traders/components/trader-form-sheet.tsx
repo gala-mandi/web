@@ -183,7 +183,10 @@ function TraderForm({
     } catch (error) {
       const e = toApiError(error);
       if (
-        !applyServerErrors(e, form.setError, traderFields, {}, traderConflicts)
+        !applyServerErrors(e, form.setError, traderFields, {
+          conflicts: traderConflicts,
+          fallback: traderText.errors.generic,
+        })
       ) {
         setFormError(
           e.status === 0

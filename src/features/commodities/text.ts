@@ -1,4 +1,3 @@
-import { unitText } from "@/features/settings/text";
 import type { ChargeField, WeightUnit } from "./types";
 
 /**
@@ -8,7 +7,11 @@ import type { ChargeField, WeightUnit } from "./types";
  */
 
 /** Long unit names for the form, the same as on the Settings page. */
-export { unitText };
+export const unitText = {
+  kg: "Kilogram (kg)",
+  maund: "Maund (mn)",
+  bag: "Bag (bori)",
+} as const satisfies Record<WeightUnit, string>;
 
 /** Short unit names for the list and the picker. */
 export const unitShortText = {

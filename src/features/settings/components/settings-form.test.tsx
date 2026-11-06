@@ -13,7 +13,9 @@ import type { User } from "@/features/auth/types";
 import { api } from "@/lib/api";
 import { httpError, ok } from "@/test/fake-api";
 import { resetStores } from "@/test/render-panel";
-import { settingsText } from "../text";
+import { testMessages } from "@/test/intl";
+
+const settingsText = testMessages.en.settings;
 import { settingsServer, shopSettings } from "../test-data";
 import {
   discardButton,

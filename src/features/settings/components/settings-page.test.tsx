@@ -44,7 +44,7 @@ describe("SettingsPage", () => {
       "Shop profile",
       "Parchi",
       "Charges & commission",
-      "Units",
+      "Units & language",
       "Numbering",
       "Parchi preview",
     ]) {

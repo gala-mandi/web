@@ -201,13 +201,10 @@ function CommodityForm({
     } catch (error) {
       const e = toApiError(error);
       if (
-        !applyServerErrors(
-          e,
-          form.setError,
-          commodityFields,
-          {},
-          commodityConflicts,
-        )
+        !applyServerErrors(e, form.setError, commodityFields, {
+          conflicts: commodityConflicts,
+          fallback: commodityText.errors.generic,
+        })
       ) {
         setFormError(
           e.status === 0

@@ -46,7 +46,6 @@ import {
   type InviteValues,
   toInviteInput,
 } from "../schemas";
-import { inviteText as t, roleHint, roleText } from "../text";
 import type { InviteMethod } from "../types";
 import { OneTimeSecretDialog } from "./one-time-secret-dialog";
 
@@ -87,6 +86,7 @@ function PlanLimitAlert() {
 }
 
 function InviteDialogInner() {
+  const t = useTranslations("staff");
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
@@ -94,7 +94,7 @@ function InviteDialogInner() {
   const inFlight = useRef(false);
 
   const form = useForm<InviteValues>({
-    resolver: zodResolver(inviteSchema),
+    resolver: zodResolver(inviteSchema(t)),
     defaultValues: emptyInvite,
   });
   const method = useWatch({ control: form.control, name: "method" });
@@ -118,8 +118,18 @@ function InviteDialogInner() {
         setLimitReached(true);
         return;
       }
-      if (!applyServerErrors(e, form.setError, inviteFields)) {
-        setFormError(generalErrorMessage(e));
+      if (
+        !applyServerErrors(e, form.setError, inviteFields, {
+          conflicts: {
+            PHONE_TAKEN: {
+              field: "phone",
+              message: t("invite.errors.phoneTaken"),
+            },
+          },
+          fallback: t("errors.generic"),
+        })
+      ) {
+        setFormError(generalErrorMessage(e, t));
       }
     }
   };
@@ -152,15 +162,15 @@ function InviteDialogInner() {
         <DialogTrigger asChild>
           <Button size="lg" className="h-10 gap-2 px-4 font-semibold">
             <UserPlus aria-hidden />
-            {t.title}
+            {t("invite.title")}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-heading text-lg font-bold">
-              {t.title}
+              {t("invite.title")}
             </DialogTitle>
-            <DialogDescription>{t.description}</DialogDescription>
+            <DialogDescription>{t("invite.description")}</DialogDescription>
           </DialogHeader>
 
           <form
@@ -186,7 +196,9 @@ function InviteDialogInner() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-2">
-                  <FieldLabel htmlFor="invite-phone">{t.phone}</FieldLabel>
+                  <FieldLabel htmlFor="invite-phone">
+                    {t("invite.phone")}
+                  </FieldLabel>
                   <Input
                     {...field}
                     id="invite-phone"
@@ -194,7 +206,7 @@ function InviteDialogInner() {
                     inputMode="tel"
                     autoComplete="off"
                     dir="ltr"
-                    placeholder={t.phonePlaceholder}
+                    placeholder={t("invite.phonePlaceholder")}
                     className={inputClass}
                     aria-invalid={fieldState.invalid}
                     aria-describedby={
@@ -215,7 +227,7 @@ function InviteDialogInner() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid} className="gap-2">
                   <FieldLabel id="invite-role-label" htmlFor="invite-role">
-                    {t.role}
+                    {t("invite.role")}
                   </FieldLabel>
                   <Select
                     name={field.name}
@@ -240,13 +252,13 @@ function InviteDialogInner() {
                     <SelectContent position="popper">
                       {inviteRoles.map((role) => (
                         <SelectItem key={role} value={role}>
-                          {roleText[role]}
+                          {t(`roles.${role}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   <FieldDescription id="invite-role-hint">
-                    {roleHint[field.value]}
+                    {t(`roleHints.${field.value}`)}
                   </FieldDescription>
                   <FieldError
                     id="invite-role-error"
@@ -261,7 +273,9 @@ function InviteDialogInner() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <FieldSet data-invalid={fieldState.invalid} className="gap-3">
-                  <FieldLegend variant="label">{t.method}</FieldLegend>
+                  <FieldLegend variant="label">
+                    {t("invite.method")}
+                  </FieldLegend>
                   <RadioGroup
                     name={field.name}
                     value={field.value}
@@ -285,13 +299,13 @@ function InviteDialogInner() {
                           />
                           <FieldContent className="gap-0.5">
                             <span className="font-semibold">
-                              {t.methods[m].label}
+                              {t(`invite.methods.${m}.label`)}
                             </span>
                             <span
                               id={`invite-method-${m}-hint`}
                               className="text-muted-foreground text-[13px] font-normal"
                             >
-                              {t.methods[m].hint}
+                              {t(`invite.methods.${m}.hint`)}
                             </span>
                           </FieldContent>
                         </Field>
@@ -309,12 +323,14 @@ function InviteDialogInner() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="gap-2">
-                    <FieldLabel htmlFor="invite-name">{t.name}</FieldLabel>
+                    <FieldLabel htmlFor="invite-name">
+                      {t("invite.name")}
+                    </FieldLabel>
                     <Input
                       {...field}
                       id="invite-name"
                       autoComplete="off"
-                      placeholder={t.namePlaceholder}
+                      placeholder={t("invite.namePlaceholder")}
                       className={inputClass}
                       aria-invalid={fieldState.invalid}
                       aria-describedby={
@@ -338,7 +354,7 @@ function InviteDialogInner() {
                 disabled={busy}
                 onClick={close}
               >
-                {t.cancel}
+                {t("invite.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -350,10 +366,10 @@ function InviteDialogInner() {
                   <Loader2 aria-hidden className="size-4 animate-spin" />
                 ) : null}
                 {busy
-                  ? t.submitting
+                  ? t("invite.submitting")
                   : method === "password"
-                    ? t.submitPassword
-                    : t.submit}
+                    ? t("invite.submitPassword")
+                    : t("invite.submit")}
               </Button>
             </DialogFooter>
           </form>

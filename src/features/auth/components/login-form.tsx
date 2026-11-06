@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Clock, Lock, User } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,6 @@ import {
   normalizeIdentifier,
   normalizePhone,
 } from "../schemas";
-import { loginText } from "../text";
 import {
   AuthCard,
   CardHeading,
@@ -34,8 +34,6 @@ import {
   SubLine,
 } from "./auth-ui";
 import { LockedOut } from "./locked-out";
-
-const t = loginText;
 
 type Failure =
   | { kind: "credentials"; attemptsLeft: number | null }
@@ -63,6 +61,7 @@ export function LoginForm({
   next = null,
   phone = null,
 }: LoginFormProps) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [failure, setFailure] = useState<Failure | null>(null);
   const [lock, setLock] = useState<Lock | null>(null);
@@ -70,7 +69,7 @@ export function LoginForm({
   const inFlight = useRef(false);
 
   const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema(t)),
     defaultValues: {
       identifier: (phone && normalizePhone(phone)) ?? "",
       password: "",
@@ -99,7 +98,7 @@ export function LoginForm({
         setFailure({ kind: "credentials", attemptsLeft: remainingAttempts(e) });
         form.setError("password", {
           type: "server",
-          message: t.errors.capsLock,
+          message: t("login.errors.capsLock"),
         });
       } else if (e.status === 429) {
         setLock((prev) => ({
@@ -149,7 +148,7 @@ export function LoginForm({
 
   return (
     <AuthCard>
-      <CardHeading title={t.title} description={t.subtitle} />
+      <CardHeading title={t("login.title")} description={t("login.subtitle")} />
 
       {reason === "session-expired" && !failure ? (
         <div
@@ -158,12 +157,14 @@ export function LoginForm({
         >
           <Clock aria-hidden className="text-primary mt-0.5 size-5 flex-none" />
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-bold">{t.sessionExpired.title}</span>
+            <span className="text-sm font-bold">
+              {t("login.sessionExpired.title")}
+            </span>
             <span className="text-muted-foreground text-[13px]">
-              {t.sessionExpired.body}
+              {t("login.sessionExpired.body")}
             </span>
             <SubLine className="text-start text-xs">
-              {t.sessionExpired.ur}
+              {t("login.sessionExpired.subline")}
             </SubLine>
           </div>
         </div>
@@ -181,19 +182,19 @@ export function LoginForm({
           <div className="flex flex-col gap-0.5">
             <span className="text-destructive text-sm font-bold">
               {failure.kind === "credentials"
-                ? t.errors.invalidCredentials
+                ? t("login.errors.invalidCredentials")
                 : failure.kind === "network"
-                  ? t.errors.network
-                  : t.errors.unknown}
+                  ? t("login.errors.network")
+                  : t("login.errors.unknown")}
             </span>
             {failure.kind === "credentials" && failure.attemptsLeft !== null ? (
               <span className="text-foreground/85 text-[13px]">
-                {t.errors.attemptsLeft(failure.attemptsLeft)}
+                {t("login.errors.attemptsLeft", { n: failure.attemptsLeft })}
               </span>
             ) : null}
             {failure.kind === "credentials" ? (
               <SubLine className="text-start text-xs">
-                {t.errors.invalidCredentialsUr}
+                {t("login.errors.invalidCredentialsSubline")}
               </SubLine>
             ) : null}
           </div>
@@ -215,7 +216,7 @@ export function LoginForm({
                 htmlFor="login-identifier"
                 className={fieldLabelClass}
               >
-                {t.identifierLabel}
+                {t("login.identifierLabel")}
               </FieldLabel>
               <IconInput
                 {...field}
@@ -223,7 +224,7 @@ export function LoginForm({
                 icon={<User />}
                 autoComplete="username"
                 inputMode="email"
-                placeholder={t.identifierPlaceholder}
+                placeholder={t("login.identifierPlaceholder")}
                 aria-invalid={fieldState.invalid}
                 aria-describedby={
                   fieldState.error ? "login-identifier-error" : undefined
@@ -247,16 +248,18 @@ export function LoginForm({
                   htmlFor="login-password"
                   className={fieldLabelClass}
                 >
-                  {t.passwordLabel}
+                  {t("login.passwordLabel")}
                 </FieldLabel>
-                <TextLink href="/forgot-password">{t.forgotPassword}</TextLink>
+                <TextLink href="/forgot-password">
+                  {t("login.forgotPassword")}
+                </TextLink>
               </div>
               <PasswordInput
                 {...field}
                 id="login-password"
                 icon={<Lock />}
                 autoComplete="current-password"
-                placeholder={t.passwordPlaceholder}
+                placeholder={t("login.passwordPlaceholder")}
                 aria-invalid={fieldState.invalid}
                 aria-describedby={
                   fieldState.error ? "login-password-error" : undefined
@@ -289,7 +292,7 @@ export function LoginForm({
                 htmlFor="login-remember"
                 className="text-foreground/85 text-sm font-normal"
               >
-                {t.rememberMe}
+                {t("login.rememberMe")}
               </FieldLabel>
             </Field>
           )}
@@ -299,15 +302,25 @@ export function LoginForm({
           type="submit"
           disabled={busy}
           pending={busy}
-          ur={wrongPassword ? t.retryUr : t.submitUr}
+          subline={
+            wrongPassword ? t("login.retrySubline") : t("login.submitSubline")
+          }
         >
-          {busy ? t.submitting : wrongPassword ? t.retry : t.submit}
+          {busy
+            ? t("login.submitting")
+            : wrongPassword
+              ? t("login.retry")
+              : t("login.submit")}
         </PrimaryButton>
       </form>
 
       <div className="flex flex-col gap-0.5 text-center">
-        <span className="text-muted-foreground text-[13px]">{t.staffHint}</span>
-        <SubLine className="text-center text-xs">{t.staffHintUr}</SubLine>
+        <span className="text-muted-foreground text-[13px]">
+          {t("login.staffHint")}
+        </span>
+        <SubLine className="text-center text-xs">
+          {t("login.staffHintSubline")}
+        </SubLine>
       </div>
     </AuthCard>
   );

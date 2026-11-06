@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -15,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { toApiError } from "@/lib/api-error";
 import { generalErrorMessage } from "../form-errors";
 import { type StaffStatusAction, useStaffStatus } from "../hooks";
-import { staffText } from "../text";
 import type { StaffMember } from "../types";
 
 /** Deactivate / Activate confirmation that explains what happens. */
@@ -28,8 +28,8 @@ export function StatusDialog({
   action: StaffStatusAction;
   onClose: () => void;
 }) {
+  const t = useTranslations("staff");
   const mutation = useStaffStatus();
-  const t = staffText.status[action];
   const pending = mutation.isPending;
 
   const confirm = () => {
@@ -38,12 +38,12 @@ export function StatusDialog({
       { id: member.id, action },
       {
         onSuccess: (updated) => {
-          toast.success(t.done(updated.name));
+          toast.success(t(`status.${action}.done`, { name: updated.name }));
           onClose();
         },
         onError: (error) => {
           // e.g. CANNOT_DEACTIVATE_SELF or "A shop needs at least one owner".
-          toast.error(generalErrorMessage(toApiError(error)));
+          toast.error(generalErrorMessage(toApiError(error), t));
         },
       },
     );
@@ -59,13 +59,15 @@ export function StatusDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            {t.title(member.name)}
+            {t(`status.${action}.title`, { name: member.name })}
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>
+            {t(`status.${action}.body`)}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>
-            {staffText.status.cancel}
+            {t("status.cancel")}
           </AlertDialogCancel>
           <Button
             variant={action === "deactivate" ? "destructive" : "default"}
@@ -75,7 +77,9 @@ export function StatusDialog({
             className="gap-2"
           >
             {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {pending ? t.pending : t.confirm}
+            {pending
+              ? t(`status.${action}.pending`)
+              : t(`status.${action}.confirm`)}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

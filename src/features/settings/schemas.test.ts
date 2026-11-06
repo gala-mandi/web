@@ -1,15 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
   sampleBillNumber,
-  settingsSchema,
+  settingsSchema as makeSettingsSchema,
   type SettingsValues,
   toFormValues,
   toUpdateInput,
 } from "./schemas";
-import { settingsText } from "./text";
+import { testTranslator } from "@/test/intl";
 import { shopSettings } from "./test-data";
 
-const e = settingsText.errors;
+const t = testTranslator("settings");
+const settingsSchema = makeSettingsSchema(t);
+
 const valid = toFormValues(shopSettings());
 
 /** The first error message for `field`, or undefined when it is valid. */
@@ -32,36 +34,42 @@ describe("settingsSchema", () => {
   });
 
   it("needs a shop name of 2 to 120 characters", () => {
-    expect(errorOf({ name: " A " }, "name")).toBe(e.nameRequired);
-    expect(errorOf({ name: "x".repeat(121) }, "name")).toBe(e.tooLong(120));
+    expect(errorOf({ name: " A " }, "name")).toBe(t("errors.nameRequired"));
+    expect(errorOf({ name: "x".repeat(121) }, "name")).toBe(
+      t("errors.tooLong", { max: 120 }),
+    );
     expect(errorOf({ name: "AB" }, "name")).toBeUndefined();
   });
 
   it("needs a Pakistani mobile number in any common spelling", () => {
-    expect(errorOf({ phone: "" }, "phone")).toBe(e.phoneRequired);
-    expect(errorOf({ phone: "12345" }, "phone")).toBe(e.phoneInvalid);
+    expect(errorOf({ phone: "" }, "phone")).toBe(t("errors.phoneRequired"));
+    expect(errorOf({ phone: "12345" }, "phone")).toBe(t("errors.phoneInvalid"));
     expect(errorOf({ phone: "+92 301 1234567" }, "phone")).toBeUndefined();
     expect(errorOf({ phone: "0301-1234567" }, "phone")).toBeUndefined();
   });
 
   it("allows an empty email but not a bad one", () => {
     expect(errorOf({ email: "" }, "email")).toBeUndefined();
-    expect(errorOf({ email: "not-an-email" }, "email")).toBe(e.emailInvalid);
+    expect(errorOf({ email: "not-an-email" }, "email")).toBe(
+      t("errors.emailInvalid"),
+    );
   });
 
   it("limits the free-text fields", () => {
-    expect(errorOf({ city: "x".repeat(81) }, "city")).toBe(e.tooLong(80));
+    expect(errorOf({ city: "x".repeat(81) }, "city")).toBe(
+      t("errors.tooLong", { max: 80 }),
+    );
     expect(errorOf({ address: "x".repeat(501) }, "address")).toBe(
-      e.tooLong(500),
+      t("errors.tooLong", { max: 500 }),
     );
     expect(errorOf({ displayName: "x".repeat(121) }, "displayName")).toBe(
-      e.tooLong(120),
+      t("errors.tooLong", { max: 120 }),
     );
     expect(errorOf({ parchiFooter: "x".repeat(500) }, "parchiFooter")).toBe(
       undefined,
     );
     expect(errorOf({ parchiFooter: "x".repeat(501) }, "parchiFooter")).toBe(
-      e.tooLong(500),
+      t("errors.tooLong", { max: 500 }),
     );
   });
 
@@ -80,17 +88,25 @@ describe("settingsSchema", () => {
     (value) => {
       expect(
         errorOf({ defaultCommissionPct: value }, "defaultCommissionPct"),
-      ).toBe(e.percent);
-      expect(errorOf({ marketFeePct: value }, "marketFeePct")).toBe(e.percent);
+      ).toBe(t("errors.percent"));
+      expect(errorOf({ marketFeePct: value }, "marketFeePct")).toBe(
+        t("errors.percent"),
+      );
     },
   );
 
   it("takes labour per bag in rupees with up to 2 decimals", () => {
     expect(errorOf({ labourPerBag: "15" }, "labourPerBag")).toBeUndefined();
     expect(errorOf({ labourPerBag: "15.5" }, "labourPerBag")).toBeUndefined();
-    expect(errorOf({ labourPerBag: "15.555" }, "labourPerBag")).toBe(e.money);
-    expect(errorOf({ labourPerBag: "-1" }, "labourPerBag")).toBe(e.money);
-    expect(errorOf({ labourPerBag: "" }, "labourPerBag")).toBe(e.money);
+    expect(errorOf({ labourPerBag: "15.555" }, "labourPerBag")).toBe(
+      t("errors.money"),
+    );
+    expect(errorOf({ labourPerBag: "-1" }, "labourPerBag")).toBe(
+      t("errors.money"),
+    );
+    expect(errorOf({ labourPerBag: "" }, "labourPerBag")).toBe(
+      t("errors.money"),
+    );
   });
 
   it("takes kg per maund above 0 with up to 3 decimals", () => {
@@ -98,7 +114,7 @@ describe("settingsSchema", () => {
       expect(errorOf({ maundKg: ok }, "maundKg")).toBeUndefined();
     }
     for (const bad of ["0", "0.000", "", "1000", "40.0001", "-40", "forty"]) {
-      expect(errorOf({ maundKg: bad }, "maundKg")).toBe(e.maundKg);
+      expect(errorOf({ maundKg: bad }, "maundKg")).toBe(t("errors.maundKg"));
     }
   });
 
@@ -115,10 +131,14 @@ describe("settingsSchema", () => {
     for (const ok of ["", "MND", "GM-26", "26/27"]) {
       expect(errorOf({ billPrefix: ok }, "billPrefix")).toBeUndefined();
     }
-    expect(errorOf({ billPrefix: "MN D" }, "billPrefix")).toBe(e.billPrefix);
-    expect(errorOf({ billPrefix: "مندی" }, "billPrefix")).toBe(e.billPrefix);
+    expect(errorOf({ billPrefix: "MN D" }, "billPrefix")).toBe(
+      t("errors.billPrefix"),
+    );
+    expect(errorOf({ billPrefix: "مندی" }, "billPrefix")).toBe(
+      t("errors.billPrefix"),
+    );
     expect(errorOf({ billPrefix: "ABCDEFGHIJK" }, "billPrefix")).toBe(
-      e.tooLong(10),
+      t("errors.tooLong", { max: 10 }),
     );
   });
 
@@ -131,10 +151,10 @@ describe("settingsSchema", () => {
     ).toBeUndefined();
     expect(
       errorOf({ financialYearStart: "2026-13-01" }, "financialYearStart"),
-    ).toBe(e.date);
+    ).toBe(t("errors.date"));
     expect(
       errorOf({ financialYearStart: "01/07/2026" }, "financialYearStart"),
-    ).toBe(e.date);
+    ).toBe(t("errors.date"));
   });
 });
 
