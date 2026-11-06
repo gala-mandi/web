@@ -20,6 +20,22 @@ describe("breadcrumbsFor", () => {
     ]);
   });
 
+  it("links each report back to the Reports hub", () => {
+    expect(breadcrumbsFor("/reports/cash-book", owner)).toEqual([
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Reports", href: "/reports" },
+      { label: "Cash book", href: null },
+    ]);
+    expect(breadcrumbsFor("/reports/daily-summary", manager).at(-1)).toEqual({
+      label: "Daily summary",
+      href: null,
+    });
+    expect(breadcrumbsFor("/reports/unknown", owner).at(-1)).toEqual({
+      label: "Reports",
+      href: null,
+    });
+  });
+
   it("keeps the section as the last crumb on the list itself", () => {
     expect(breadcrumbsFor("/traders", owner)).toEqual([
       { label: "Dashboard", href: "/dashboard" },

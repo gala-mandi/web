@@ -8,7 +8,8 @@ import {
   shopSettings,
 } from "./mock-api";
 
-const ownerMenu = [
+/** Menu items; `heading` when the page's own title differs (Payments opens on the cash book). */
+const ownerMenu: { name: string; path: string; heading?: string }[] = [
   { name: "Dashboard", path: "/dashboard" },
   { name: "Daily rates", path: "/rates" },
   { name: "Purchases", path: "/purchases" },
@@ -16,7 +17,7 @@ const ownerMenu = [
   { name: "Traders", path: "/traders" },
   { name: "Commodities", path: "/commodities" },
   { name: "Ledger", path: "/ledger" },
-  { name: "Payments", path: "/payments" },
+  { name: "Payments", path: "/payments", heading: "Cash book" },
   { name: "Reports", path: "/reports" },
   { name: "Staff", path: "/staff" },
   { name: "Settings", path: "/settings" },
@@ -88,7 +89,7 @@ test.describe("shop panel layout", () => {
     for (const item of ownerMenu) {
       await mainMenu(page).getByRole("link", { name: item.name }).click();
       await expect(page).toHaveURL(item.path);
-      await expect(pageHeading(page, item.name)).toBeVisible();
+      await expect(pageHeading(page, item.heading ?? item.name)).toBeVisible();
       await expect(
         mainMenu(page).getByRole("link", { name: item.name }),
       ).toHaveAttribute("aria-current", "page");
@@ -162,7 +163,7 @@ test.describe("shop panel layout", () => {
 
     await expect(page).toHaveURL("/payments");
     await expect(palette).toBeHidden();
-    await expect(pageHeading(page, "Payments")).toBeVisible();
+    await expect(pageHeading(page, "Cash book")).toBeVisible();
 
     await page.getByRole("button", { name: "Search pages" }).click();
     await expect(palette).toBeVisible();

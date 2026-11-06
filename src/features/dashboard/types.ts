@@ -56,38 +56,86 @@ export interface DailySummary {
 export type ReportGroup = "day" | "commodity" | "trader";
 
 interface LineMetrics {
+  /** Posted bills counted (a bill with two commodities counts in both rows). */
   bills: number;
   bags: number;
+  /** kg, 3 decimals, e.g. "1000.000". */
   weightKg: string;
+  /** Sum of the item amounts: the bills' gross amount. */
   grossAmount: string;
   /** Bill-level; `null` when bills are split by commodity. */
   netAmount: string | null;
 }
 
-/** One group of a purchases or sales report: a day, or a commodity or trader. */
-export interface BookRow extends LineMetrics {
+/** A purchases row or total: what the kissans are owed (`netAmount`). */
+export interface PurchaseMetrics extends LineMetrics {
+  /** Bill-level; `null` when bills are split by commodity. */
+  totalDeductions: string | null;
+}
+
+/** A sales row or total: what the beoparis owe (`netAmount`). */
+export interface SaleMetrics extends LineMetrics {
+  /** Bill-level; `null` when bills are split by commodity. */
+  totalCharges: string | null;
+}
+
+interface GroupKey {
   /** The date for days; the id for commodities and traders. */
   key: string;
   /** The date for days; the name for commodities and traders. */
   label: string;
 }
 
-/** `GET /reports/purchases` and `GET /reports/sales` (shared fields). */
-export interface BookReport {
+/** One group of a purchases or sales report: a day, or a commodity or trader. */
+export type BookRow<M extends LineMetrics = LineMetrics> = M & GroupKey;
+
+/** `GET /reports/purchases` and `GET /reports/sales`. */
+export interface BookReport<M extends LineMetrics = LineMetrics> {
   from: string;
   to: string;
   groupBy: ReportGroup;
   commodity: string | null;
   trader: string | null;
   /** Only groups with bills; days oldest first, names A–Z. */
-  rows: BookRow[];
-  totals: LineMetrics;
+  rows: BookRow<M>[];
+  totals: M;
 }
 
-export interface BookReportQuery {
+export type PurchasesReport = BookReport<PurchaseMetrics>;
+export type SalesReport = BookReport<SaleMetrics>;
+
+/** `from`/`to` are Asia/Karachi days, both included; at most 366 days. */
+export interface ReportRange {
   from: string;
   to: string;
+}
+
+export interface BookReportQuery extends ReportRange {
   groupBy: ReportGroup;
+  /** Only the lines of this commodity (id). */
+  commodity?: string;
+  /** Only the bills of this kissan (purchases) or beopari (sales) (id). */
+  trader?: string;
+}
+
+/** `GET /reports/commission`: commission charged on posted bills. */
+export interface CommissionReport {
+  from: string;
+  to: string;
+  /** Days with commission, oldest first. */
+  days: (Sides & { date: string })[];
+  /** The shop's commission income for the range. */
+  totals: Sides;
+  /** Other charge lines of the same bills; not shop income. */
+  otherCharges: { marketFee: Sides; labour: Sides; other: Sides };
+}
+
+export interface OutstandingQuery {
+  /** Balances at the end of this day; everything so far when left out. */
+  asOf?: string;
+  type?: TraderType;
+  /** Largest N of each side; every trader when left out. */
+  limit?: number;
 }
 
 export interface OutstandingTrader {
@@ -107,7 +155,7 @@ export interface OutstandingSide {
   traders: OutstandingTrader[];
 }
 
-/** `GET /reports/outstanding?limit=` */
+/** `GET /reports/outstanding?asOf=&type=&limit=` */
 export interface OutstandingReport {
   asOf: string | null;
   /** Traders who owe the shop. */

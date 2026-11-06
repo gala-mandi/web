@@ -28,7 +28,12 @@ import {
   salesByDay,
   TODAY,
 } from "../test-data";
-import type { BookReportQuery } from "../types";
+import type {
+  BookReport,
+  BookReportQuery,
+  PurchasesReport,
+  SalesReport,
+} from "../types";
 import { Dashboard } from "./dashboard";
 
 vi.mock("../api", () => ({
@@ -44,10 +49,11 @@ vi.mock("@/features/rates/api", () => ({
 }));
 vi.mock("@/features/commodities/api", () => ({ listCommodities: vi.fn() }));
 
+/** Either report for either mock: the dashboard reads the shared fields. */
 const byGroup =
-  (day: typeof purchasesByDay, commodity: typeof purchasesByDay) =>
-  async (query: BookReportQuery) =>
-    query.groupBy === "commodity" ? commodity : day;
+  (day: BookReport, commodity: BookReport) => async (query: BookReportQuery) =>
+    (query.groupBy === "commodity" ? commodity : day) as PurchasesReport &
+      SalesReport;
 
 function mockShop() {
   vi.mocked(getDailySummary).mockResolvedValue(dailySummary);
@@ -144,7 +150,10 @@ describe("Dashboard", () => {
         { ...range, groupBy: "commodity" },
         expect.anything(),
       );
-      expect(getOutstanding).toHaveBeenCalledWith(10, expect.anything());
+      expect(getOutstanding).toHaveBeenCalledWith(
+        { limit: 10 },
+        expect.anything(),
+      );
       // Purchases ranked the commodities, so sales are not asked.
       expect(getSalesReport).not.toHaveBeenCalledWith(
         expect.objectContaining({ groupBy: "commodity" }),

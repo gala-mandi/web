@@ -1,5 +1,5 @@
 import type { Role } from "@/features/auth/types";
-import type { PanelSection } from "@/lib/routes";
+import type { PanelSection, ReportSlug } from "@/lib/routes";
 
 /**
  * Every user-facing string of the panel shell and its placeholder pages. Kept
@@ -65,7 +65,8 @@ export const panelText = {
     },
     reports: {
       label: "Reports",
-      description: "Daily, monthly and trader reports.",
+      description:
+        "Daily summary, purchases, sales, commission, outstanding and cash book.",
     },
     staff: {
       label: "Staff",
@@ -88,6 +89,14 @@ export const panelText = {
     balances: "Balances",
     newVoucher: "New voucher",
     voucher: "Voucher",
+    reports: {
+      "daily-summary": "Daily summary",
+      purchases: "Purchases",
+      sales: "Sales",
+      commission: "Commission",
+      outstanding: "Outstanding",
+      "cash-book": "Cash book",
+    } satisfies Record<ReportSlug, string>,
   },
   comingSoon: {
     title: "Nothing here yet",
