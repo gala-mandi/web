@@ -84,12 +84,33 @@ export const paymentRoutes = {
   /** The cash book of one day. */
   cashBookOf: (day: string) =>
     `${panelRoutes.payments}?from=${encodeURIComponent(day)}&to=${encodeURIComponent(day)}`,
+  /** The cash book (and its cash vouchers) of `from`..`to`. */
+  cashBookRange: (from: string, to: string) =>
+    `${panelRoutes.payments}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
   new: (direction: "paid" | "received") =>
     `${panelRoutes.payments}/new?direction=${direction}`,
   detail: (id: string) => `${panelRoutes.payments}/${encodeURIComponent(id)}`,
   /** The voucher, opening the print dialog once it has loaded. */
   print: (id: string) =>
     `${panelRoutes.payments}/${encodeURIComponent(id)}?print=1`,
+} as const;
+
+/** The reports below `/reports`, in the hub's order. */
+export const reportSlugs = [
+  "daily-summary",
+  "purchases",
+  "sales",
+  "commission",
+  "outstanding",
+  "cash-book",
+] as const;
+
+export type ReportSlug = (typeof reportSlugs)[number];
+
+/** Pages of the Reports section: the hub and one page per report. */
+export const reportRoutes = {
+  hub: panelRoutes.reports,
+  report: (slug: ReportSlug) => `${panelRoutes.reports}/${slug}`,
 } as const;
 
 export const panelSections = Object.keys(panelRoutes) as PanelSection[];

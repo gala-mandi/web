@@ -1,5 +1,11 @@
 import type { User } from "@/features/auth/types";
-import { type PanelSection, panelRoutes, sectionOf } from "@/lib/routes";
+import {
+  type PanelSection,
+  panelRoutes,
+  type ReportSlug,
+  reportSlugs,
+  sectionOf,
+} from "@/lib/routes";
 import { landingItemFor, menuItem } from "./menu";
 import { panelText } from "./text";
 
@@ -74,6 +80,10 @@ const detailCrumbs: Partial<
     panelText.crumbs.sale,
     panelText.crumbs.editSale,
   ),
+  reports: (parts) =>
+    parts.length === 1 && (reportSlugs as readonly string[]).includes(parts[0])
+      ? panelText.crumbs.reports[parts[0] as ReportSlug]
+      : null,
   // Vouchers are never edited (cancel instead): `new` and `:id` only.
   payments: (parts) =>
     parts.length === 1
