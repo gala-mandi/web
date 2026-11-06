@@ -2,7 +2,8 @@
 
 import { ArrowRight, LayoutDashboard, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { type Permission, useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
+import type { Permission } from "@/lib/can";
 
 export interface EmptyStep {
   key: string;
@@ -60,7 +61,7 @@ export function DashboardEmpty({
 }
 
 function Step({ step }: { step: EmptyStep }) {
-  const allowed = useCan(step.permission);
+  const allowed = useCanWrite(step.permission);
   if (!allowed) return null;
   const Icon = step.icon;
   return (

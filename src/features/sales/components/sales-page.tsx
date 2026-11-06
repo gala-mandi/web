@@ -28,7 +28,7 @@ import { toApiError } from "@/lib/api-error";
 import { ReprintOutlet } from "@/features/parchi/components/reprint-outlet";
 import { useReprint } from "@/features/parchi/hooks";
 import { saleParchi } from "@/features/parchi/parchi";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
 import { saleRoutes } from "@/lib/routes";
 import { purchaseStatusText } from "@/features/purchases/text";
@@ -71,9 +71,9 @@ export function SalesPage() {
 function SalesList() {
   const router = useRouter();
   const section = panelText.sections.sales;
-  const canCreate = useCan("sale.create");
-  const canEdit = useCan("sale.edit");
-  const canCancel = useCan("sale.delete");
+  const canCreate = useCanWrite("sale.create");
+  const canEdit = useCanWrite("sale.edit");
+  const canCancel = useCanWrite("sale.delete");
   const [cancelling, setCancelling] = useState<SaleSummary | null>(null);
   const load = useSaleLoader();
   const reprinter = useReprint(async (id) => saleParchi(await load(id)));

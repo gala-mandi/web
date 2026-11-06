@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { panelText } from "@/features/panel/text";
+import { PlanUsage } from "@/features/subscription/components/plan-usage";
 import { staffText } from "../text";
 import { InvitationsTable } from "./invitations-table";
 import { InviteDialog } from "./invite-dialog";
@@ -22,6 +23,7 @@ export function StaffPage() {
           description={section.description}
           actions={<InviteDialog />}
         />
+        <PlanUsage />
         <Tabs defaultValue="staff" className="gap-4">
           <TabsList aria-label={t.label}>
             <TabsTrigger value="staff">{t.staff}</TabsTrigger>

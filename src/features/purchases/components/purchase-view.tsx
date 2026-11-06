@@ -16,6 +16,7 @@ import { toApiError } from "@/lib/api-error";
 import { BillParchi } from "@/features/parchi/components/bill-parchi";
 import { purchaseParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { formatDate, formatRs } from "@/lib/format";
 import { purchaseRoutes, traderRoutes } from "@/lib/routes";
 import { usePurchase } from "../hooks";
@@ -76,8 +77,8 @@ export function PurchaseSkeleton() {
 }
 
 function PurchaseView({ purchase }: { purchase: Purchase }) {
-  const canEdit = useCan("purchase.edit");
-  const canCancel = useCan("purchase.delete");
+  const canEdit = useCanWrite("purchase.edit");
+  const canCancel = useCanWrite("purchase.delete");
   const canOpenTrader = useCan("trader.manage");
   const [cancelling, setCancelling] = useState(false);
   const active = purchase.status !== "cancelled";

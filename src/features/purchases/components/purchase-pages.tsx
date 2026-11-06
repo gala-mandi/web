@@ -26,7 +26,7 @@ export function NewPurchasePage() {
   // Read once: a form left open past midnight keeps its own day.
   const [today] = useState(() => karachiToday());
   return (
-    <RequirePermission permission="purchase.create">
+    <RequirePermission permission="purchase.create" write>
       <div className="flex flex-col gap-6">
         <PageHeader title={t.newTitle} description={t.newDescription} />
         <PurchaseForm today={today} />
@@ -38,7 +38,7 @@ export function NewPurchasePage() {
 /** `/purchases/:id/edit`: `purchase.edit` (owner, manager). */
 export function EditPurchasePage({ id }: { id: string }) {
   return (
-    <RequirePermission permission="purchase.edit">
+    <RequirePermission permission="purchase.edit" write>
       <EditPurchase id={id} />
     </RequirePermission>
   );

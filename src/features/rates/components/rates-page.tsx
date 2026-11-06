@@ -15,7 +15,7 @@ import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { panelText } from "@/features/panel/text";
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 import { toApiError } from "@/lib/api-error";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { formatDate } from "@/lib/format";
 import { panelRoutes } from "@/lib/routes";
 import { useEveryCommodity, usePastDayRates, useTodayRates } from "../hooks";
@@ -43,8 +43,8 @@ export function RatesPage() {
  */
 function DailyRates() {
   const section = panelText.sections.rates;
-  const canManage = useCan("rate.manage");
-  const canAddCommodities = useCan("commodity.manage");
+  const canManage = useCanWrite("rate.manage");
+  const canAddCommodities = useCanWrite("commodity.manage");
   const [dirty, setDirty] = useState(false);
   const [dateParam, setDateParam] = useQueryState("date", parseAsString);
 

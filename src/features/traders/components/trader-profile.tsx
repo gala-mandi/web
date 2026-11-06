@@ -13,7 +13,7 @@ import {
   NotFoundState,
 } from "@/features/panel/components/status-pages";
 import { toApiError } from "@/lib/api-error";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { formatDate, formatRs } from "@/lib/format";
 import { traderRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -79,7 +79,7 @@ function ProfileSkeleton() {
 }
 
 function Profile({ trader }: { trader: TraderDetail }) {
-  const canManage = useCan("trader.manage");
+  const canManage = useCanWrite("trader.manage");
   const [editing, setEditing] = useState(false);
   const f = t.fields;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, Loader2, UserPlus } from "lucide-react";
+import { AlertCircle, Loader2, UserPlus, Users } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCanWrite, useSubscription } from "@/features/subscription/hooks";
+import { USER_LIMIT_CODE } from "@/features/subscription/keys";
+import { subscriptionText } from "@/features/subscription/text";
 import { toApiError } from "@/lib/api-error";
 import { applyServerErrors, generalErrorMessage } from "../form-errors";
 import { useInviteStaff } from "../hooks";
@@ -56,8 +59,35 @@ export const inputClass = "rounded-field h-11 bg-card";
  * invite link or temporary password is shown once, then forgotten.
  */
 export function InviteDialog() {
+  const canInvite = useCanWrite("staff.manage");
+  return canInvite ? <InviteDialogInner /> : null;
+}
+
+/** "Your plan is full" with the plan's limit (403 `PLAN_USER_LIMIT`). */
+function PlanLimitAlert() {
+  const plan = useSubscription().data?.subscription?.plan;
+  const lt = subscriptionText.limit;
+  return (
+    <div
+      role="alert"
+      data-testid="plan-limit-alert"
+      className="bg-notice-soft text-notice flex items-start gap-3 rounded-xl border border-orange-200 px-3.5 py-3"
+    >
+      <Users aria-hidden className="mt-0.5 size-4 flex-none" />
+      <div className="flex flex-col gap-0.5">
+        <span className="text-[13px] font-bold">{lt.title}</span>
+        <span className="text-[13px]/relaxed">
+          {plan ? lt.body(plan.name, plan.maxUsers) : lt.bodyUnknown}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function InviteDialogInner() {
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const invite = useInviteStaff();
   const inFlight = useRef(false);
 
@@ -70,16 +100,22 @@ export function InviteDialog() {
   const close = () => {
     setOpen(false);
     setFormError(null);
+    setLimitReached(false);
     form.reset(emptyInvite);
   };
 
   const submit = async (values: InviteValues) => {
     setFormError(null);
+    setLimitReached(false);
     try {
       await invite.mutateAsync(toInviteInput(values));
       close();
     } catch (error) {
       const e = toApiError(error);
+      if (e.code === USER_LIMIT_CODE) {
+        setLimitReached(true);
+        return;
+      }
       if (!applyServerErrors(e, form.setError, inviteFields)) {
         setFormError(generalErrorMessage(e));
       }
@@ -132,6 +168,7 @@ export function InviteDialog() {
             aria-busy={busy || undefined}
             className="flex flex-col gap-5"
           >
+            {limitReached ? <PlanLimitAlert /> : null}
             {formError ? (
               <div
                 role="alert"

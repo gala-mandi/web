@@ -19,7 +19,7 @@ import { RequirePermission } from "@/features/panel/components/require-permissio
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { panelText } from "@/features/panel/text";
 import { toApiError } from "@/lib/api-error";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
 import { useCommodities } from "../hooks";
 import {
@@ -81,8 +81,8 @@ export function CommoditiesPage() {
  */
 function CommoditiesList() {
   const section = panelText.sections.commodities;
-  const canManage = useCan("commodity.manage");
-  const canDelete = useCan("commodity.delete");
+  const canManage = useCanWrite("commodity.manage");
+  const canDelete = useCanWrite("commodity.delete");
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
   // Kept while the sheet closes, so its content doesn't jump.
   const [formCommodity, setFormCommodity] = useState<Commodity | null>(null);

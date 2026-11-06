@@ -1,5 +1,6 @@
 "use client";
 
+import { useReadOnly } from "@/features/subscription/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { type FormEvent, type ReactNode, useRef, useState } from "react";
@@ -59,6 +60,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
   const values = useWatch({ control: form.control });
   const { isDirty, isSubmitting } = form.formState;
   const busy = isSubmitting || update.isPending;
+  // Read-only shop: settings can be viewed, not saved (the server refuses).
+  const readOnly = useReadOnly();
 
   const submit = async (data: SettingsValues) => {
     setFormError(null);
@@ -270,7 +273,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
           </Button>
           <Button
             type="submit"
-            disabled={!isDirty || busy}
+            disabled={!isDirty || busy || readOnly}
             className="gap-2 font-semibold"
           >
             {busy ? <Loader2 aria-hidden className="animate-spin" /> : null}

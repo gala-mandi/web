@@ -1,4 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { toast } from "sonner";
 import type { Session } from "@/features/auth/types";
 import { toApiError } from "@/lib/api-error";
 import {
@@ -7,6 +8,9 @@ import {
   startSession,
 } from "@/lib/auth-session";
 import { env } from "@/lib/env";
+import { getQueryClient } from "@/lib/query-client";
+import { READ_ONLY_CODE, subscriptionKeys } from "@/features/subscription/keys";
+import { subscriptionText } from "@/features/subscription/text";
 import { useSessionStore } from "@/stores/session";
 
 /** The only HTTP client for the server API. */
@@ -65,6 +69,12 @@ function bearerOf(config: InternalAxiosRequestConfig): string | null {
   return header.slice("Bearer ".length);
 }
 
+/** Shows the read-only toast once (same id) and refreshes the plan state. */
+export function notifyReadOnly(): void {
+  toast.error(subscriptionText.toast.readOnly, { id: READ_ONLY_CODE });
+  void getQueryClient().invalidateQueries({ queryKey: subscriptionKeys.all });
+}
+
 api.interceptors.request.use((config) => {
   const token = useSessionStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -78,6 +88,13 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
 
   if (status === 403 && blockedPageFor(toApiError(error).code)) {
     handleAuthFailure(error);
+    throw error;
+  }
+
+  // The plan ran out while this page was open: one friendly toast for every
+  // refused write, and the banner/buttons switch to read-only mode.
+  if (status === 403 && toApiError(error).code === READ_ONLY_CODE) {
+    notifyReadOnly();
     throw error;
   }
 

@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { toApiError } from "@/lib/api-error";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { karachiToday } from "@/lib/format";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -74,7 +74,7 @@ export function CashBookPage() {
 function CashBookView() {
   const router = useRouter();
   const [today] = useState(() => karachiToday());
-  const canCreate = useCan("payment.create");
+  const canCreate = useCanWrite("payment.create");
   const list = useDataTableState({
     filters: cashBookFilters,
     sortFields: paymentSortFields,

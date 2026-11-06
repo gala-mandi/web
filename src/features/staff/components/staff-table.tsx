@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
+import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
 import { formatDateTime } from "@/lib/format";
 import { type StaffStatusAction, useStaff } from "../hooks";
@@ -160,6 +161,12 @@ export function StaffTable() {
   const query = useStaff();
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
   const columns = useMemo(() => staffColumns(setDialog), []);
+  // Read-only shop: no role, activate or cancel buttons (the server refuses).
+  const readOnly = useReadOnly();
+  const visibleColumns = useMemo(
+    () => (readOnly ? columns.filter((c) => c.id !== "actions") : columns),
+    [columns, readOnly],
+  );
   const paged = useClientPage(query.data);
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -172,7 +179,7 @@ export function StaffTable() {
     <>
       <DataTable<StaffMember>
         caption={t.caption}
-        columns={columns}
+        columns={visibleColumns}
         data={paged.page}
         getRowId={(row) => row.id}
         rowCount={paged.rowCount}

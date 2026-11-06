@@ -28,7 +28,7 @@ import { toApiError } from "@/lib/api-error";
 import { ReprintOutlet } from "@/features/parchi/components/reprint-outlet";
 import { useReprint } from "@/features/parchi/hooks";
 import { purchaseParchi } from "@/features/parchi/parchi";
-import { useCan } from "@/lib/can";
+import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
 import { purchaseRoutes } from "@/lib/routes";
 import { usePurchaseLoader, usePurchases } from "../hooks";
@@ -74,9 +74,9 @@ export function PurchasesPage() {
 function PurchasesList() {
   const router = useRouter();
   const section = panelText.sections.purchases;
-  const canCreate = useCan("purchase.create");
-  const canEdit = useCan("purchase.edit");
-  const canCancel = useCan("purchase.delete");
+  const canCreate = useCanWrite("purchase.create");
+  const canEdit = useCanWrite("purchase.edit");
+  const canCancel = useCanWrite("purchase.delete");
   const [cancelling, setCancelling] = useState<PurchaseSummary | null>(null);
   const load = usePurchaseLoader();
   const reprinter = useReprint(async (id) => purchaseParchi(await load(id)));

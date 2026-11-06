@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useMe } from "@/features/auth/hooks";
+import { SubscriptionBanner } from "@/features/subscription/components/subscription-banner";
 import { useSessionStore } from "@/stores/session";
 import { useParchiPrefs } from "@/stores/parchi";
 import { useUiStore } from "@/stores/ui";
@@ -45,6 +46,7 @@ export function PanelShell({ children }: { children: ReactNode }) {
           tabIndex={-1}
           className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 p-4 outline-none sm:p-6 lg:p-8"
         >
+          <SubscriptionBanner />
           {children}
         </div>
       </SidebarInset>
