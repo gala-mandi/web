@@ -84,6 +84,7 @@ export const panelText = {
     newSale: "New sale",
     sale: "Sale",
     editSale: "Edit sale",
+    balances: "Balances",
   },
   comingSoon: {
     title: "Nothing here yet",

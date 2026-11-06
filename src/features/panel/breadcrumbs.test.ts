@@ -12,6 +12,14 @@ describe("breadcrumbsFor", () => {
     expect(breadcrumbsFor("/traders/abc-123/", manager)).toHaveLength(3);
   });
 
+  it("links the balances page back to the Ledger", () => {
+    expect(breadcrumbsFor("/ledger/balances", manager)).toEqual([
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Ledger", href: "/ledger" },
+      { label: "Balances", href: null },
+    ]);
+  });
+
   it("keeps the section as the last crumb on the list itself", () => {
     expect(breadcrumbsFor("/traders", owner)).toEqual([
       { label: "Dashboard", href: "/dashboard" },

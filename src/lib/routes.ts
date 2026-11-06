@@ -64,6 +64,16 @@ export const saleRoutes = {
     `${panelRoutes.sales}/${encodeURIComponent(id)}?print=1`,
 } as const;
 
+/** Pages of the Ledger section. */
+export const ledgerRoutes = {
+  /** The khata page; with a trader, that trader's statement. */
+  khata: (traderId?: string) =>
+    traderId
+      ? `${panelRoutes.ledger}?trader=${encodeURIComponent(traderId)}`
+      : panelRoutes.ledger,
+  balances: `${panelRoutes.ledger}/balances`,
+} as const;
+
 export const panelSections = Object.keys(panelRoutes) as PanelSection[];
 
 /**
