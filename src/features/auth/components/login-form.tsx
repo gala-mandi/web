@@ -31,7 +31,7 @@ import {
   PasswordInput,
   PrimaryButton,
   TextLink,
-  UrduLine,
+  SubLine,
 } from "./auth-ui";
 import { LockedOut } from "./locked-out";
 
@@ -162,9 +162,9 @@ export function LoginForm({
             <span className="text-muted-foreground text-[13px]">
               {t.sessionExpired.body}
             </span>
-            <UrduLine className="text-start text-xs">
+            <SubLine className="text-start text-xs">
               {t.sessionExpired.ur}
-            </UrduLine>
+            </SubLine>
           </div>
         </div>
       ) : null}
@@ -192,9 +192,9 @@ export function LoginForm({
               </span>
             ) : null}
             {failure.kind === "credentials" ? (
-              <UrduLine className="text-start text-xs">
+              <SubLine className="text-start text-xs">
                 {t.errors.invalidCredentialsUr}
-              </UrduLine>
+              </SubLine>
             ) : null}
           </div>
         </div>
@@ -307,7 +307,7 @@ export function LoginForm({
 
       <div className="flex flex-col gap-0.5 text-center">
         <span className="text-muted-foreground text-[13px]">{t.staffHint}</span>
-        <UrduLine className="text-center text-xs">{t.staffHintUr}</UrduLine>
+        <SubLine className="text-center text-xs">{t.staffHintUr}</SubLine>
       </div>
     </AuthCard>
   );

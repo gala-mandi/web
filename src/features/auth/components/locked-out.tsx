@@ -4,7 +4,7 @@ import { Clock, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
 import { lockedText } from "../text";
 import { formatClock, useCountdown } from "../use-countdown";
-import { AuthCard, PrimaryButton, TextLink, UrduLine } from "./auth-ui";
+import { AuthCard, PrimaryButton, TextLink, SubLine } from "./auth-ui";
 
 interface LockedOutProps {
   seconds: number;
@@ -50,7 +50,7 @@ export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
         <p className="text-muted-foreground text-[15px]/relaxed">
           {who ? lockedText.body(who) : lockedText.bodyGeneric}
         </p>
-        <UrduLine>{lockedText.ur}</UrduLine>
+        <SubLine>{lockedText.ur}</SubLine>
       </div>
       <div className="bg-background text-foreground/85 flex w-full gap-2.5 rounded-xl px-3.5 py-3 text-start text-[13px]/normal">
         <ShieldCheck

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2, UserPlus, Users } from "lucide-react";
 import { type FormEvent, useRef, useState } from "react";
@@ -34,7 +35,6 @@ import {
 } from "@/components/ui/select";
 import { useReadOnly, useSubscription } from "@/features/subscription/hooks";
 import { USER_LIMIT_CODE } from "@/features/subscription/keys";
-import { subscriptionText } from "@/features/subscription/text";
 import { toApiError } from "@/lib/api-error";
 import { applyServerErrors, generalErrorMessage } from "../form-errors";
 import { useInviteStaff } from "../hooks";
@@ -66,7 +66,7 @@ export function InviteDialog() {
 /** "Your plan is full" with the plan's limit (403 `PLAN_USER_LIMIT`). */
 function PlanLimitAlert() {
   const plan = useSubscription().data?.subscription?.plan;
-  const lt = subscriptionText.limit;
+  const lt = useTranslations("subscription.limit");
   return (
     <div
       role="alert"
@@ -75,9 +75,11 @@ function PlanLimitAlert() {
     >
       <Users aria-hidden className="mt-0.5 size-4 flex-none" />
       <div className="flex flex-col gap-0.5">
-        <span className="text-[13px] font-bold">{lt.title}</span>
+        <span className="text-[13px] font-bold">{lt("title")}</span>
         <span className="text-[13px]/relaxed">
-          {plan ? lt.body(plan.name, plan.maxUsers) : lt.bodyUnknown}
+          {plan
+            ? lt("body", { plan: plan.name, max: plan.maxUsers })
+            : lt("bodyUnknown")}
         </span>
       </div>
     </div>

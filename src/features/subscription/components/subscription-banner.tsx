@@ -1,9 +1,11 @@
 "use client";
 
 import { CalendarClock, Lock, Sparkles, TriangleAlert, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/format";
+import type { Translator } from "@/i18n/types";
+import { type Formatters, useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { useSessionStore } from "@/stores/session";
 import {
@@ -14,10 +16,7 @@ import {
   subscribeHidden,
 } from "../banner";
 import { useSubscription } from "../hooks";
-import { subscriptionText } from "../text";
 import type { ShopSubscription } from "../types";
-
-const t = subscriptionText.banner;
 
 const tone: Record<BannerKind, string> = {
   trial: "bg-secondary text-secondary-foreground border-primary/15",
@@ -33,17 +32,26 @@ const icons = {
   read_only: Lock,
 } satisfies Record<BannerKind, unknown>;
 
-function message(kind: BannerKind, shop: ShopSubscription): string {
+function message(
+  t: Translator<"subscription.banner">,
+  { formatDate }: Formatters,
+  kind: BannerKind,
+  shop: ShopSubscription,
+): string {
   const sub = shop.subscription;
   if (kind === "read_only")
-    return t.readOnly(sub ? formatDate(sub.endsOn) : "—");
+    return t("readOnly", { endsOn: sub ? formatDate(sub.endsOn) : "—" });
   if (!sub) return "";
   const endsOn = formatDate(sub.endsOn);
   if (kind === "grace") {
-    return t.grace(endsOn, sub.graceDaysLeft, formatDate(sub.graceEndsOn));
+    return t("grace", {
+      endsOn,
+      left: sub.graceDaysLeft,
+      graceEndsOn: formatDate(sub.graceEndsOn),
+    });
   }
-  if (kind === "trial") return t.trial(sub.daysLeft, endsOn);
-  return t.expiring(sub.plan.name, sub.daysLeft, endsOn);
+  if (kind === "trial") return t("trial", { left: sub.daysLeft, endsOn });
+  return t("expiring", { plan: sub.plan.name, left: sub.daysLeft, endsOn });
 }
 
 /**
@@ -52,6 +60,8 @@ function message(kind: BannerKind, shop: ShopSubscription): string {
  * "ending soon" can be hidden until the next (Pakistan) day.
  */
 export function SubscriptionBanner() {
+  const t = useTranslations("subscription.banner");
+  const format = useFormat();
   const query = useSubscription();
   const isOwner = useSessionStore((s) => s.user?.role === "owner");
   // Server HTML has no storage (null), so it matches the first client pass.
@@ -67,7 +77,7 @@ export function SubscriptionBanner() {
 
   return (
     <section
-      aria-label={t.label}
+      aria-label={t("label")}
       role={urgent ? "alert" : "status"}
       data-testid="subscription-banner"
       data-kind={banner.kind}
@@ -78,10 +88,12 @@ export function SubscriptionBanner() {
     >
       <Icon aria-hidden className="mt-0.5 size-[18px] flex-none sm:mt-0" />
       <p className="flex-1 leading-relaxed">
-        <span className="font-semibold">{message(banner.kind, shop)}</span>{" "}
+        <span className="font-semibold">
+          {message(t, format, banner.kind, shop)}
+        </span>{" "}
         {urgent || banner.kind === "expiring" ? (
           <span className="opacity-90">
-            {isOwner ? t.renewOwner : t.renewStaff}
+            {isOwner ? t("renewOwner") : t("renewStaff")}
           </span>
         ) : null}
       </p>
@@ -91,8 +103,8 @@ export function SubscriptionBanner() {
           variant="ghost"
           size="icon-sm"
           className="-me-1 flex-none text-current hover:bg-black/5"
-          aria-label={t.dismiss}
-          title={t.dismiss}
+          aria-label={t("dismiss")}
+          title={t("dismiss")}
           onClick={() => {
             hideFor(shop.today);
           }}

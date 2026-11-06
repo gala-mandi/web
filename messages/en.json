@@ -1,1 +1,38 @@
-{}
+{
+  "subscription": {
+    "banner": {
+      "label": "Your plan",
+      "trial": "{left, plural, =0 {Your free trial ends today ({endsOn}).} one {Free trial: # day left, until {endsOn}.} other {Free trial: # days left, until {endsOn}.}}",
+      "expiring": "{left, plural, =0 {Your {plan} plan ends today ({endsOn}).} one {Your {plan} plan ends in # day, on {endsOn}.} other {Your {plan} plan ends in # days, on {endsOn}.}}",
+      "grace": "{left, plural, =0 {Your plan ended on {endsOn}. Today is the last day of full access; from tomorrow the shop is read-only.} one {Your plan ended on {endsOn}. Full access for # more day, then read-only after {graceEndsOn}.} other {Your plan ended on {endsOn}. Full access for # more days, then read-only after {graceEndsOn}.}}",
+      "readOnly": "Your plan ended on {endsOn}. The shop is read-only: you can view and print, but not add or change anything.",
+      "renewOwner": "Contact Galla Mandi support to renew.",
+      "renewStaff": "Ask your shop owner to renew.",
+      "dismiss": "Hide for today"
+    },
+    "notice": {
+      "badge": "Read-only",
+      "title": "{shop} is read-only",
+      "titleNoShop": "Your shop is read-only",
+      "body": "This shop’s plan ended on {endsOn}. Your khata, traders and reports are safe — nothing has been deleted.",
+      "subline": "پلان ختم ہو گیا ہے، آپ کا تمام ڈیٹا محفوظ ہے",
+      "points": {
+        "view": "You can still view and print every record",
+        "paused": "Adding and changing entries is paused",
+        "unlock": "Everything unlocks the moment you renew"
+      },
+      "contact": "Contact Galla Mandi support to renew.",
+      "staff": "Staff? Ask your shop owner.",
+      "back": "Back"
+    },
+    "toast": {
+      "readOnly": "Your plan has ended, so the shop is read-only. You can view and print; renew to add or change entries."
+    },
+    "limit": {
+      "title": "Your plan is full",
+      "body": "Your {plan} plan allows {max, number} users, counting the owner, staff and invites not yet accepted. Ask Galla Mandi support to upgrade your plan, or free a place by cancelling an invite or turning off a staff member.",
+      "bodyUnknown": "Your plan has no room for more users. Ask Galla Mandi support to upgrade your plan, or free a place by cancelling an invite or turning off a staff member.",
+      "usage": "{used, number} of {max, number} users on your {plan} plan"
+    }
+  }
+}

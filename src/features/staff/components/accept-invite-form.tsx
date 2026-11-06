@@ -13,7 +13,7 @@ import {
   IconInput,
   PrimaryButton,
   TextLink,
-  UrduLine,
+  SubLine,
 } from "@/features/auth/components/auth-ui";
 import { NewPasswordFields } from "@/features/auth/components/new-password-fields";
 import { blockedText, loginText } from "@/features/auth/text";
@@ -75,7 +75,7 @@ function Joined({ result }: { result: AcceptInviteResult }) {
           {s.title(result.shopName)}
         </h2>
         <p className="text-muted-foreground text-[15px]/relaxed">{s.body}</p>
-        <UrduLine>{s.ur}</UrduLine>
+        <SubLine>{s.ur}</SubLine>
       </div>
       <Link
         ref={linkRef}

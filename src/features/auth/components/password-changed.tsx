@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { passwordChangedText as t } from "../text";
-import { UrduLine } from "./auth-ui";
+import { SubLine } from "./auth-ui";
 
 interface PasswordChangedProps {
   revokedSessions: number;
@@ -53,7 +53,7 @@ export function PasswordChanged({
             {t.ready}
             {t.signedOut(revokedSessions, otherDevices)}
           </p>
-          <UrduLine>{t.ur}</UrduLine>
+          <SubLine>{t.ur}</SubLine>
         </div>
         <Link
           href={href}

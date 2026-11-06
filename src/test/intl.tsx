@@ -1,4 +1,4 @@
-import { NextIntlClientProvider } from "next-intl";
+import { type Messages, NextIntlClientProvider } from "next-intl";
 import { Direction } from "radix-ui";
 import type { ReactNode } from "react";
 import { type Locale, localeDirection } from "@/i18n/config";
@@ -36,7 +36,7 @@ export function IntlProviders({
   return (
     <NextIntlClientProvider
       locale={locale}
-      messages={testMessages[locale]}
+      messages={testMessages[locale] as unknown as Messages}
       timeZone={SHOP_TIME_ZONE}
     >
       <Direction.Provider dir={localeDirection[locale]}>

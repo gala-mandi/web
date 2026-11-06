@@ -46,3 +46,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# next-intl: message argument types, made by `next typegen`/dev/build
+/messages/*.d.json.ts

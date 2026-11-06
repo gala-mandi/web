@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
 };
 
 // Messages per language from `src/i18n/request.ts` (no locale in the URL).
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin({
+  experimental: { createMessagesDeclaration: "./messages/en.json" },
+});
 
 export default withNextIntl(nextConfig);

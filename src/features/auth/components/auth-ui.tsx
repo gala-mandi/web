@@ -1,5 +1,7 @@
 "use client";
 
+import { localeDirection } from "@/i18n/config";
+import { useLocale } from "next-intl";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { type ComponentProps, type ReactNode, useState } from "react";
@@ -55,24 +57,31 @@ export function CardHeading({
           {description}
         </p>
       ) : null}
-      {ur ? <UrduLine>{ur}</UrduLine> : null}
+      {ur ? <SubLine>{ur}</SubLine> : null}
     </div>
   );
 }
 
-export function UrduLine({
+/**
+ * The small second-language line under a heading, as in the designs: the
+ * Urdu line on the English screens and the English line on the Urdu ones.
+ */
+export function SubLine({
   children,
   className,
 }: {
   children: ReactNode;
   className?: string;
 }) {
+  const other = useLocale() === "ur" ? "en" : "ur";
   return (
     <p
-      lang="ur"
-      dir="rtl"
+      lang={other}
+      dir={localeDirection[other]}
       className={cn(
-        "font-urdu text-muted-foreground text-[13px]/loose",
+        other === "ur"
+          ? "font-urdu text-muted-foreground text-[13px]/loose"
+          : "text-muted-foreground text-[12.5px]/relaxed font-sans",
         className,
       )}
     >

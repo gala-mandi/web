@@ -1,6 +1,6 @@
 import { Check, Lock, PauseCircle } from "lucide-react";
 import { blockedText } from "../text";
-import { AuthCard, TextLink, UrduLine } from "./auth-ui";
+import { AuthCard, TextLink, SubLine } from "./auth-ui";
 
 /** 4.1 Shop suspended (login or refresh answered 403 `TENANT_SUSPENDED`). */
 export function ShopSuspended({
@@ -22,7 +22,7 @@ export function ShopSuspended({
           {t.title(shopName)}
         </h2>
         <p className="text-muted-foreground text-[14.5px]/relaxed">{t.body}</p>
-        <UrduLine>{t.ur}</UrduLine>
+        <SubLine>{t.ur}</SubLine>
       </div>
       <ul className="bg-background text-foreground/85 flex flex-col gap-2.5 rounded-[14px] px-4 py-3.5 text-[13.5px]">
         {t.points.map((point) => (
@@ -62,7 +62,7 @@ export function AccountDisabled() {
           {t.title}
         </h2>
         <p className="text-muted-foreground text-[14.5px]/relaxed">{t.body}</p>
-        <UrduLine>{t.ur}</UrduLine>
+        <SubLine>{t.ur}</SubLine>
       </div>
       <div className="bg-background text-foreground/85 w-full rounded-xl px-3.5 py-3 text-start text-[13px]/normal">
         {t.hint} <strong className="text-foreground">{t.hintPath}</strong>.
