@@ -94,3 +94,35 @@ export function KpiTile({
     </Card>
   );
 }
+
+/**
+ * "13 bills · 546 bags" on one line, or one part per line (`stacked`) for
+ * longer parts such as two amounts.
+ */
+export function HintParts({
+  parts,
+  stacked = false,
+}: {
+  parts: string[];
+  stacked?: boolean;
+}) {
+  if (stacked) {
+    return (
+      <span className="flex flex-col">
+        {parts.map((part, i) => (
+          <span key={`${i}-${part}`}>{part}</span>
+        ))}
+      </span>
+    );
+  }
+  return (
+    <span className="flex flex-wrap gap-x-1.5">
+      {parts.map((part, i) => (
+        <span key={`${i}-${part}`} className="whitespace-nowrap">
+          {i > 0 ? <span aria-hidden>· </span> : null}
+          {part}
+        </span>
+      ))}
+    </span>
+  );
+}

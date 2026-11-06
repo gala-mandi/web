@@ -109,16 +109,17 @@ test.describe("shop panel layout", () => {
     expect(logouts).toHaveLength(1);
   });
 
-  test("operator: 4 items, lands on Daily rates, /settings is 403 in the layout", async ({
+  test("operator: 5 items, lands on the simpler Dashboard, /settings is 403 in the layout", async ({
     page,
     context,
   }) => {
     await signIn(page, context, operator);
 
-    await expect(page).toHaveURL("/rates");
-    await expect(pageHeading(page, "Daily rates")).toBeVisible();
+    await expect(page).toHaveURL("/dashboard");
+    await expect(pageHeading(page, "Dashboard")).toBeVisible();
     const links = mainMenu(page).getByRole("link");
     await expect(links).toHaveText([
+      "Dashboard",
       "Daily rates",
       "Purchases",
       "Sales",
@@ -129,14 +130,11 @@ test.describe("shop panel layout", () => {
 
     await expect(pageHeading(page, "You don’t have access")).toBeVisible();
     await expect(page.getByText("403")).toBeVisible();
-    await expect(mainMenu(page).getByRole("link")).toHaveCount(4);
+    await expect(mainMenu(page).getByRole("link")).toHaveCount(5);
     await expect(page.getByTestId("shop-name")).toHaveText("Demo Mandi");
 
-    await page.goto("/dashboard");
-    await expect(pageHeading(page, "You don’t have access")).toBeVisible();
-
-    await page.getByRole("link", { name: "Back to Daily rates" }).click();
-    await expect(page).toHaveURL("/rates");
+    await page.getByRole("link", { name: "Back to Dashboard" }).click();
+    await expect(page).toHaveURL("/dashboard");
   });
 
   test("Ctrl+K palette opens pages from the keyboard", async ({
@@ -151,6 +149,7 @@ test.describe("shop panel layout", () => {
     const palette = page.getByRole("dialog", { name: "Go to a page" });
     await expect(palette).toBeVisible();
     await expect(palette.getByRole("option")).toHaveText([
+      "Dashboard",
       "Daily rates",
       "Purchases",
       "Sales",
@@ -281,7 +280,7 @@ test.describe("shop panel layout", () => {
       await expect(drawer).toBeVisible();
       await expect(
         drawer.getByRole("navigation", { name: "Main menu" }).getByRole("link"),
-      ).toHaveCount(4);
+      ).toHaveCount(5);
       await drawer.getByRole("link", { name: "Sales" }).click();
 
       await expect(page).toHaveURL("/sales");

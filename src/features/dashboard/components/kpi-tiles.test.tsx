@@ -36,14 +36,12 @@ describe("KpiTiles", () => {
     render(<KpiTiles summary={dailySummary} />);
 
     expect(tile("purchases")).toHaveTextContent(
-      `${dailySummary.purchases.bills} bills · ${dailySummary.purchases.bags.toLocaleString("en-PK")} bags`,
+      `${dailySummary.purchases.bills} bills· ${dailySummary.purchases.bags.toLocaleString("en-PK")} bags`,
     );
     expect(tile("commission")).toHaveTextContent(
-      "Purchases Rs 15,620.40 · Sales Rs 13,245.10",
+      "Purchases Rs 15,620.40Sales Rs 13,245.10",
     );
-    expect(tile("cash")).toHaveTextContent(
-      "In Rs 380,500.00 · Out Rs 295,000.00",
-    );
+    expect(tile("cash")).toHaveTextContent("In Rs 380,500.00Out Rs 295,000.00");
   });
 
   it("shows zero, singular words and no minus for an empty day", () => {
@@ -57,8 +55,8 @@ describe("KpiTiles", () => {
     );
 
     expect(within(tile("purchases")).getByText("Rs 0.00")).toBeInTheDocument();
-    expect(tile("purchases")).toHaveTextContent("1 bill · 1 bag");
-    expect(tile("sales")).toHaveTextContent("0 bills · 0 bags");
+    expect(tile("purchases")).toHaveTextContent("1 bill· 1 bag");
+    expect(tile("sales")).toHaveTextContent("0 bills· 0 bags");
   });
 
   it("shows a skeleton in every tile while loading", () => {

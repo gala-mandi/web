@@ -93,7 +93,7 @@ export function SalesTrendChart({
         </CardTitle>
         <CardDescription>{t.description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 px-5">
+      <CardContent className="flex flex-1 flex-col gap-4 px-5">
         {totals ? (
           <ul className="flex flex-wrap gap-2" aria-label={t.total}>
             <LegendChip
@@ -119,7 +119,7 @@ export function SalesTrendChart({
           <SectionEmpty className="h-72">{t.empty}</SectionEmpty>
         ) : (
           <div
-            className="h-72 w-full"
+            className="min-h-72 w-full flex-1"
             dir="ltr"
             role="img"
             aria-label={t.chartLabel(

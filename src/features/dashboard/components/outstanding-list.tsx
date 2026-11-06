@@ -140,7 +140,10 @@ export function OutstandingList({
                           {trader.name}
                         </span>
                       )}
-                      <TraderTypeBadge type={trader.type} />
+                      {/* On a phone the name gets the room; the khata shows the type. */}
+                      <span className="hidden shrink-0 sm:inline-flex">
+                        <TraderTypeBadge type={trader.type} />
+                      </span>
                       <span className="ms-auto shrink-0 font-semibold tabular-nums">
                         {formatRs(trader.amount)}
                       </span>

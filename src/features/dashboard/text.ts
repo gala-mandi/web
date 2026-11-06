@@ -23,23 +23,17 @@ export const dashboardText = {
   tiles: {
     label: "Today’s position",
     error: "Couldn’t load today’s figures. Check your internet and try again.",
-    purchases: {
-      title: "Purchases",
-      hint: (bills: string, bags: string) => `${bills} · ${bags}`,
-    },
-    sales: {
-      title: "Sales",
-      hint: (bills: string, bags: string) => `${bills} · ${bags}`,
-    },
+    purchases: { title: "Purchases" },
+    sales: { title: "Sales" },
     commission: {
       title: "Commission",
-      hint: (purchases: string, sales: string) =>
-        `Purchases ${purchases} · Sales ${sales}`,
+      purchases: (amount: string) => `Purchases ${amount}`,
+      sales: (amount: string) => `Sales ${amount}`,
     },
     cash: {
       title: "Cash in hand",
-      hint: (cashIn: string, cashOut: string) =>
-        `In ${cashIn} · Out ${cashOut}`,
+      cashIn: (amount: string) => `In ${amount}`,
+      cashOut: (amount: string) => `Out ${amount}`,
     },
   },
   trend: {

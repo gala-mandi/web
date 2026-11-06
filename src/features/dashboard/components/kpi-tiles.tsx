@@ -5,7 +5,7 @@ import { formatRs } from "@/lib/format";
 import { dashboardText } from "../text";
 import type { DailySummary } from "../types";
 import { MoneyFigure, SectionError } from "./chart-parts";
-import { KpiTile } from "./kpi-tile";
+import { HintParts, KpiTile } from "./kpi-tile";
 
 const t = dashboardText.tiles;
 
@@ -45,10 +45,13 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
           loading={loading}
           value={summary && <MoneyFigure value={summary.purchases.netAmount} />}
           hint={
-            summary &&
-            t.purchases.hint(
-              dashboardText.bills(summary.purchases.bills),
-              dashboardText.bags(summary.purchases.bags),
+            summary && (
+              <HintParts
+                parts={[
+                  dashboardText.bills(summary.purchases.bills),
+                  dashboardText.bags(summary.purchases.bags),
+                ]}
+              />
             )
           }
         />
@@ -60,10 +63,13 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
           loading={loading}
           value={summary && <MoneyFigure value={summary.sales.netAmount} />}
           hint={
-            summary &&
-            t.sales.hint(
-              dashboardText.bills(summary.sales.bills),
-              dashboardText.bags(summary.sales.bags),
+            summary && (
+              <HintParts
+                parts={[
+                  dashboardText.bills(summary.sales.bills),
+                  dashboardText.bags(summary.sales.bags),
+                ]}
+              />
             )
           }
         />
@@ -75,10 +81,16 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
           loading={loading}
           value={summary && <MoneyFigure value={summary.commission.total} />}
           hint={
-            summary &&
-            t.commission.hint(
-              formatRs(summary.commission.purchases),
-              formatRs(summary.commission.sales),
+            summary && (
+              <HintParts
+                stacked
+                parts={[
+                  t.commission.purchases(
+                    formatRs(summary.commission.purchases),
+                  ),
+                  t.commission.sales(formatRs(summary.commission.sales)),
+                ]}
+              />
             )
           }
         />
@@ -90,10 +102,14 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
           loading={loading}
           value={summary && <MoneyFigure value={summary.cash.closingCash} />}
           hint={
-            summary &&
-            t.cash.hint(
-              formatRs(summary.cash.cashIn),
-              formatRs(summary.cash.cashOut),
+            summary && (
+              <HintParts
+                stacked
+                parts={[
+                  t.cash.cashIn(formatRs(summary.cash.cashIn)),
+                  t.cash.cashOut(formatRs(summary.cash.cashOut)),
+                ]}
+              />
             )
           }
         />

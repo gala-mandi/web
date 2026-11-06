@@ -124,22 +124,22 @@ function CommodityRow({
       data-commodity={commodity.id}
       className="flex flex-col gap-1.5 py-3 first:pt-0 last:pb-0"
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+      <div className="flex items-baseline justify-between gap-3">
         <p className="font-semibold">{commodity.name}</p>
         {latest ? (
-          <p className="text-sm">
-            <span className="font-semibold tabular-nums">
-              {t.range(formatRs(latest.minRate), formatRs(latest.maxRate))}
-            </span>{" "}
-            <span className="text-muted-foreground text-xs">
-              {t.unit[trendUnit(rates)]}
-            </span>
+          <p className="text-muted-foreground shrink-0 text-xs">
+            {t.latest(shortDate(latest.rateDate))}
           </p>
         ) : null}
       </div>
       {latest ? (
-        <p className="text-muted-foreground text-xs">
-          {t.latest(shortDate(latest.rateDate))}
+        <p className="text-sm">
+          <span className="font-semibold tabular-nums">
+            {t.range(formatRs(latest.minRate), formatRs(latest.maxRate))}
+          </span>{" "}
+          <span className="text-muted-foreground text-xs">
+            {t.unit[trendUnit(rates)]}
+          </span>
         </p>
       ) : null}
 
@@ -150,12 +150,12 @@ function CommodityRow({
           className="py-4"
         />
       ) : !history || history.isPending ? (
-        <Skeleton className="h-16 w-full rounded-lg" />
+        <Skeleton className="h-20 w-full rounded-lg" />
       ) : rates.length === 0 ? (
-        <SectionEmpty className="h-16 py-0">{t.noRates}</SectionEmpty>
+        <SectionEmpty className="h-20 py-0">{t.noRates}</SectionEmpty>
       ) : (
         <div
-          className="h-16 w-full"
+          className="h-20 w-full"
           dir="ltr"
           role="img"
           aria-label={t.chartLabel(commodity.name)}

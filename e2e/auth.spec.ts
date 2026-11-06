@@ -200,7 +200,7 @@ test.describe("auth", () => {
     ).toBeVisible();
   });
 
-  test("a signed-in operator opening /login lands on Daily rates", async ({
+  test("a signed-in operator opening /login lands on the (simpler) dashboard", async ({
     page,
     context,
   }) => {
@@ -222,9 +222,9 @@ test.describe("auth", () => {
 
     await page.goto("/login");
 
-    await expect(page).toHaveURL("/rates");
+    await expect(page).toHaveURL("/dashboard");
     const menu = page.getByRole("navigation", { name: "Main menu" });
-    await expect(menu.getByRole("listitem")).toHaveCount(4);
+    await expect(menu.getByRole("listitem")).toHaveCount(5);
     await expect(menu.getByText("Staff")).toHaveCount(0);
   });
 });
