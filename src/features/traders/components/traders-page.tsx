@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useFormat } from "@/lib/use-format";
 import { Plus, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -29,7 +30,6 @@ import {
   traderListFilters,
   traderStatuses,
 } from "../search-params";
-import { traderText, traderTypeText } from "../text";
 import {
   type Trader,
   type TraderListQuery,
@@ -44,15 +44,16 @@ import {
   TraderStatusDialog,
 } from "./trader-dialogs";
 import { TraderFormSheet } from "./trader-form-sheet";
+import type { TradersTranslator } from "../schemas";
 
-const t = traderText.list;
 const ALL = "all";
 
-const statusOptions = traderStatuses.map((status) => ({
-  value: status,
-  label: status === "active" ? traderText.active : traderText.inactive,
-  dotClassName: status === "active" ? "bg-success" : "bg-muted-foreground",
-}));
+const statusOptions = (t: TradersTranslator) =>
+  traderStatuses.map((status) => ({
+    value: status,
+    label: status === "active" ? t("active") : t("inactive"),
+    dotClassName: status === "active" ? "bg-success" : "bg-muted-foreground",
+  }));
 
 const getRowId = (row: Trader) => row.id;
 const getRowLabel = (row: Trader) => row.name;
@@ -75,6 +76,8 @@ export function TradersPage() {
  * (`?type=&status=&q=&page=&sort=`), so reload and Back keep the view.
  */
 function TradersList() {
+  const format = useFormat();
+  const t = useTranslations("traders");
   const router = useRouter();
   const section = useTranslations("panel.sections.traders");
   const canCreate = useCanWrite("trader.create");
@@ -108,7 +111,7 @@ function TradersList() {
 
   const columns = useMemo(
     () =>
-      traderColumns({
+      traderColumns(t, format, {
         canManage,
         canDelete,
         onEdit: (trader) => {
@@ -119,7 +122,7 @@ function TradersList() {
           setDialog({ kind: "status", trader, action }),
         onDelete: (trader) => setDialog({ kind: "delete", trader }),
       }),
-    [canManage, canDelete],
+    [canManage, canDelete, t, format],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -134,7 +137,7 @@ function TradersList() {
       onClick={() => openForm(null)}
     >
       <Plus aria-hidden />
-      {t.addButton}
+      {t("list.addButton")}
     </Button>
   ) : null;
 
@@ -152,13 +155,13 @@ function TradersList() {
           list.setFilter("type", value === ALL ? null : (value as TraderType))
         }
       >
-        <TabsList aria-label={t.tabsLabel}>
+        <TabsList aria-label={t("list.tabsLabel")}>
           <TabsTrigger value={ALL} className="px-3">
-            {t.allTypes}
+            {t("list.allTypes")}
           </TabsTrigger>
           {traderTypes.map((value) => (
             <TabsTrigger key={value} value={value} className="px-3">
-              {traderTypeText[value]}
+              {t(`types.${value}`)}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -168,15 +171,15 @@ function TradersList() {
         search={{
           value: list.search,
           onChange: list.setSearch,
-          label: t.searchLabel,
-          placeholder: t.searchPlaceholder,
+          label: t("list.searchLabel"),
+          placeholder: t("list.searchPlaceholder"),
         }}
         filters={
           <DataTableStatusFilter
-            label={t.statusLabel}
-            allLabel={t.statusAll}
+            label={t("list.statusLabel")}
+            allLabel={t("list.statusAll")}
             value={list.filters.status}
-            options={statusOptions}
+            options={statusOptions(t)}
             onChange={(value) => list.setFilter("status", value)}
           />
         }
@@ -190,7 +193,7 @@ function TradersList() {
               onColumnVisibilityChange={onColumnVisibilityChange}
             />
             <DataTableExport
-              fileName={t.exportFileName}
+              fileName={t("list.exportFileName")}
               columns={columns}
               rows={rows}
               columnVisibility={columnVisibility}
@@ -200,7 +203,7 @@ function TradersList() {
       />
 
       <DataTable
-        caption={t.caption}
+        caption={t("list.caption")}
         columns={columns}
         data={rows}
         getRowId={getRowId}
@@ -221,20 +224,20 @@ function TradersList() {
           list.isFiltered ? (
             <EmptyState
               icon={Search}
-              title={t.noMatches.title}
-              body={t.noMatches.body}
+              title={t("list.noMatches.title")}
+              body={t("list.noMatches.body")}
               className="rounded-none border-0"
               action={
                 <Button variant="outline" onClick={list.clearAll}>
-                  {t.noMatches.clear}
+                  {t("list.noMatches.clear")}
                 </Button>
               }
             />
           ) : (
             <EmptyState
               icon={Users}
-              title={t.empty.title}
-              body={t.empty.body}
+              title={t("list.empty.title")}
+              body={t("list.empty.body")}
               className="rounded-none border-0"
               action={addButton}
             />

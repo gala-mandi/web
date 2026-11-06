@@ -1,6 +1,6 @@
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { traderText, traderTypeText } from "../text";
 import type { TraderType } from "../types";
 
 const typeTone: Record<TraderType, string> = {
@@ -10,19 +10,21 @@ const typeTone: Record<TraderType, string> = {
 };
 
 export function TraderTypeBadge({ type }: { type: TraderType }) {
+  const t = useTranslations("traders");
   return (
     <Badge
       variant="outline"
       data-type={type}
       className={cn("border-transparent font-semibold", typeTone[type])}
     >
-      {traderTypeText[type]}
+      {t(`types.${type}`)}
     </Badge>
   );
 }
 
 /** The word is always shown, not only the colour. */
 export function TraderStatusBadge({ active }: { active: boolean }) {
+  const t = useTranslations("traders");
   return (
     <Badge
       variant="outline"
@@ -35,7 +37,7 @@ export function TraderStatusBadge({ active }: { active: boolean }) {
       )}
     >
       <span aria-hidden className="size-1.5 rounded-full bg-current" />
-      {active ? traderText.active : traderText.inactive}
+      {active ? t("active") : t("inactive")}
     </Badge>
   );
 }

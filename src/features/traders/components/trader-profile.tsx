@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ArrowLeft, CircleAlert, Pencil, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
@@ -14,18 +15,15 @@ import {
 } from "@/features/panel/components/status-pages";
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
-import { formatDate, formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { traderRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { readBalance } from "../balance";
 import { useTrader } from "../hooks";
-import { balanceTypeText, traderText, traderTypeText } from "../text";
 import type { TraderDetail } from "../types";
 import { TraderStatusBadge, TraderTypeBadge } from "./badges";
 import { TraderFormSheet } from "./trader-form-sheet";
 import { TraderName } from "./trader-name";
-
-const t = traderText.profile;
 
 /** `/traders/:id`: details, current balance and (later) recent entries. */
 export function TraderProfile({ id }: { id: string }) {
@@ -37,6 +35,7 @@ export function TraderProfile({ id }: { id: string }) {
 }
 
 function ProfileContent({ id }: { id: string }) {
+  const t = useTranslations("traders");
   const query = useTrader(id);
 
   if (query.isPending) return <ProfileSkeleton />;
@@ -49,12 +48,12 @@ function ProfileContent({ id }: { id: string }) {
       <EmptyState
         role="alert"
         icon={CircleAlert}
-        title={t.error.title}
-        body={t.error.body}
+        title={t("profile.error.title")}
+        body={t("profile.error.body")}
         headingLevel="h1"
         action={
           <Button variant="outline" onClick={() => void query.refetch()}>
-            {t.error.retry}
+            {t("profile.error.retry")}
           </Button>
         }
       />
@@ -64,10 +63,11 @@ function ProfileContent({ id }: { id: string }) {
 }
 
 function ProfileSkeleton() {
+  const t = useTranslations("traders");
   return (
     <div className="flex flex-col gap-6" aria-busy>
       <span role="status" className="sr-only">
-        {t.loading}
+        {t("profile.loading")}
       </span>
       <Skeleton className="h-9 w-64" />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -79,9 +79,10 @@ function ProfileSkeleton() {
 }
 
 function Profile({ trader }: { trader: TraderDetail }) {
+  const { formatDate, formatRs } = useFormat();
+  const t = useTranslations("traders");
   const canManage = useCanWrite("trader.manage");
   const [editing, setEditing] = useState(false);
-  const f = t.fields;
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,7 +91,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-semibold outline-none focus-visible:ring-3"
       >
         <ArrowLeft aria-hidden className="size-4 rtl:rotate-180" />
-        {t.back}
+        {t("profile.back")}
       </Link>
 
       <PageHeader
@@ -101,8 +102,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
             <TraderStatusBadge active={trader.isActive} />
             {trader.fatherName ? (
               <span>
-                {traderText.fatherPrefix}{" "}
-                <TraderName name={trader.fatherName} />
+                {t("fatherPrefix")} <TraderName name={trader.fatherName} />
               </span>
             ) : null}
           </span>
@@ -116,7 +116,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
               onClick={() => setEditing(true)}
             >
               <Pencil aria-hidden />
-              {t.edit}
+              {t("profile.edit")}
             </Button>
           ) : null
         }
@@ -131,61 +131,65 @@ function Profile({ trader }: { trader: TraderDetail }) {
             id="trader-details-title"
             className="font-heading text-lg font-bold"
           >
-            {t.details}
+            {t("profile.details")}
           </h2>
           <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-            <Detail label={f.type}>{traderTypeText[trader.type]}</Detail>
-            <Detail label={f.status}>
-              {trader.isActive ? traderText.active : traderText.inactive}
+            <Detail label={t("profile.fields.type")}>
+              {t(`types.${trader.type}`)}
             </Detail>
-            <Detail label={f.fatherName}>
+            <Detail label={t("profile.fields.status")}>
+              {trader.isActive ? t("active") : t("inactive")}
+            </Detail>
+            <Detail label={t("profile.fields.fatherName")}>
               {trader.fatherName ? (
                 <TraderName name={trader.fatherName} />
               ) : null}
             </Detail>
-            <Detail label={f.phone}>
+            <Detail label={t("profile.fields.phone")}>
               {trader.phone ? (
                 <span dir="ltr" className="tabular-nums">
                   {trader.phone}
                 </span>
               ) : null}
             </Detail>
-            <Detail label={f.cnic}>
+            <Detail label={t("profile.fields.cnic")}>
               {trader.cnic ? (
                 <span dir="ltr" className="tabular-nums">
                   {trader.cnic}
                 </span>
               ) : null}
             </Detail>
-            <Detail label={f.village}>
+            <Detail label={t("profile.fields.village")}>
               {trader.village ? <TraderName name={trader.village} /> : null}
             </Detail>
-            <Detail label={f.address} wide>
+            <Detail label={t("profile.fields.address")} wide>
               {trader.address ? (
                 <span dir="auto" className="whitespace-pre-line">
                   {trader.address}
                 </span>
               ) : null}
             </Detail>
-            <Detail label={f.openingBalance}>
+            <Detail label={t("profile.fields.openingBalance")}>
               <span dir="ltr" className="tabular-nums">
                 {formatRs(trader.openingBalance)}
               </span>{" "}
               <span className="text-muted-foreground text-sm">
-                {balanceTypeText[trader.openingBalanceType]}
+                {t(`balanceTypes.${trader.openingBalanceType}`)}
               </span>
             </Detail>
-            <Detail label={f.creditLimit}>
+            <Detail label={t("profile.fields.creditLimit")}>
               {trader.creditLimit ? (
                 <span dir="ltr" className="tabular-nums">
                   {formatRs(trader.creditLimit)}
                 </span>
               ) : (
-                t.noLimit
+                t("profile.noLimit")
               )}
             </Detail>
-            <Detail label={f.added}>{formatDate(trader.createdAt)}</Detail>
-            <Detail label={f.notes} wide>
+            <Detail label={t("profile.fields.added")}>
+              {formatDate(trader.createdAt)}
+            </Detail>
+            <Detail label={t("profile.fields.notes")} wide>
               {trader.notes ? (
                 <span dir="auto" className="whitespace-pre-line">
                   {trader.notes}
@@ -206,12 +210,12 @@ function Profile({ trader }: { trader: TraderDetail }) {
           id="trader-transactions-title"
           className="font-heading text-lg font-bold"
         >
-          {t.transactions.title}
+          {t("profile.transactions.title")}
         </h2>
         <EmptyState
           icon={ReceiptText}
-          title={t.transactions.emptyTitle}
-          body={t.transactions.emptyBody}
+          title={t("profile.transactions.emptyTitle")}
+          body={t("profile.transactions.emptyBody")}
           headingLevel="h2"
         />
       </section>
@@ -236,6 +240,7 @@ function Detail({
   wide?: boolean;
   children: ReactNode;
 }) {
+  const t = useTranslations("traders");
   return (
     <div
       className={cn("flex min-w-0 flex-col gap-0.5", wide && "sm:col-span-2")}
@@ -244,9 +249,7 @@ function Detail({
         {label}
       </dt>
       <dd className="break-words">
-        {children ?? (
-          <span className="text-muted-foreground">{traderText.none}</span>
-        )}
+        {children ?? <span className="text-muted-foreground">{t("none")}</span>}
       </dd>
     </div>
   );
@@ -260,14 +263,15 @@ const balanceTone = {
 
 /** Positive = Receivable (trader owes the shop), negative = Payable. */
 function BalanceCard({ trader }: { trader: TraderDetail }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("traders");
   const { kind, amount } = readBalance(trader.balance);
-  const b = t.balance;
   const hint =
     kind === "receivable"
-      ? b.receivableHint(trader.name)
+      ? t("profile.balance.receivableHint", { name: trader.name })
       : kind === "payable"
-        ? b.payableHint(trader.name)
-        : b.settledHint;
+        ? t("profile.balance.payableHint", { name: trader.name })
+        : t("profile.balance.settledHint");
 
   return (
     <section
@@ -278,7 +282,7 @@ function BalanceCard({ trader }: { trader: TraderDetail }) {
         id="trader-balance-title"
         className="text-muted-foreground text-sm font-semibold"
       >
-        {b.title}
+        {t("profile.balance.title")}
       </h2>
       <p
         data-testid="trader-balance"
@@ -294,7 +298,7 @@ function BalanceCard({ trader }: { trader: TraderDetail }) {
           balanceTone[kind],
         )}
       >
-        {b[kind]}
+        {t(`profile.balance.${kind}`)}
       </p>
       <p className="text-muted-foreground text-sm">
         <bdi dir="auto">{hint}</bdi>

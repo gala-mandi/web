@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
 import {
@@ -48,9 +49,9 @@ import {
   type TraderField,
   traderFields,
   traderFormSchema,
+  type TradersTranslator,
   type TraderFormValues,
 } from "../schemas";
-import { traderText, traderTypeHint, traderTypeText } from "../text";
 import {
   balanceTypes,
   type Trader,
@@ -58,13 +59,12 @@ import {
   traderTypes,
 } from "../types";
 
-const t = traderText.form;
 const inputClass = "rounded-field h-11 bg-card";
 
 /** 409 codes of the traders API and the field they belong to. */
-const traderConflicts: ConflictFields = {
-  PHONE_TAKEN: { field: "phone", message: traderText.errors.phoneTaken },
-};
+const traderConflicts = (t: TradersTranslator): ConflictFields => ({
+  PHONE_TAKEN: { field: "phone", message: t("errors.phoneTaken") },
+});
 
 export interface TraderFormSheetProps {
   open: boolean;
@@ -96,6 +96,7 @@ export function TraderFormSheet({
   prefill,
   onSaved,
 }: TraderFormSheetProps) {
+  const t = useTranslations("traders");
   const [busy, setBusy] = useState(false);
 
   return (
@@ -112,10 +113,12 @@ export function TraderFormSheet({
       >
         <SheetHeader className="border-b px-5 py-4 pe-12">
           <SheetTitle className="font-heading text-lg font-bold">
-            {trader ? t.editTitle(trader.name) : t.addTitle}
+            {trader
+              ? t("form.editTitle", { name: trader.name })
+              : t("form.addTitle")}
           </SheetTitle>
           <SheetDescription>
-            {trader ? t.editDescription : t.addDescription}
+            {trader ? t("form.editDescription") : t("form.addDescription")}
           </SheetDescription>
         </SheetHeader>
         {open ? (
@@ -148,13 +151,14 @@ function TraderForm({
   onCancel: () => void;
   onSaved: (trader: Trader) => void;
 }) {
+  const t = useTranslations("traders");
   const [formError, setFormError] = useState<string | null>(null);
   const create = useCreateTrader();
   const update = useUpdateTrader();
   const inFlight = useRef(false);
 
   const form = useForm<TraderFormValues>({
-    resolver: zodResolver(traderFormSchema),
+    resolver: zodResolver(traderFormSchema(t)),
     defaultValues: trader
       ? toTraderFormValues(trader)
       : emptyTraderValues(prefill),
@@ -169,29 +173,29 @@ function TraderForm({
       if (trader) {
         const input = toUpdateInput(values, form.formState.dirtyFields);
         if (Object.keys(input).length === 0) {
-          toast.info(t.nothingChanged);
+          toast.info(t("form.nothingChanged"));
           onCancel();
           return;
         }
         saved = await update.mutateAsync({ id: trader.id, input });
-        toast.success(t.saved(saved.name));
+        toast.success(t("form.saved", { name: saved.name }));
       } else {
         saved = await create.mutateAsync(toCreateInput(values));
-        toast.success(t.added(saved.name));
+        toast.success(t("form.added", { name: saved.name }));
       }
       onSaved(saved);
     } catch (error) {
       const e = toApiError(error);
       if (
         !applyServerErrors(e, form.setError, traderFields, {
-          conflicts: traderConflicts,
-          fallback: traderText.errors.generic,
+          conflicts: traderConflicts(t),
+          fallback: t("errors.generic"),
         })
       ) {
         setFormError(
           e.status === 0
-            ? traderText.errors.network
-            : (e.message ?? traderText.errors.generic),
+            ? t("errors.network")
+            : (e.message ?? t("errors.generic")),
         );
       }
     }
@@ -233,14 +237,14 @@ function TraderForm({
           </div>
         ) : null}
 
-        <Section title={t.sections.basic}>
+        <Section title={t("form.sections.basic")}>
           <TypeField control={form.control} />
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField
               control={form.control}
               name="name"
-              label={t.name}
-              placeholder={t.namePlaceholder}
+              label={t("form.name")}
+              placeholder={t("form.namePlaceholder")}
               dir="auto"
               autoComplete="off"
               autoFocus
@@ -248,7 +252,7 @@ function TraderForm({
             <TextField
               control={form.control}
               name="fatherName"
-              label={t.fatherName}
+              label={t("form.fatherName")}
               optional
               dir="auto"
               autoComplete="off"
@@ -256,76 +260,76 @@ function TraderForm({
             <TextField
               control={form.control}
               name="phone"
-              label={t.phone}
+              label={t("form.phone")}
               optional
               type="tel"
               inputMode="tel"
               dir="ltr"
               autoComplete="off"
-              placeholder={t.phonePlaceholder}
+              placeholder={t("form.phonePlaceholder")}
             />
             <TextField
               control={form.control}
               name="cnic"
-              label={t.cnic}
+              label={t("form.cnic")}
               optional
               inputMode="numeric"
               dir="ltr"
               autoComplete="off"
-              placeholder={t.cnicPlaceholder}
+              placeholder={t("form.cnicPlaceholder")}
             />
           </div>
         </Section>
 
-        <Section title={t.sections.address}>
+        <Section title={t("form.sections.address")}>
           <TextField
             control={form.control}
             name="village"
-            label={t.village}
+            label={t("form.village")}
             optional
             dir="auto"
           />
           <TextField
             control={form.control}
             name="address"
-            label={t.address}
+            label={t("form.address")}
             optional
             multiline
           />
         </Section>
 
-        <Section title={t.sections.opening}>
+        <Section title={t("form.sections.opening")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField
               control={form.control}
               name="openingBalance"
-              label={t.openingBalance}
-              hint={t.openingBalanceHint}
+              label={t("form.openingBalance")}
+              hint={t("form.openingBalanceHint")}
               optional
               inputMode="decimal"
               dir="ltr"
               placeholder="0"
-              prefix={t.currency}
+              prefix={t("form.currency")}
             />
             <TextField
               control={form.control}
               name="creditLimit"
-              label={t.creditLimit}
-              hint={t.creditLimitHint}
+              label={t("form.creditLimit")}
+              hint={t("form.creditLimitHint")}
               optional
               inputMode="decimal"
               dir="ltr"
-              prefix={t.currency}
+              prefix={t("form.currency")}
             />
           </div>
           <BalanceTypeField control={form.control} />
         </Section>
 
-        <Section title={t.sections.notes}>
+        <Section title={t("form.sections.notes")}>
           <TextField
             control={form.control}
             name="notes"
-            label={t.notes}
+            label={t("form.notes")}
             optional
             multiline
           />
@@ -341,7 +345,7 @@ function TraderForm({
           disabled={busy}
           onClick={onCancel}
         >
-          {t.cancel}
+          {t("form.cancel")}
         </Button>
         <Button
           type="submit"
@@ -352,7 +356,11 @@ function TraderForm({
           {busy ? (
             <Loader2 aria-hidden className="size-4 animate-spin" />
           ) : null}
-          {busy ? t.saving : trader ? t.submitEdit : t.submitAdd}
+          {busy
+            ? t("form.saving")
+            : trader
+              ? t("form.submitEdit")
+              : t("form.submitAdd")}
         </Button>
       </SheetFooter>
     </form>
@@ -371,9 +379,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 function OptionalMark() {
+  const t = useTranslations("traders");
   return (
     <span className="text-muted-foreground text-xs font-normal">
-      ({t.optional})
+      ({t("form.optional")})
     </span>
   );
 }
@@ -456,6 +465,7 @@ function TextField({
 }
 
 function TypeField({ control }: { control: Control<TraderFormValues> }) {
+  const t = useTranslations("traders");
   return (
     <Controller
       name="type"
@@ -463,7 +473,7 @@ function TypeField({ control }: { control: Control<TraderFormValues> }) {
       render={({ field, fieldState }) => (
         <FieldSet data-invalid={fieldState.invalid} className="gap-2">
           <FieldLegend variant="label" className="mb-0">
-            {t.type}
+            {t("form.type")}
           </FieldLegend>
           <RadioGroup
             name={field.name}
@@ -484,14 +494,12 @@ function TypeField({ control }: { control: Control<TraderFormValues> }) {
                     aria-describedby={`trader-type-${type}-hint`}
                   />
                   <FieldContent className="gap-0">
-                    <span className="font-semibold">
-                      {traderTypeText[type]}
-                    </span>
+                    <span className="font-semibold">{t(`types.${type}`)}</span>
                     <span
                       id={`trader-type-${type}-hint`}
                       className="text-muted-foreground text-xs font-normal"
                     >
-                      {traderTypeHint[type]}
+                      {t(`typeHints.${type}`)}
                     </span>
                   </FieldContent>
                 </Field>
@@ -506,6 +514,7 @@ function TypeField({ control }: { control: Control<TraderFormValues> }) {
 }
 
 function BalanceTypeField({ control }: { control: Control<TraderFormValues> }) {
+  const t = useTranslations("traders");
   return (
     <Controller
       name="openingBalanceType"
@@ -513,7 +522,7 @@ function BalanceTypeField({ control }: { control: Control<TraderFormValues> }) {
       render={({ field, fieldState }) => (
         <FieldSet data-invalid={fieldState.invalid} className="gap-2">
           <FieldLegend variant="label" className="mb-0">
-            {t.openingBalanceType}
+            {t("form.openingBalanceType")}
           </FieldLegend>
           <RadioGroup
             name={field.name}
@@ -535,13 +544,13 @@ function BalanceTypeField({ control }: { control: Control<TraderFormValues> }) {
                   />
                   <FieldContent className="gap-0">
                     <span className="font-semibold">
-                      {t.balanceTypes[side].label}
+                      {t(`form.balanceTypes.${side}.label`)}
                     </span>
                     <span
                       id={`trader-balance-${side}-hint`}
                       className="text-muted-foreground text-xs font-normal"
                     >
-                      {t.balanceTypes[side].hint}
+                      {t(`form.balanceTypes.${side}.hint`)}
                     </span>
                   </FieldContent>
                 </Field>
@@ -556,6 +565,7 @@ function BalanceTypeField({ control }: { control: Control<TraderFormValues> }) {
 }
 
 function ActiveField({ control }: { control: Control<TraderFormValues> }) {
+  const t = useTranslations("traders");
   return (
     <Controller
       name="isActive"
@@ -572,9 +582,11 @@ function ActiveField({ control }: { control: Control<TraderFormValues> }) {
             aria-describedby="trader-isActive-hint"
           />
           <FieldContent className="gap-0.5">
-            <FieldLabel htmlFor="trader-isActive">{t.isActive}</FieldLabel>
+            <FieldLabel htmlFor="trader-isActive">
+              {t("form.isActive")}
+            </FieldLabel>
             <FieldDescription id="trader-isActive-hint">
-              {t.isActiveHint}
+              {t("form.isActiveHint")}
             </FieldDescription>
           </FieldContent>
         </Field>

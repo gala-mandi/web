@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -15,15 +16,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { type ApiError, toApiError } from "@/lib/api-error";
 import { useDeleteTrader, useUpdateTrader } from "../hooks";
-import { traderText } from "../text";
+import type { TradersTranslator } from "../schemas";
 import type { Trader } from "../types";
 
 export type TraderStatusAction = "deactivate" | "activate";
 
 /** Message for an error that isn't about one form field. */
-export function traderErrorMessage(error: ApiError): string {
-  if (error.status === 0) return traderText.errors.network;
-  return error.message ?? traderText.errors.generic;
+export function traderErrorMessage(
+  error: ApiError,
+  t: TradersTranslator,
+): string {
+  if (error.status === 0) return t("errors.network");
+  return error.message ?? t("errors.generic");
 }
 
 /** Deactivate / Activate confirmation (`PATCH { isActive }`). */
@@ -36,8 +40,8 @@ export function TraderStatusDialog({
   action: TraderStatusAction;
   onClose: () => void;
 }) {
+  const t = useTranslations("traders");
   const mutation = useUpdateTrader();
-  const t = traderText.status[action];
   const pending = mutation.isPending;
 
   const confirm = () => {
@@ -46,10 +50,11 @@ export function TraderStatusDialog({
       { id: trader.id, input: { isActive: action === "activate" } },
       {
         onSuccess: (updated) => {
-          toast.success(t.done(updated.name));
+          toast.success(t(`status.${action}.done`, { name: updated.name }));
           onClose();
         },
-        onError: (error) => toast.error(traderErrorMessage(toApiError(error))),
+        onError: (error) =>
+          toast.error(traderErrorMessage(toApiError(error), t)),
       },
     );
   };
@@ -64,13 +69,17 @@ export function TraderStatusDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            <bdi dir="auto">{t.title(trader.name)}</bdi>
+            <bdi dir="auto">
+              {t(`status.${action}.title`, { name: trader.name })}
+            </bdi>
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>
+            {t(`status.${action}.body`)}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>
-            {traderText.status.cancel}
+            {t("status.cancel")}
           </AlertDialogCancel>
           <Button
             variant={action === "deactivate" ? "destructive" : "default"}
@@ -80,7 +89,9 @@ export function TraderStatusDialog({
             className="gap-2"
           >
             {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {pending ? t.pending : t.confirm}
+            {pending
+              ? t(`status.${action}.pending`)
+              : t(`status.${action}.confirm`)}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -105,8 +116,8 @@ export function DeleteTraderDialog({
   onDeactivate: () => void;
   onClose: () => void;
 }) {
+  const t = useTranslations("traders");
   const mutation = useDeleteTrader();
-  const t = traderText.delete;
   const pending = mutation.isPending;
   const [blocked, setBlocked] = useState<string | null>(null);
 
@@ -114,15 +125,15 @@ export function DeleteTraderDialog({
     if (pending) return;
     mutation.mutate(trader.id, {
       onSuccess: () => {
-        toast.success(t.done(trader.name));
+        toast.success(t("delete.done", { name: trader.name }));
         onClose();
       },
       onError: (error) => {
         const e = toApiError(error);
         if (e.status === 409 && e.code === "TRADER_HAS_TRANSACTIONS") {
-          setBlocked(e.message ?? t.hasTransactions);
+          setBlocked(e.message ?? t("delete.hasTransactions"));
         } else {
-          toast.error(traderErrorMessage(e));
+          toast.error(traderErrorMessage(e, t));
         }
       },
     });
@@ -138,9 +149,9 @@ export function DeleteTraderDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            <bdi dir="auto">{t.title(trader.name)}</bdi>
+            <bdi dir="auto">{t("delete.title", { name: trader.name })}</bdi>
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>{t("delete.body")}</AlertDialogDescription>
         </AlertDialogHeader>
         {blocked ? (
           <p
@@ -152,12 +163,12 @@ export function DeleteTraderDialog({
         ) : null}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>
-            {blocked ? t.close : t.cancel}
+            {blocked ? t("delete.close") : t("delete.cancel")}
           </AlertDialogCancel>
           {blocked ? (
             canDeactivate ? (
               <Button variant="destructive" onClick={onDeactivate}>
-                {t.deactivateInstead}
+                {t("delete.deactivateInstead")}
               </Button>
             ) : null
           ) : (
@@ -171,7 +182,7 @@ export function DeleteTraderDialog({
               {pending ? (
                 <Loader2 aria-hidden className="animate-spin" />
               ) : null}
-              {pending ? t.pending : t.confirm}
+              {pending ? t("delete.pending") : t("delete.confirm")}
             </Button>
           )}
         </AlertDialogFooter>

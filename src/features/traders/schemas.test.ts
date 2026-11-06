@@ -5,10 +5,13 @@ import {
   toCreateInput,
   toTraderFormValues,
   toUpdateInput,
-  traderFormSchema,
+  traderFormSchema as makeTraderFormSchema,
   type TraderFormValues,
 } from "./schemas";
+import { testTranslator } from "@/test/intl";
 import { trader } from "./test-data";
+
+const traderFormSchema = makeTraderFormSchema(testTranslator("traders"));
 
 function valid(overrides: Partial<TraderFormValues> = {}) {
   return { ...emptyTraderValues(), name: "Aslam", ...overrides };
@@ -87,7 +90,7 @@ describe("traderFormSchema", () => {
       fatherName: "Use at most 120 characters",
       village: "Use at most 80 characters",
       address: "Use at most 500 characters",
-      notes: "Use at most 1000 characters",
+      notes: "Use at most 1,000 characters",
     });
   });
 });
