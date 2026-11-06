@@ -1,18 +1,28 @@
 import { listPurchases } from "@/features/purchases/api";
 import { listSales } from "@/features/sales/api";
 import { api } from "@/lib/api";
+import type { CashBook } from "@/features/payments/types";
 import type {
-  BookReport,
   BookReportQuery,
+  CommissionReport,
   DailySummary,
+  OutstandingQuery,
   OutstandingReport,
+  PurchasesReport,
+  ReportRange,
+  SalesReport,
 } from "./types";
 
-/** `GET /reports/daily-summary`: today (Asia/Karachi) on the server's clock. */
+/**
+ * `GET /reports/daily-summary?date=`: one day; without a date, today
+ * (Asia/Karachi) on the server's clock.
+ */
 export async function getDailySummary(
+  query: { date?: string } = {},
   signal?: AbortSignal,
 ): Promise<DailySummary> {
   const { data } = await api.get<DailySummary>("/reports/daily-summary", {
+    params: query,
     signal,
   });
   return data;
@@ -22,8 +32,8 @@ export async function getDailySummary(
 export async function getPurchasesReport(
   query: BookReportQuery,
   signal?: AbortSignal,
-): Promise<BookReport> {
-  const { data } = await api.get<BookReport>("/reports/purchases", {
+): Promise<PurchasesReport> {
+  const { data } = await api.get<PurchasesReport>("/reports/purchases", {
     params: query,
     signal,
   });
@@ -34,21 +44,51 @@ export async function getPurchasesReport(
 export async function getSalesReport(
   query: BookReportQuery,
   signal?: AbortSignal,
-): Promise<BookReport> {
-  const { data } = await api.get<BookReport>("/reports/sales", {
+): Promise<SalesReport> {
+  const { data } = await api.get<SalesReport>("/reports/sales", {
     params: query,
     signal,
   });
   return data;
 }
 
-/** `GET /reports/outstanding?limit=`: the largest balances on each side. */
+/**
+ * `GET /reports/outstanding`: receivable and payable khata balances,
+ * largest first (the `limit` largest of each side; every trader without).
+ */
 export async function getOutstanding(
-  limit: number,
+  query: OutstandingQuery,
   signal?: AbortSignal,
 ): Promise<OutstandingReport> {
   const { data } = await api.get<OutstandingReport>("/reports/outstanding", {
-    params: { limit },
+    params: query,
+    signal,
+  });
+  return data;
+}
+
+/** `GET /reports/commission?from=&to=`: commission per day and in total. */
+export async function getCommissionReport(
+  range: ReportRange,
+  signal?: AbortSignal,
+): Promise<CommissionReport> {
+  const { data } = await api.get<CommissionReport>("/reports/commission", {
+    params: range,
+    signal,
+  });
+  return data;
+}
+
+/**
+ * `GET /reports/cash-book?from=&to=`: the cash book of
+ * `GET /payments/cash-book`, for `report.view`.
+ */
+export async function getCashBookReport(
+  range: ReportRange,
+  signal?: AbortSignal,
+): Promise<CashBook> {
+  const { data } = await api.get<CashBook>("/reports/cash-book", {
+    params: range,
     signal,
   });
   return data;

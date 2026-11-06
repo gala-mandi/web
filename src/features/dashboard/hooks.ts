@@ -42,7 +42,7 @@ export const dashboardKeys = {
 export function useDailySummary() {
   return useQuery({
     queryKey: dashboardKeys.summary(),
-    queryFn: ({ signal }) => getDailySummary(signal),
+    queryFn: ({ signal }) => getDailySummary({}, signal),
     ...live,
   });
 }
@@ -71,7 +71,7 @@ export function useSalesByDay(from: string, to: string) {
 export function useOutstanding(limit: number = OUTSTANDING_LIMIT) {
   return useQuery({
     queryKey: dashboardKeys.outstanding(limit),
-    queryFn: ({ signal }) => getOutstanding(limit, signal),
+    queryFn: ({ signal }) => getOutstanding({ limit }, signal),
     ...live,
   });
 }

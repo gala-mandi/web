@@ -10,6 +10,8 @@ import type {
   DailySummary,
   OutstandingReport,
   OutstandingTrader,
+  PurchasesReport,
+  SalesReport,
 } from "./types";
 
 export const TODAY = "2026-11-06";
@@ -42,13 +44,21 @@ const wave = (i: number, phase: number, base: number, swing: number) =>
       (swing / 3) * Math.cos((i * 7 + phase) / 5),
   );
 
-function book(kind: "purchases" | "sales"): BookReport {
-  const rows: BookRow[] = [];
+/** The bill-level charge field: deductions on purchases, charges on sales. */
+const chargeField = (kind: "purchases" | "sales") =>
+  kind === "purchases" ? "totalDeductions" : "totalCharges";
+
+function book(kind: "purchases"): PurchasesReport;
+function book(kind: "sales"): SalesReport;
+function book(kind: "purchases" | "sales"): PurchasesReport | SalesReport {
+  const field = chargeField(kind);
+  const rows: Record<string, unknown>[] = [];
   let bills = 0;
   let bags = 0;
   let grams = 0;
   let gross = 0;
   let net = 0;
+  let charges = 0;
   days().forEach((date, i) => {
     if (CLOSED_DAYS.includes(date)) return;
     const n = kind === "purchases" ? wave(i, 0, 14, 5) : wave(i, 2, 11, 4);
@@ -56,7 +66,8 @@ function book(kind: "purchases" | "sales"): BookReport {
       kind === "purchases"
         ? wave(i, 0, 78_000_000, 26_000_000) + 37
         : wave(i, 2, 66_000_000, 24_000_000) + 50;
-    const dayGross = dayNet + (kind === "purchases" ? 1 : -1) * n * 95_000;
+    const dayCharges = n * 95_000;
+    const dayGross = dayNet + (kind === "purchases" ? 1 : -1) * dayCharges;
     const dayBags = n * 42;
     const dayGrams = dayBags * 50_000 + n * 125;
     rows.push({
@@ -66,6 +77,7 @@ function book(kind: "purchases" | "sales"): BookReport {
       bags: dayBags,
       weightKg: kg(dayGrams),
       grossAmount: rupees(dayGross),
+      [field]: rupees(dayCharges),
       netAmount: rupees(dayNet),
     });
     bills += n;
@@ -73,6 +85,7 @@ function book(kind: "purchases" | "sales"): BookReport {
     grams += dayGrams;
     gross += dayGross;
     net += dayNet;
+    charges += dayCharges;
   });
   return {
     from: FROM,
@@ -86,13 +99,15 @@ function book(kind: "purchases" | "sales"): BookReport {
       bags,
       weightKg: kg(grams),
       grossAmount: rupees(gross),
+      [field]: rupees(charges),
       netAmount: rupees(net),
     },
-  };
+    // One builder for both books; `field` makes it the right one.
+  } as unknown as PurchasesReport | SalesReport;
 }
 
-export const purchasesByDay: BookReport = book("purchases");
-export const salesByDay: BookReport = book("sales");
+export const purchasesByDay: PurchasesReport = book("purchases");
+export const salesByDay: SalesReport = book("sales");
 
 const todayRow = (report: BookReport) =>
   report.rows.find((r) => r.key === TODAY) as BookRow;
@@ -105,7 +120,7 @@ export const commodityIds = {
 } as const;
 
 /** `GET /reports/purchases?groupBy=commodity`: name order, as the server sends it. */
-export const purchasesByCommodity: BookReport = {
+export const purchasesByCommodity: PurchasesReport = {
   ...purchasesByDay,
   groupBy: "commodity",
   rows: [
@@ -120,9 +135,10 @@ export const purchasesByCommodity: BookReport = {
     bags: 900,
     weightKg: kg(grams as number),
     grossAmount: "1000000.00",
+    totalDeductions: null,
     netAmount: null,
   })),
-  totals: { ...purchasesByDay.totals, netAmount: null },
+  totals: { ...purchasesByDay.totals, totalDeductions: null, netAmount: null },
 };
 
 function history(
@@ -251,7 +267,10 @@ export const outstanding: OutstandingReport = {
   },
 };
 
-const emptyBook = (groupBy: BookReport["groupBy"]): BookReport => ({
+/** No bills: zeros (both charge fields, so it answers purchases and sales). */
+const emptyBook = (
+  groupBy: BookReport["groupBy"],
+): PurchasesReport & SalesReport => ({
   from: FROM,
   to: TODAY,
   groupBy,
@@ -263,7 +282,9 @@ const emptyBook = (groupBy: BookReport["groupBy"]): BookReport => ({
     bags: 0,
     weightKg: "0.000",
     grossAmount: "0.00",
-    netAmount: "0.00",
+    totalDeductions: groupBy === "commodity" ? null : "0.00",
+    totalCharges: groupBy === "commodity" ? null : "0.00",
+    netAmount: groupBy === "commodity" ? null : "0.00",
   },
 });
 

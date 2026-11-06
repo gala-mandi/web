@@ -28,6 +28,7 @@ import {
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -83,6 +84,13 @@ export interface DataTableProps<TData extends RowData> {
   /** Hidden columns (`{ [columnId]: false }`); see `useColumnVisibility`. */
   columnVisibility?: ColumnVisibilityState;
   onColumnVisibilityChange?: (next: ColumnVisibilityState) => void;
+  /**
+   * Renders the columns' `footer` as a last row (e.g. a report's totals
+   * from the server), shown with the rows only.
+   */
+  showFooter?: boolean;
+  /** Every row is on one page (e.g. a report): no pager below the table. */
+  hidePagination?: boolean;
 }
 
 const emptyRows: never[] = [];
@@ -230,6 +238,8 @@ export function DataTable<TData extends RowData>({
   bulkActions,
   columnVisibility = emptyObject,
   onColumnVisibilityChange,
+  showFooter = false,
+  hidePagination = false,
 }: DataTableProps<TData>) {
   const selectable = Boolean(onRowSelectionChange);
 
@@ -294,7 +304,8 @@ export function DataTable<TData extends RowData>({
   const from =
     rowCount === 0 ? 0 : pagination.pageIndex * pagination.pageSize + 1;
   const to = Math.min(rowCount, from + rows.length - 1);
-  const showPager = !isLoading && !isError && rowCount > 0;
+  const showPager = !hidePagination && !isLoading && !isError && rowCount > 0;
+  const footer = showFooter && !isLoading && !isError && rows.length > 0;
   const busy = isLoading || isFetching;
 
   const selectedIds = Object.keys(rowSelection);
@@ -443,6 +454,31 @@ export function DataTable<TData extends RowData>({
             ))
           )}
         </TableBody>
+        {footer ? (
+          <TableFooter className="bg-surface-muted/60">
+            {table.getFooterGroups().map((group) => (
+              <TableRow key={group.id} className="hover:bg-transparent">
+                {group.headers.map((header) => {
+                  const meta = header.column.columnDef.meta;
+                  return (
+                    <TableCell
+                      key={header.id}
+                      className={cn(
+                        "px-3 py-3 font-bold",
+                        alignClass(meta?.align),
+                        meta?.className,
+                      )}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <table.FlexRender footer={header} />
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableFooter>
+        ) : null}
       </Table>
 
       {showPager ? (
