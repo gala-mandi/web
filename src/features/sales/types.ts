@@ -32,6 +32,11 @@ export interface SaleSummary {
   netAmount: string;
   /** Received on the same save (credited back in the khata). */
   receivedAmount: string;
+  /**
+   * Still to receive from the beopari: net − received on save − live
+   * receipt vouchers; "0.00" when cancelled.
+   */
+  outstanding: string;
   status: SaleStatus;
   notes: string | null;
   createdAt: string;

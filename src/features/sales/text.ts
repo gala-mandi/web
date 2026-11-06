@@ -49,6 +49,7 @@ export const saleText = {
       grossAmount: "Gross",
       totalCharges: "Charges",
       netAmount: "Net",
+      outstanding: "Outstanding",
       status: "Status",
     },
     empty: {
@@ -118,6 +119,7 @@ export const saleText = {
   },
   view: {
     back: "All sales",
+    outstanding: "Outstanding",
     loading: "Loading sale…",
     error: {
       title: "Couldn’t load this sale",

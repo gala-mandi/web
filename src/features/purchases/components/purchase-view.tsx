@@ -16,7 +16,7 @@ import { toApiError } from "@/lib/api-error";
 import { BillParchi } from "@/features/parchi/components/bill-parchi";
 import { purchaseParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatRs } from "@/lib/format";
 import { purchaseRoutes, traderRoutes } from "@/lib/routes";
 import { usePurchase } from "../hooks";
 import { purchaseText } from "../text";
@@ -98,6 +98,14 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
           <span className="flex flex-wrap items-center gap-2">
             <PurchaseStatusBadge status={purchase.status} />
             <span>{formatDate(purchase.purchaseDate)}</span>
+            {active ? (
+              <span data-testid="bill-outstanding">
+                {t.outstanding}:{" "}
+                <span dir="ltr" className="text-foreground font-semibold">
+                  {formatRs(purchase.outstanding)}
+                </span>
+              </span>
+            ) : null}
           </span>
         }
         actions={

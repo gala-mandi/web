@@ -88,6 +88,7 @@ export const purchaseText = {
       grossAmount: "Gross",
       totalDeductions: "Deductions",
       netAmount: "Net",
+      outstanding: "Outstanding",
       status: "Status",
     },
     empty: {
@@ -176,6 +177,7 @@ export const purchaseText = {
   },
   view: {
     back: "All purchases",
+    outstanding: "Outstanding",
     loading: "Loading purchase…",
     error: {
       title: "Couldn’t load this purchase",

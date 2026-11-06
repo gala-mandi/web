@@ -69,6 +69,7 @@ export function savedPurchase(
     rounding: totals.rounding,
     netAmount: totals.netAmount,
     paidAmount: "0.00",
+    outstanding: totals.netAmount,
     status: "posted",
     notes: input.notes ?? null,
     createdAt: "2026-11-06T05:00:00.000Z",

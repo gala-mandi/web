@@ -15,7 +15,13 @@ import { httpError, operator, owner } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
 import { getFullStatement, getStatement } from "../api";
 import { exportStatementToExcel } from "../statement";
-import { KISSAN, PURCHASE_ID, SALE_ID, statement } from "../test-data";
+import {
+  KISSAN,
+  PAYMENT_ID,
+  PURCHASE_ID,
+  SALE_ID,
+  statement,
+} from "../test-data";
 import { KhataPage } from "./khata-page";
 
 const push = vi.hoisted(() => vi.fn());
@@ -125,7 +131,7 @@ describe("KhataPage", () => {
     expect(legend).toHaveTextContent("Cr (credit): you owe the trader more");
   });
 
-  it("links purchases and sales (and their reversals) to their bill; payments not yet", async () => {
+  it("links purchases and sales (and their reversals) to their bill, payments to their voucher", async () => {
     renderWith(<KhataPage />, owner, withTrader);
     await screen.findByTestId("khata-closing");
 
@@ -138,13 +144,16 @@ describe("KhataPage", () => {
       }),
     ).toHaveAttribute("href", `/sales/${SALE_ID}`);
     expect(
-      within(row("Payment PAY-2026-27-000001")).queryByRole("link"),
-    ).toBeNull();
+      screen.getByRole("link", { name: "Open Payment PAY-2026-27-000001" }),
+    ).toHaveAttribute("href", `/payments/${PAYMENT_ID}`);
 
     fireEvent.click(row("Paid on purchase PUR-2026-27-000001"));
     expect(push).toHaveBeenCalledWith(`/purchases/${PURCHASE_ID}`);
     push.mockReset();
     fireEvent.click(row("Payment PAY-2026-27-000001"));
+    expect(push).toHaveBeenCalledWith(`/payments/${PAYMENT_ID}`);
+    push.mockReset();
+    fireEvent.click(row("Rounding agreed with Rafiq"));
     expect(push).not.toHaveBeenCalled();
   });
 

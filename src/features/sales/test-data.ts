@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { chanaItem, gandumItem, TODAY } from "@/features/purchases/test-data";
 import type { CommodityLookupItem } from "@/features/commodities/types";
 import { traderDetail } from "@/features/traders/test-data";
@@ -70,6 +71,9 @@ export function savedSale(
     rounding: totals.rounding,
     netAmount: totals.netAmount,
     receivedAmount: input.receivedAmount ?? "0.00",
+    outstanding: new Decimal(totals.netAmount)
+      .minus(input.receivedAmount ?? "0")
+      .toFixed(2),
     status: "posted",
     notes: input.notes ?? null,
     createdAt: "2026-11-06T05:00:00.000Z",
