@@ -479,7 +479,8 @@ function RollLayout({ bill, shop, lang, w }: LayoutProps) {
               <div className="flex flex-wrap items-baseline justify-between gap-x-[0.6em]">
                 <span className="min-w-0">
                   {weight.maund}{" "}
-                  <span className="text-ink-muted">({weight.kg})</span>
+                  {/* Isolated, so Urdu keeps the brackets round "1,010 کلو". */}
+                  <bdi className="text-ink-muted">({weight.kg})</bdi>
                   {" · "}
                   <Ltr>{parchiRs(item.rate)}</Ltr> {w.perUnit[item.rateUnit]}
                 </span>
