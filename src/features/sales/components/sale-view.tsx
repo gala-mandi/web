@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CircleAlert, Pencil, Printer, XCircle } from "lucide-react";
+import { ArrowLeft, CircleAlert, Pencil, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -13,9 +13,9 @@ import {
   NotFoundState,
 } from "@/features/panel/components/status-pages";
 import { PurchaseStatusBadge } from "@/features/purchases/components/badges";
-import { PrintableBill } from "@/features/purchases/components/printable-bill";
-import { usePrintOnce } from "@/hooks/use-print-once";
 import { toApiError } from "@/lib/api-error";
+import { BillParchi } from "@/features/parchi/components/bill-parchi";
+import { saleParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
 import { formatDate } from "@/lib/format";
 import { saleRoutes, traderRoutes } from "@/lib/routes";
@@ -23,7 +23,6 @@ import { useSale } from "../hooks";
 import { saleText } from "../text";
 import type { Sale } from "../types";
 import { CancelSaleDialog } from "./cancel-sale-dialog";
-import { SaleBreakdownLines } from "./sale-breakdown";
 
 const t = saleText.view;
 const a = saleText.actions;
@@ -94,7 +93,6 @@ function SaleView({ sale }: { sale: Sale }) {
   const canOpenTrader = useCan("trader.manage");
   const [cancelling, setCancelling] = useState(false);
   const active = sale.status !== "cancelled";
-  usePrintOnce();
 
   return (
     <div className="flex flex-col gap-6">
@@ -116,15 +114,6 @@ function SaleView({ sale }: { sale: Sale }) {
         }
         actions={
           <>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-10 gap-2 px-4 font-semibold"
-              onClick={() => window.print()}
-            >
-              <Printer aria-hidden />
-              {a.print}
-            </Button>
             {canEdit && active ? (
               <Button
                 asChild
@@ -159,21 +148,18 @@ function SaleView({ sale }: { sale: Sale }) {
         </p>
       )}
 
-      <PrintableBill
-        billNo={sale.billNo}
-        date={sale.saleDate}
-        status={sale.status}
-        sectionTitle={saleText.sectionTitle}
-        partyLabel={t.buyer}
-        partyName={sale.buyer.name}
-        khata={
-          canOpenTrader
-            ? { href: traderRoutes.detail(sale.buyer.id), label: t.khataLink }
-            : null
+      <BillParchi
+        bill={saleParchi(sale)}
+        aside={
+          canOpenTrader ? (
+            <Link
+              href={traderRoutes.detail(sale.buyer.id)}
+              className="text-primary focus-visible:ring-ring/50 rounded-sm text-sm font-semibold outline-none hover:underline focus-visible:ring-3"
+            >
+              {t.khataLink}
+            </Link>
+          ) : null
         }
-        items={sale.items}
-        notes={sale.notes}
-        breakdown={<SaleBreakdownLines values={sale} className="sm:w-80" />}
       />
 
       {cancelling ? (

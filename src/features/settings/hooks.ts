@@ -16,12 +16,16 @@ function retryUnlessClientError(failureCount: number, error: unknown) {
   return failureCount < 1;
 }
 
-/** `GET /settings` (owner only). */
-export function useSettings() {
+/**
+ * `GET /settings` (owner only: `settings.manage`). `enabled: false` skips
+ * the request for users who can't read it.
+ */
+export function useSettings({ enabled = true }: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: settingsKeys.detail(),
     queryFn: ({ signal }) => getSettings(signal),
     retry: retryUnlessClientError,
+    enabled,
   });
 }
 

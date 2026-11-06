@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CircleAlert, Pencil, Printer, XCircle } from "lucide-react";
+import { ArrowLeft, CircleAlert, Pencil, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -12,8 +12,9 @@ import {
   ForbiddenState,
   NotFoundState,
 } from "@/features/panel/components/status-pages";
-import { usePrintOnce } from "@/hooks/use-print-once";
 import { toApiError } from "@/lib/api-error";
+import { BillParchi } from "@/features/parchi/components/bill-parchi";
+import { purchaseParchi } from "@/features/parchi/parchi";
 import { useCan } from "@/lib/can";
 import { formatDate } from "@/lib/format";
 import { purchaseRoutes, traderRoutes } from "@/lib/routes";
@@ -21,9 +22,7 @@ import { usePurchase } from "../hooks";
 import { purchaseText } from "../text";
 import type { Purchase } from "../types";
 import { PurchaseStatusBadge } from "./badges";
-import { BreakdownLines } from "./breakdown-lines";
 import { CancelPurchaseDialog } from "./cancel-purchase-dialog";
-import { PrintableBill } from "./printable-bill";
 
 const t = purchaseText.view;
 const a = purchaseText.actions;
@@ -82,7 +81,6 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
   const canOpenTrader = useCan("trader.manage");
   const [cancelling, setCancelling] = useState(false);
   const active = purchase.status !== "cancelled";
-  usePrintOnce();
 
   return (
     <div className="flex flex-col gap-6">
@@ -104,15 +102,6 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
         }
         actions={
           <>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-10 gap-2 px-4 font-semibold"
-              onClick={() => window.print()}
-            >
-              <Printer aria-hidden />
-              {a.print}
-            </Button>
             {canEdit && active ? (
               <Button
                 asChild
@@ -147,24 +136,18 @@ function PurchaseView({ purchase }: { purchase: Purchase }) {
         </p>
       )}
 
-      <PrintableBill
-        billNo={purchase.billNo}
-        date={purchase.purchaseDate}
-        status={purchase.status}
-        sectionTitle={purchaseText.sectionTitle}
-        partyLabel={t.trader}
-        partyName={purchase.trader.name}
-        khata={
-          canOpenTrader
-            ? {
-                href: traderRoutes.detail(purchase.trader.id),
-                label: t.khataLink,
-              }
-            : null
+      <BillParchi
+        bill={purchaseParchi(purchase)}
+        aside={
+          canOpenTrader ? (
+            <Link
+              href={traderRoutes.detail(purchase.trader.id)}
+              className="text-primary focus-visible:ring-ring/50 rounded-sm text-sm font-semibold outline-none hover:underline focus-visible:ring-3"
+            >
+              {t.khataLink}
+            </Link>
+          ) : null
         }
-        items={purchase.items}
-        notes={purchase.notes}
-        breakdown={<BreakdownLines values={purchase} className="sm:w-80" />}
       />
 
       {cancelling ? (

@@ -1,0 +1,4221 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ParchiDocument snapshots > cancelled sale, 80 mm, Urdu 1`] = `
+<article
+  aria-label="فروخت کی پرچی SAL-2026-27-000002"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[2]"
+  data-parchi="thermal80"
+  data-parchi-lang="ur"
+  dir="rtl"
+  lang="ur"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center print:fixed"
+    data-testid="parchi-watermark"
+  >
+    <span
+      class="text-destructive/25 -rotate-[28deg] rounded-[0.12em] border-[0.07em] border-current px-[0.3em] font-black whitespace-nowrap text-[3.4em] leading-[1.9]"
+    >
+      منسوخ
+    </span>
+  </div>
+  <header
+    class="flex flex-col items-center gap-[0.15em] text-center"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain mb-[0.3em] size-[4.6em] grayscale"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <p
+      class="text-[1.55em] leading-[1.25] font-extrabold"
+      data-testid="parchi-shop"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Al-Madina Commission Shop
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Shop 12, New Grain Market, Okara
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      فون
+      : 
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        0300-1234567
+      </span>
+    </p>
+  </header>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <p
+    class="text-center text-[1.1em] font-extrabold"
+  >
+    فروخت کی پرچی
+  </p>
+  <div
+    class="mt-[0.3em] text-center"
+  >
+    <p
+      class="text-destructive border-destructive inline-block rounded-[0.3em] border-[1.5px] px-[0.6em] font-extrabold text-[1.1em]"
+      data-testid="parchi-cancelled"
+    >
+      منسوخ
+    </p>
+  </div>
+  <dl
+    class="mt-[0.5em] grid grid-cols-[auto_1fr] gap-x-[0.8em] gap-y-[0.1em]"
+  >
+    <dt
+      class="text-ink-muted"
+    >
+      بل نمبر
+    </dt>
+    <dd
+      class="text-end font-bold"
+    >
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        SAL-2026-27-000002
+      </span>
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      تاریخ
+    </dt>
+    <dd
+      class="text-end"
+    >
+      6 نومبر، 2026
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      بیوپاری
+    </dt>
+    <dd
+      class="min-w-0 text-end font-bold"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Shahid Traders
+      </bdi>
+    </dd>
+  </dl>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <ol>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+           
+          بوری
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          25 من 10 کلو
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            1,010 کلو
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 4,000.00
+          </span>
+           
+          فی من
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 101,000.00
+        </span>
+      </div>
+    </li>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+           
+          بوری
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          15 من 15.5 کلو
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            615.5 کلو
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 6,200.00
+          </span>
+           
+          فی من
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 95,402.50
+        </span>
+      </div>
+    </li>
+  </ol>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <dl
+    class="flex flex-col gap-[0.25em] leading-[1.9]"
+    data-parchi-keep="true"
+    data-testid="parchi-sums"
+  >
+    <div
+      class="flex items-baseline justify-between gap-[1em] font-bold"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کل رقم
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 196,402.50
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کمیشن ⁦2%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 2,020.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کمیشن ⁦2.5%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 2,385.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مارکیٹ فیس ⁦0.5%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 505.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مزدوری ⁦Rs 20.00⁩ فی بوری
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 200.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مزدوری ⁦Rs 15.00⁩ فی بوری
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 90.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کل اخراجات
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 5,200.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        راؤنڈنگ
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 0.44
+        </span>
+      </dd>
+    </div>
+    <div
+      class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+    >
+      <dt>
+        قابلِ وصولی
+      </dt>
+      <dd
+        data-testid="parchi-net"
+      >
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 201,603.00
+        </span>
+      </dd>
+    </div>
+  </dl>
+  <footer
+    class="text-center border-ink mt-[0.8em] border-t border-dashed pt-[0.6em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      پرنٹ کی تاریخ
+      : 
+      6 نومبر، 2026 کو 10:30 AM
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > cancelled sale, A4, English 1`] = `
+<article
+  aria-label="Sale parchi SAL-2026-27-000002"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0 text-[12px] font-sans leading-[1.45]"
+  data-parchi="a4"
+  data-parchi-lang="en"
+  dir="ltr"
+  lang="en"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center print:fixed"
+    data-testid="parchi-watermark"
+  >
+    <span
+      class="text-destructive/25 -rotate-[28deg] rounded-[0.12em] border-[0.07em] border-current px-[0.3em] font-black whitespace-nowrap text-[7em] leading-[1.15] tracking-[0.08em]"
+    >
+      CANCELLED
+    </span>
+  </div>
+  <header
+    class="border-ink flex items-start gap-[1.2em] border-b-2 pb-[1em]"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain size-[5.2em] rounded-[0.5em]"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-[1.9em] leading-[1.25] font-extrabold font-heading"
+        data-testid="parchi-shop"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Al-Madina Commission Shop
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Shop 12, New Grain Market, Okara
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        Phone
+        : 
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          0300-1234567
+        </span>
+      </p>
+    </div>
+    <div
+      class="flex shrink-0 flex-col items-end gap-[0.5em]"
+    >
+      <p
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
+      >
+        Sale parchi
+      </p>
+      <dl
+        class="grid grid-cols-[auto_auto] gap-x-[1em] gap-y-[0.1em]"
+      >
+        <dt
+          class="text-ink-muted"
+        >
+          Bill no
+        </dt>
+        <dd
+          class="text-end text-[1.1em] font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            SAL-2026-27-000002
+          </span>
+        </dd>
+        <dt
+          class="text-ink-muted"
+        >
+          Date
+        </dt>
+        <dd
+          class="text-end font-semibold"
+        >
+          6 Nov 2026
+        </dd>
+      </dl>
+      <p
+        class="text-destructive border-destructive inline-block rounded-[0.3em] border-[1.5px] px-[0.6em] font-extrabold"
+        data-testid="parchi-cancelled"
+      >
+        CANCELLED
+      </p>
+    </div>
+  </header>
+  <section
+    class="border-ink-rule mt-[1.1em] flex flex-wrap items-baseline gap-x-[0.7em] rounded-[0.5em] border px-[1em] py-[0.55em]"
+    data-parchi-keep="true"
+  >
+    <span
+      class="text-ink-muted font-semibold uppercase tracking-[0.06em]"
+    >
+      Beopari
+    </span>
+    <bdi
+      class="[overflow-wrap:break-word] min-w-0 text-[1.3em] font-bold"
+      dir="auto"
+    >
+      Shahid Traders
+    </bdi>
+  </section>
+  <table
+    class="mt-[1.1em] w-full table-fixed border-collapse"
+  >
+    <colgroup>
+      <col
+        class="w-[5%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[8%]"
+      />
+      <col
+        class="w-[22%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[23%]"
+      />
+    </colgroup>
+    <thead>
+      <tr
+        class="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]"
+      >
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          #
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          Commodity
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Bags
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Weight
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Rate
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] ps-[0.5em] text-end"
+          scope="col"
+        >
+          Amount
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            25 mn 10 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            1,010 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 4,000.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 101,000.00
+          </span>
+        </td>
+      </tr>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            15 mn 15.5 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            615.5 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 6,200.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 95,402.50
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section
+    class="mt-[1.2em] flex items-start gap-[2em]"
+    data-parchi-keep="true"
+  >
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-ink-muted"
+      >
+        2 items
+      </p>
+    </div>
+    <dl
+      class="flex flex-col gap-[0.25em] w-[48%]"
+      data-parchi-keep="true"
+      data-testid="parchi-sums"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[1em] font-bold"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Gross amount
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 196,402.50
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,020.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,385.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Market fee 0.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 505.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 20.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 200.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 15.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 90.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Total charges
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 5,200.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Rounding
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 0.44
+          </span>
+        </dd>
+      </div>
+      <div
+        class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+      >
+        <dt>
+          Net receivable
+        </dt>
+        <dd
+          data-testid="parchi-net"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 201,603.00
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <footer
+    class="text-center border-ink-rule mt-[1.6em] border-t pt-[0.8em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      Printed on
+      : 
+      6 Nov 2026, 10:30 am
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > purchase, 80 mm, English 1`] = `
+<article
+  aria-label="Purchase parchi PUR-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[11px] font-sans leading-[1.45]"
+  data-parchi="thermal80"
+  data-parchi-lang="en"
+  dir="ltr"
+  lang="en"
+>
+  <header
+    class="flex flex-col items-center gap-[0.15em] text-center"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain mb-[0.3em] size-[4.6em] grayscale"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <p
+      class="text-[1.55em] leading-[1.25] font-extrabold font-heading"
+      data-testid="parchi-shop"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Al-Madina Commission Shop
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Shop 12, New Grain Market, Okara
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      Phone
+      : 
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        0300-1234567
+      </span>
+    </p>
+  </header>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <p
+    class="text-center text-[1.1em] font-extrabold uppercase tracking-[0.06em]"
+  >
+    Purchase parchi
+  </p>
+  <dl
+    class="mt-[0.5em] grid grid-cols-[auto_1fr] gap-x-[0.8em] gap-y-[0.1em]"
+  >
+    <dt
+      class="text-ink-muted"
+    >
+      Bill no
+    </dt>
+    <dd
+      class="text-end font-bold"
+    >
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        PUR-2026-27-000001
+      </span>
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      Date
+    </dt>
+    <dd
+      class="text-end"
+    >
+      6 Nov 2026
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      Kissan
+    </dt>
+    <dd
+      class="min-w-0 text-end font-bold"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Rafiq Ahmad
+      </bdi>
+    </dd>
+  </dl>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <ol>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+           
+          Bags
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          25 mn 10 kg
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            1,010 kg
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 4,000.00
+          </span>
+           
+          per maund
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 101,000.00
+        </span>
+      </div>
+    </li>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+           
+          Bags
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          15 mn 15.5 kg
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            615.5 kg
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 6,200.00
+          </span>
+           
+          per maund
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 95,402.50
+        </span>
+      </div>
+    </li>
+  </ol>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <dl
+    class="flex flex-col gap-[0.25em]"
+    data-parchi-keep="true"
+    data-testid="parchi-sums"
+  >
+    <div
+      class="flex items-baseline justify-between gap-[1em] font-bold"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Gross amount
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 196,402.50
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Commission 2%
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 2,020.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Commission 2.5%
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 2,385.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Market fee 0.5%
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 505.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Labour Rs 20.00 per bag
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 200.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Labour Rs 15.00 per bag
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 90.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Total deductions
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 5,200.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Rounding
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          -Rs 0.44
+        </span>
+      </dd>
+    </div>
+    <div
+      class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+    >
+      <dt>
+        Net payable to kissan
+      </dt>
+      <dd
+        data-testid="parchi-net"
+      >
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 191,202.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+    >
+      <dt
+        class="min-w-0"
+      >
+        Paid now
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 20,000.00
+        </span>
+      </dd>
+    </div>
+  </dl>
+  <div
+    class="mt-[0.6em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="text-ink-muted font-semibold"
+    >
+      Notes
+    </p>
+    <p
+      class="text-start"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
+        dir="auto"
+      >
+        Truck LES-4521
+      </span>
+    </p>
+  </div>
+  <footer
+    class="text-center border-ink mt-[0.8em] border-t border-dashed pt-[0.6em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      Printed on
+      : 
+      6 Nov 2026, 10:30 am
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > purchase, A4, English 1`] = `
+<article
+  aria-label="Purchase parchi PUR-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0 text-[12px] font-sans leading-[1.45]"
+  data-parchi="a4"
+  data-parchi-lang="en"
+  dir="ltr"
+  lang="en"
+>
+  <header
+    class="border-ink flex items-start gap-[1.2em] border-b-2 pb-[1em]"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain size-[5.2em] rounded-[0.5em]"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-[1.9em] leading-[1.25] font-extrabold font-heading"
+        data-testid="parchi-shop"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Al-Madina Commission Shop
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Shop 12, New Grain Market, Okara
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        Phone
+        : 
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          0300-1234567
+        </span>
+      </p>
+    </div>
+    <div
+      class="flex shrink-0 flex-col items-end gap-[0.5em]"
+    >
+      <p
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
+      >
+        Purchase parchi
+      </p>
+      <dl
+        class="grid grid-cols-[auto_auto] gap-x-[1em] gap-y-[0.1em]"
+      >
+        <dt
+          class="text-ink-muted"
+        >
+          Bill no
+        </dt>
+        <dd
+          class="text-end text-[1.1em] font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            PUR-2026-27-000001
+          </span>
+        </dd>
+        <dt
+          class="text-ink-muted"
+        >
+          Date
+        </dt>
+        <dd
+          class="text-end font-semibold"
+        >
+          6 Nov 2026
+        </dd>
+      </dl>
+    </div>
+  </header>
+  <section
+    class="border-ink-rule mt-[1.1em] flex flex-wrap items-baseline gap-x-[0.7em] rounded-[0.5em] border px-[1em] py-[0.55em]"
+    data-parchi-keep="true"
+  >
+    <span
+      class="text-ink-muted font-semibold uppercase tracking-[0.06em]"
+    >
+      Kissan
+    </span>
+    <bdi
+      class="[overflow-wrap:break-word] min-w-0 text-[1.3em] font-bold"
+      dir="auto"
+    >
+      Rafiq Ahmad
+    </bdi>
+  </section>
+  <table
+    class="mt-[1.1em] w-full table-fixed border-collapse"
+  >
+    <colgroup>
+      <col
+        class="w-[5%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[8%]"
+      />
+      <col
+        class="w-[22%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[23%]"
+      />
+    </colgroup>
+    <thead>
+      <tr
+        class="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]"
+      >
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          #
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          Commodity
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Bags
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Weight
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Rate
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] ps-[0.5em] text-end"
+          scope="col"
+        >
+          Amount
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            25 mn 10 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            1,010 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 4,000.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 101,000.00
+          </span>
+        </td>
+      </tr>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            15 mn 15.5 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            615.5 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 6,200.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 95,402.50
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section
+    class="mt-[1.2em] flex items-start gap-[2em]"
+    data-parchi-keep="true"
+  >
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-ink-muted"
+      >
+        2 items
+      </p>
+      <div
+        class="mt-[0.5em]"
+        data-parchi-keep="true"
+      >
+        <p
+          class="text-ink-muted font-semibold"
+        >
+          Notes
+        </p>
+        <p
+          class="text-start"
+        >
+          <span
+            class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
+            dir="auto"
+          >
+            Truck LES-4521
+          </span>
+        </p>
+      </div>
+    </div>
+    <dl
+      class="flex flex-col gap-[0.25em] w-[48%]"
+      data-parchi-keep="true"
+      data-testid="parchi-sums"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[1em] font-bold"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Gross amount
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 196,402.50
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 2,020.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 2,385.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Market fee 0.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 505.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 20.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 200.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 15.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 90.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Total deductions
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 5,200.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Rounding
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 0.44
+          </span>
+        </dd>
+      </div>
+      <div
+        class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+      >
+        <dt>
+          Net payable to kissan
+        </dt>
+        <dd
+          data-testid="parchi-net"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 191,202.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Paid now
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 20,000.00
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <footer
+    class="text-center border-ink-rule mt-[1.6em] border-t pt-[0.8em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      Printed on
+      : 
+      6 Nov 2026, 10:30 am
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > purchase, A4, Urdu 1`] = `
+<article
+  aria-label="خرید کی پرچی PUR-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[210mm] min-h-[297mm] px-[12mm] pt-[12mm] pb-[16mm] print:w-auto print:min-h-0 print:p-0 text-[13px] font-urdu-mixed leading-[2]"
+  data-parchi="a4"
+  data-parchi-lang="ur"
+  dir="rtl"
+  lang="ur"
+>
+  <header
+    class="border-ink flex items-start gap-[1.2em] border-b-2 pb-[1em]"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain size-[5.2em] rounded-[0.5em]"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-[1.9em] leading-[1.25] font-extrabold"
+        data-testid="parchi-shop"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Al-Madina Commission Shop
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Shop 12, New Grain Market, Okara
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        فون
+        : 
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          0300-1234567
+        </span>
+      </p>
+    </div>
+    <div
+      class="flex shrink-0 flex-col items-end gap-[0.5em]"
+    >
+      <p
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.1em] leading-[2.1]"
+      >
+        خرید کی پرچی
+      </p>
+      <dl
+        class="grid grid-cols-[auto_auto] gap-x-[1em] gap-y-[0.1em]"
+      >
+        <dt
+          class="text-ink-muted"
+        >
+          بل نمبر
+        </dt>
+        <dd
+          class="text-end text-[1.1em] font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            PUR-2026-27-000001
+          </span>
+        </dd>
+        <dt
+          class="text-ink-muted"
+        >
+          تاریخ
+        </dt>
+        <dd
+          class="text-end font-semibold"
+        >
+          6 نومبر، 2026
+        </dd>
+      </dl>
+    </div>
+  </header>
+  <section
+    class="border-ink-rule mt-[1.1em] flex flex-wrap items-baseline gap-x-[0.7em] rounded-[0.5em] border px-[1em] py-[0.55em]"
+    data-parchi-keep="true"
+  >
+    <span
+      class="text-ink-muted font-semibold"
+    >
+      کسان
+    </span>
+    <bdi
+      class="[overflow-wrap:break-word] min-w-0 text-[1.3em] font-bold"
+      dir="auto"
+    >
+      Rafiq Ahmad
+    </bdi>
+  </section>
+  <table
+    class="mt-[1.1em] w-full table-fixed border-collapse"
+  >
+    <colgroup>
+      <col
+        class="w-[5%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[8%]"
+      />
+      <col
+        class="w-[22%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[23%]"
+      />
+    </colgroup>
+    <thead>
+      <tr
+        class="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]"
+      >
+        <th
+          class="py-[0.55em] font-semibold pe-[0.5em] text-start"
+          scope="col"
+        >
+          نمبر
+        </th>
+        <th
+          class="py-[0.55em] font-semibold pe-[0.5em] text-start"
+          scope="col"
+        >
+          جنس
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          بوری
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          وزن
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          ریٹ
+        </th>
+        <th
+          class="py-[0.55em] font-semibold ps-[0.5em] text-end"
+          scope="col"
+        >
+          رقم
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top leading-[2.3] text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            25 من 10 کلو
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            1,010 کلو
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 4,000.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            فی من
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 101,000.00
+          </span>
+        </td>
+      </tr>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top leading-[2.3] text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            15 من 15.5 کلو
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            615.5 کلو
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 6,200.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            فی من
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 95,402.50
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section
+    class="mt-[1.2em] flex items-start gap-[2em]"
+    data-parchi-keep="true"
+  >
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-ink-muted"
+      >
+        2 اشیاء
+      </p>
+      <div
+        class="mt-[0.5em]"
+        data-parchi-keep="true"
+      >
+        <p
+          class="text-ink-muted font-semibold"
+        >
+          نوٹ
+        </p>
+        <p
+          class="text-start"
+        >
+          <span
+            class="block [overflow-wrap:break-word] [line-height:1.5] text-start"
+            dir="auto"
+          >
+            Truck LES-4521
+          </span>
+        </p>
+      </div>
+    </div>
+    <dl
+      class="flex flex-col gap-[0.25em] leading-[1.9] w-[48%]"
+      data-parchi-keep="true"
+      data-testid="parchi-sums"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[1em] font-bold"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کل رقم
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 196,402.50
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کمیشن ⁦2%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 2,020.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کمیشن ⁦2.5%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 2,385.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مارکیٹ فیس ⁦0.5%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 505.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مزدوری ⁦Rs 20.00⁩ فی بوری
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 200.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مزدوری ⁦Rs 15.00⁩ فی بوری
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 90.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کل کٹوتی
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 5,200.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          راؤنڈنگ
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            -Rs 0.44
+          </span>
+        </dd>
+      </div>
+      <div
+        class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+      >
+        <dt>
+          کسان کو قابلِ ادائیگی
+        </dt>
+        <dd
+          data-testid="parchi-net"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 191,202.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          ادا شدہ
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 20,000.00
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <footer
+    class="text-center border-ink-rule mt-[1.6em] border-t pt-[0.8em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      پرنٹ کی تاریخ
+      : 
+      6 نومبر، 2026 کو 10:30 AM
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > sale, 80 mm, Urdu 1`] = `
+<article
+  aria-label="فروخت کی پرچی SAL-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[80mm] px-[4mm] pt-[5mm] pb-[7mm] [--ink-muted:var(--ink)] [--ink-rule:var(--ink)] text-[12px] font-urdu-mixed leading-[2]"
+  data-parchi="thermal80"
+  data-parchi-lang="ur"
+  dir="rtl"
+  lang="ur"
+>
+  <header
+    class="flex flex-col items-center gap-[0.15em] text-center"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain mb-[0.3em] size-[4.6em] grayscale"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <p
+      class="text-[1.55em] leading-[1.25] font-extrabold"
+      data-testid="parchi-shop"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Al-Madina Commission Shop
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Shop 12, New Grain Market, Okara
+      </bdi>
+    </p>
+    <p
+      class="text-ink-muted"
+    >
+      فون
+      : 
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        0300-1234567
+      </span>
+    </p>
+  </header>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <p
+    class="text-center text-[1.1em] font-extrabold"
+  >
+    فروخت کی پرچی
+  </p>
+  <dl
+    class="mt-[0.5em] grid grid-cols-[auto_1fr] gap-x-[0.8em] gap-y-[0.1em]"
+  >
+    <dt
+      class="text-ink-muted"
+    >
+      بل نمبر
+    </dt>
+    <dd
+      class="text-end font-bold"
+    >
+      <span
+        class="tabular-nums whitespace-nowrap"
+        dir="ltr"
+      >
+        SAL-2026-27-000001
+      </span>
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      تاریخ
+    </dt>
+    <dd
+      class="text-end"
+    >
+      6 نومبر، 2026
+    </dd>
+    <dt
+      class="text-ink-muted"
+    >
+      بیوپاری
+    </dt>
+    <dd
+      class="min-w-0 text-end font-bold"
+    >
+      <bdi
+        class="[overflow-wrap:break-word]"
+        dir="auto"
+      >
+        Shahid Traders
+      </bdi>
+    </dd>
+  </dl>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <ol>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+           
+          بوری
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          25 من 10 کلو
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            1,010 کلو
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 4,000.00
+          </span>
+           
+          فی من
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 101,000.00
+        </span>
+      </div>
+    </li>
+    <li
+      class="border-ink border-b border-dashed py-[0.4em] last:border-b-0"
+      data-parchi-keep="true"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[0.6em]"
+      >
+        <span
+          class="min-w-0 font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+            .
+          </span>
+           
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </span>
+        <span
+          class="shrink-0"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+           
+          بوری
+        </span>
+      </div>
+      <div
+        class="flex flex-wrap items-baseline justify-between gap-x-[0.6em]"
+      >
+        <span
+          class="min-w-0"
+        >
+          15 من 15.5 کلو
+           
+          <bdi
+            class="text-ink-muted"
+          >
+            (
+            615.5 کلو
+            )
+          </bdi>
+           · 
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 6,200.00
+          </span>
+           
+          فی من
+        </span>
+        <span
+          class="tabular-nums whitespace-nowrap ms-auto font-bold"
+          dir="ltr"
+        >
+          Rs 95,402.50
+        </span>
+      </div>
+    </li>
+  </ol>
+  <hr
+    class="border-ink my-[0.5em] border-t border-dashed"
+  />
+  <dl
+    class="flex flex-col gap-[0.25em] leading-[1.9]"
+    data-parchi-keep="true"
+    data-testid="parchi-sums"
+  >
+    <div
+      class="flex items-baseline justify-between gap-[1em] font-bold"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کل رقم
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 196,402.50
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کمیشن ⁦2%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 2,020.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کمیشن ⁦2.5%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 2,385.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مارکیٹ فیس ⁦0.5%⁩
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 505.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مزدوری ⁦Rs 20.00⁩ فی بوری
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 200.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        مزدوری ⁦Rs 15.00⁩ فی بوری
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 90.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+    >
+      <dt
+        class="min-w-0"
+      >
+        کل اخراجات
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 5,200.06
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+    >
+      <dt
+        class="min-w-0"
+      >
+        راؤنڈنگ
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          +Rs 0.44
+        </span>
+      </dd>
+    </div>
+    <div
+      class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+    >
+      <dt>
+        قابلِ وصولی
+      </dt>
+      <dd
+        data-testid="parchi-net"
+      >
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 201,603.00
+        </span>
+      </dd>
+    </div>
+    <div
+      class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+    >
+      <dt
+        class="min-w-0"
+      >
+        وصول شدہ
+      </dt>
+      <dd>
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          Rs 50,000.00
+        </span>
+      </dd>
+    </div>
+  </dl>
+  <footer
+    class="text-center border-ink mt-[0.8em] border-t border-dashed pt-[0.6em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      پرنٹ کی تاریخ
+      : 
+      6 نومبر، 2026 کو 10:30 AM
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > sale, A5, English 1`] = `
+<article
+  aria-label="Sale parchi SAL-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0 text-[10.5px] font-sans leading-[1.45]"
+  data-parchi="a5"
+  data-parchi-lang="en"
+  dir="ltr"
+  lang="en"
+>
+  <header
+    class="border-ink flex items-start gap-[1.2em] border-b-2 pb-[1em]"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain size-[5.2em] rounded-[0.5em]"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-[1.9em] leading-[1.25] font-extrabold font-heading"
+        data-testid="parchi-shop"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Al-Madina Commission Shop
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Shop 12, New Grain Market, Okara
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        Phone
+        : 
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          0300-1234567
+        </span>
+      </p>
+    </div>
+    <div
+      class="flex shrink-0 flex-col items-end gap-[0.5em]"
+    >
+      <p
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.2em] uppercase tracking-[0.06em]"
+      >
+        Sale parchi
+      </p>
+      <dl
+        class="grid grid-cols-[auto_auto] gap-x-[1em] gap-y-[0.1em]"
+      >
+        <dt
+          class="text-ink-muted"
+        >
+          Bill no
+        </dt>
+        <dd
+          class="text-end text-[1.1em] font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            SAL-2026-27-000001
+          </span>
+        </dd>
+        <dt
+          class="text-ink-muted"
+        >
+          Date
+        </dt>
+        <dd
+          class="text-end font-semibold"
+        >
+          6 Nov 2026
+        </dd>
+      </dl>
+    </div>
+  </header>
+  <section
+    class="border-ink-rule mt-[1.1em] flex flex-wrap items-baseline gap-x-[0.7em] rounded-[0.5em] border px-[1em] py-[0.55em]"
+    data-parchi-keep="true"
+  >
+    <span
+      class="text-ink-muted font-semibold uppercase tracking-[0.06em]"
+    >
+      Beopari
+    </span>
+    <bdi
+      class="[overflow-wrap:break-word] min-w-0 text-[1.3em] font-bold"
+      dir="auto"
+    >
+      Shahid Traders
+    </bdi>
+  </section>
+  <table
+    class="mt-[1.1em] w-full table-fixed border-collapse"
+  >
+    <colgroup>
+      <col
+        class="w-[5%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[8%]"
+      />
+      <col
+        class="w-[22%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[23%]"
+      />
+    </colgroup>
+    <thead>
+      <tr
+        class="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]"
+      >
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          #
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] pe-[0.5em] text-start"
+          scope="col"
+        >
+          Commodity
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Bags
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Weight
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] px-[0.5em] text-end"
+          scope="col"
+        >
+          Rate
+        </th>
+        <th
+          class="py-[0.55em] font-semibold uppercase tracking-[0.06em] ps-[0.5em] text-end"
+          scope="col"
+        >
+          Amount
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            25 mn 10 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            1,010 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 4,000.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 101,000.00
+          </span>
+        </td>
+      </tr>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            15 mn 15.5 kg
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            615.5 kg
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 6,200.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em] leading-[1.3]"
+          >
+            per maund
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 95,402.50
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section
+    class="mt-[1.2em] flex items-start gap-[2em]"
+    data-parchi-keep="true"
+  >
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-ink-muted"
+      >
+        2 items
+      </p>
+    </div>
+    <dl
+      class="flex flex-col gap-[0.25em] w-[48%]"
+      data-parchi-keep="true"
+      data-testid="parchi-sums"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[1em] font-bold"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Gross amount
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 196,402.50
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,020.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Commission 2.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,385.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Market fee 0.5%
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 505.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 20.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 200.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Labour Rs 15.00 per bag
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 90.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Total charges
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 5,200.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Rounding
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 0.44
+          </span>
+        </dd>
+      </div>
+      <div
+        class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+      >
+        <dt>
+          Net receivable
+        </dt>
+        <dd
+          data-testid="parchi-net"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 201,603.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          Received now
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 50,000.00
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <footer
+    class="text-center border-ink-rule mt-[1.6em] border-t pt-[0.8em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      Printed on
+      : 
+      6 Nov 2026, 10:30 am
+    </p>
+  </footer>
+</article>
+`;
+
+exports[`ParchiDocument snapshots > sale, A5, Urdu 1`] = `
+<article
+  aria-label="فروخت کی پرچی SAL-2026-27-000001"
+  class="bg-paper text-ink relative isolate overflow-hidden print:overflow-visible w-[148mm] min-h-[210mm] px-[8mm] pt-[9mm] pb-[12mm] print:w-auto print:min-h-0 print:p-0 text-[11px] font-urdu-mixed leading-[2]"
+  data-parchi="a5"
+  data-parchi-lang="ur"
+  dir="rtl"
+  lang="ur"
+>
+  <header
+    class="border-ink flex items-start gap-[1.2em] border-b-2 pb-[1em]"
+  >
+    <img
+      alt=""
+      class="shrink-0 object-contain size-[5.2em] rounded-[0.5em]"
+      data-testid="parchi-logo"
+      src="http://localhost:4000/uploads/t1/logo.png"
+    />
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-[1.9em] leading-[1.25] font-extrabold"
+        data-testid="parchi-shop"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Al-Madina Commission Shop
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        <bdi
+          class="[overflow-wrap:break-word]"
+          dir="auto"
+        >
+          Shop 12, New Grain Market, Okara
+        </bdi>
+      </p>
+      <p
+        class="text-ink-muted"
+      >
+        فون
+        : 
+        <span
+          class="tabular-nums whitespace-nowrap"
+          dir="ltr"
+        >
+          0300-1234567
+        </span>
+      </p>
+    </div>
+    <div
+      class="flex shrink-0 flex-col items-end gap-[0.5em]"
+    >
+      <p
+        class="bg-ink text-paper rounded-[0.35em] px-[0.8em] text-[1.05em] font-bold py-[0.1em] leading-[2.1]"
+      >
+        فروخت کی پرچی
+      </p>
+      <dl
+        class="grid grid-cols-[auto_auto] gap-x-[1em] gap-y-[0.1em]"
+      >
+        <dt
+          class="text-ink-muted"
+        >
+          بل نمبر
+        </dt>
+        <dd
+          class="text-end text-[1.1em] font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            SAL-2026-27-000001
+          </span>
+        </dd>
+        <dt
+          class="text-ink-muted"
+        >
+          تاریخ
+        </dt>
+        <dd
+          class="text-end font-semibold"
+        >
+          6 نومبر، 2026
+        </dd>
+      </dl>
+    </div>
+  </header>
+  <section
+    class="border-ink-rule mt-[1.1em] flex flex-wrap items-baseline gap-x-[0.7em] rounded-[0.5em] border px-[1em] py-[0.55em]"
+    data-parchi-keep="true"
+  >
+    <span
+      class="text-ink-muted font-semibold"
+    >
+      بیوپاری
+    </span>
+    <bdi
+      class="[overflow-wrap:break-word] min-w-0 text-[1.3em] font-bold"
+      dir="auto"
+    >
+      Shahid Traders
+    </bdi>
+  </section>
+  <table
+    class="mt-[1.1em] w-full table-fixed border-collapse"
+  >
+    <colgroup>
+      <col
+        class="w-[5%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[8%]"
+      />
+      <col
+        class="w-[22%]"
+      />
+      <col
+        class="w-[21%]"
+      />
+      <col
+        class="w-[23%]"
+      />
+    </colgroup>
+    <thead>
+      <tr
+        class="border-ink text-ink-muted border-b-[1.5px] text-[0.85em]"
+      >
+        <th
+          class="py-[0.55em] font-semibold pe-[0.5em] text-start"
+          scope="col"
+        >
+          نمبر
+        </th>
+        <th
+          class="py-[0.55em] font-semibold pe-[0.5em] text-start"
+          scope="col"
+        >
+          جنس
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          بوری
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          وزن
+        </th>
+        <th
+          class="py-[0.55em] font-semibold px-[0.5em] text-end"
+          scope="col"
+        >
+          ریٹ
+        </th>
+        <th
+          class="py-[0.55em] font-semibold ps-[0.5em] text-end"
+          scope="col"
+        >
+          رقم
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top leading-[2.3] text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            1
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Gandum
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            10
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            25 من 10 کلو
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            1,010 کلو
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 4,000.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            فی من
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 101,000.00
+          </span>
+        </td>
+      </tr>
+      <tr
+        class="border-ink-rule border-b"
+      >
+        <td
+          class="py-[0.5em] align-top leading-[2.3] text-ink-muted pe-[0.5em]"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            2
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] pe-[0.5em] font-semibold"
+        >
+          <bdi
+            class="[overflow-wrap:break-word]"
+            dir="auto"
+          >
+            Chana
+          </bdi>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            6
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block font-semibold"
+          >
+            15 من 15.5 کلو
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            615.5 کلو
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] px-[0.5em] text-end"
+        >
+          <span
+            class="block"
+          >
+            <span
+              class="tabular-nums whitespace-nowrap"
+              dir="ltr"
+            >
+              Rs 6,200.00
+            </span>
+          </span>
+          <span
+            class="text-ink-muted block text-[0.85em]"
+          >
+            فی من
+          </span>
+        </td>
+        <td
+          class="py-[0.5em] align-top leading-[2.3] ps-[0.5em] text-end font-bold"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 95,402.50
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section
+    class="mt-[1.2em] flex items-start gap-[2em]"
+    data-parchi-keep="true"
+  >
+    <div
+      class="min-w-0 flex-1"
+    >
+      <p
+        class="text-ink-muted"
+      >
+        2 اشیاء
+      </p>
+    </div>
+    <dl
+      class="flex flex-col gap-[0.25em] leading-[1.9] w-[48%]"
+      data-parchi-keep="true"
+      data-testid="parchi-sums"
+    >
+      <div
+        class="flex items-baseline justify-between gap-[1em] font-bold"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کل رقم
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 196,402.50
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کمیشن ⁦2%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,020.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کمیشن ⁦2.5%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 2,385.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مارکیٹ فیس ⁦0.5%⁩
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 505.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مزدوری ⁦Rs 20.00⁩ فی بوری
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 200.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          مزدوری ⁦Rs 15.00⁩ فی بوری
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 90.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] border-ink-rule border-t pt-[0.25em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          کل اخراجات
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 5,200.06
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] text-ink-muted"
+      >
+        <dt
+          class="min-w-0"
+        >
+          راؤنڈنگ
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            +Rs 0.44
+          </span>
+        </dd>
+      </div>
+      <div
+        class="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold"
+      >
+        <dt>
+          قابلِ وصولی
+        </dt>
+        <dd
+          data-testid="parchi-net"
+        >
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 201,603.00
+          </span>
+        </dd>
+      </div>
+      <div
+        class="flex items-baseline justify-between gap-[1em] pt-[0.2em]"
+      >
+        <dt
+          class="min-w-0"
+        >
+          وصول شدہ
+        </dt>
+        <dd>
+          <span
+            class="tabular-nums whitespace-nowrap"
+            dir="ltr"
+          >
+            Rs 50,000.00
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <footer
+    class="text-center border-ink-rule mt-[1.6em] border-t pt-[0.8em]"
+    data-parchi-keep="true"
+  >
+    <p
+      class="font-semibold"
+      data-testid="parchi-footer"
+    >
+      <span
+        class="block [overflow-wrap:break-word] [line-height:1.5]"
+        dir="auto"
+      >
+        Thank you for your business.
+      </span>
+      <span
+        class="block [overflow-wrap:break-word] font-urdu-mixed [line-height:2.5]"
+        dir="auto"
+      >
+        شکریہ — براہِ کرم پرچی چیک کر لیں۔
+      </span>
+    </p>
+    <p
+      class="text-ink-muted mt-[0.4em] text-[0.85em]"
+    >
+      پرنٹ کی تاریخ
+      : 
+      6 نومبر، 2026 کو 10:30 AM
+    </p>
+  </footer>
+</article>
+`;

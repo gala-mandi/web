@@ -50,6 +50,20 @@ export function usePurchase(id: string) {
 }
 
 /**
+ * Loads one whole bill for a list action (e.g. Reprint), from the cache
+ * when it is fresh, through the same detail query as the bill's page.
+ */
+export function usePurchaseLoader() {
+  const queryClient = useQueryClient();
+  return (id: string): Promise<Purchase> =>
+    queryClient.fetchQuery({
+      queryKey: purchaseKeys.detail(id),
+      queryFn: ({ signal }) => getPurchase(id, signal),
+      staleTime: 30_000,
+    });
+}
+
+/**
  * A saved purchase goes into the detail cache at once (the view opens without
  * a request); lists and the kissan's balance (khata) refresh in the background.
  */

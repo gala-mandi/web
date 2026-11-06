@@ -87,12 +87,19 @@ async function signedIn(page: Page, context: BrowserContext, user: ShopUser) {
     status: 200,
     body: shopSettings,
   }));
-  // Record window.print() instead of opening the dialog.
+  // react-to-print prints the parchi from its own iframe: record what that
+  // frame would print (paper, language, text) instead of opening the dialog.
   await page.addInitScript(() => {
-    const w = window as unknown as { printed: number };
-    w.printed = 0;
+    type Printed = { paper: string; lang: string; text: string };
+    const top = window.top as unknown as { printed?: Printed[] };
+    if (window === window.top) top.printed = [];
     window.print = () => {
-      w.printed += 1;
+      const parchi = document.querySelector<HTMLElement>("[data-parchi]");
+      top.printed?.push({
+        paper: parchi?.dataset.parchi ?? "",
+        lang: parchi?.lang ?? "",
+        text: parchi?.textContent ?? "",
+      });
     };
   });
 }
@@ -359,20 +366,34 @@ test.describe("Purchases", () => {
       ],
     });
 
-    // Print preview: only the bill, with the rounding line.
-    const bill = page.getByRole("article", { name: "Bill PUR-2026-27-000001" });
+    // The parchi on screen, as it prints, and printed once.
+    const bill = page.getByRole("article", {
+      name: "Purchase parchi PUR-2026-27-000001",
+    });
     await expect(bill).toBeVisible();
-    await expect
-      .poll(() =>
-        page.evaluate(() => (window as unknown as { printed: number }).printed),
-      )
-      .toBe(1);
     await expect(bill).toContainText("25 mn 10 kg");
     await expect(bill).toContainText("Rounding");
-    await expect(bill.getByTestId("purchase-net")).toHaveText("Rs 98,275.00");
+    await expect(bill.getByTestId("parchi-net")).toHaveText("Rs 98,275.00");
+    const printed = () =>
+      page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              printed: { paper: string; lang: string; text: string }[];
+            }
+          ).printed,
+      );
+    await expect.poll(async () => (await printed()).length).toBe(1);
+    const [first] = await printed();
+    expect(first).toMatchObject({ paper: "a4", lang: "en" });
+    expect(first.text).toContain("PUR-2026-27-000001");
+    expect(first.text).toContain("Rs 98,275.00");
+    // The browser's own print of the page shows only the parchi too.
     await page.emulateMedia({ media: "print" });
     await expect(bill).toBeVisible();
-    await expect(page.getByRole("button", { name: "Print" })).toBeHidden();
+    await expect(
+      page.getByRole("button", { name: "Print parchi" }),
+    ).toBeHidden();
     await page.emulateMedia({ media: "screen" });
 
     // The kissan's khata: credited with the net (the shop owes him).
@@ -388,6 +409,28 @@ test.describe("Purchases", () => {
     await expect(row).toContainText("Rafiq Ahmad");
     await expect(row).toContainText("Rs 98,275.00");
     await expect(row).toContainText("Saved");
+
+    // Reprint from the list, on the 80 mm roll in Urdu (remembered choice).
+    await page.evaluate(() =>
+      localStorage.setItem(
+        "gm-web-parchi",
+        JSON.stringify({
+          state: { paper: "thermal80", lang: "ur" },
+          version: 0,
+        }),
+      ),
+    );
+    await page.reload();
+    await row
+      .getByRole("button", { name: "Actions for PUR-2026-27-000001" })
+      .click();
+    await page.getByRole("menuitem", { name: "Reprint" }).click();
+    await expect.poll(async () => (await printed()).length).toBe(1);
+    const [again] = await printed();
+    expect(again).toMatchObject({ paper: "thermal80", lang: "ur" });
+    expect(again.text).toContain("PUR-2026-27-000001");
+    expect(again.text).toContain("Rs 98,275.00");
+    await expect(page).toHaveURL(/\/purchases$/);
   });
 
   test("a dropped connection while saving shows a clear error and the retry saves once", async ({

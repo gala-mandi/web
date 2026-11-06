@@ -14,6 +14,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { User } from "@/features/auth/types";
 import { listCommodities } from "@/features/commodities/api";
 import { commodityList } from "@/features/commodities/test-data";
+import { getMe } from "@/features/auth/api";
+import { getSettings } from "@/features/settings/api";
+import { shopSettings } from "@/features/settings/test-data";
+import { useParchiPrefs } from "@/stores/parchi";
 import { useSessionStore } from "@/stores/session";
 import { httpError, manager, operator, owner } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
@@ -23,9 +27,16 @@ import { PurchasesPage } from "./purchases-page";
 import { PurchaseDetailPage } from "./purchase-view";
 
 const push = vi.hoisted(() => vi.fn());
+const print = vi.hoisted(() => vi.fn());
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push, replace: vi.fn() }),
 }));
+vi.mock("react-to-print", () => ({ useReactToPrint: () => print }));
+vi.mock("@/features/auth/api", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/features/auth/api")>()),
+  getMe: vi.fn(),
+}));
+vi.mock("@/features/settings/api", () => ({ getSettings: vi.fn() }));
 vi.mock("../api", () => ({
   listPurchases: vi.fn(),
   getPurchase: vi.fn(),
@@ -64,6 +75,19 @@ async function openActions(billNo: string) {
   fireEvent.keyDown(trigger, { key: "Enter" });
   return screen.findByRole("menu");
 }
+
+beforeEach(() => {
+  print.mockReset();
+  vi.mocked(getMe).mockImplementation(
+    async () => useSessionStore.getState().user!,
+  );
+  vi.mocked(getSettings)
+    .mockReset()
+    .mockResolvedValue(
+      shopSettings({ displayName: "Al-Madina", parchiFooter: "Shukriya" }),
+    );
+  useParchiPrefs.setState({ paper: "a4", lang: null });
+});
 
 describe("PurchasesPage", () => {
   beforeEach(() => {
@@ -124,6 +148,51 @@ describe("PurchasesPage", () => {
     expect(screen.getByRole("combobox", { name: "Kissan" })).toHaveTextContent(
       "Rafiq Ahmad",
     );
+  });
+
+  it("Reprint loads the whole bill and prints its parchi without leaving the list", async () => {
+    vi.mocked(getPurchase).mockReset().mockResolvedValue(bill);
+    useParchiPrefs.setState({ paper: "thermal80", lang: "ur" });
+    renderWith(<PurchasesPage />, operator);
+    const menu = await openActions(bill.billNo);
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Reprint" }));
+
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
+    expect(getPurchase).toHaveBeenCalledWith(bill.id, expect.anything());
+    // The remembered paper and language; off screen, not in the list.
+    const parchi = screen.getByTestId("reprint-outlet").firstElementChild!;
+    expect(parchi).toHaveAttribute("data-parchi", "thermal80");
+    expect(parchi).toHaveAttribute("dir", "rtl");
+    expect(parchi).toHaveTextContent(bill.billNo);
+    expect(screen.getByTestId("reprint-outlet")).toHaveClass("hidden");
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("a cancelled bill reprints with the CANCELLED watermark", async () => {
+    vi.mocked(getPurchase).mockReset().mockResolvedValue(cancelled);
+    renderWith(<PurchasesPage />, owner);
+    const menu = await openActions(cancelled.billNo);
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Reprint" }));
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
+    const outlet = within(screen.getByTestId("reprint-outlet"));
+    expect(outlet.getByTestId("parchi-watermark")).toHaveTextContent(
+      "CANCELLED",
+    );
+    // The owner's parchi has the Settings header.
+    expect(outlet.getByTestId("parchi-shop")).toHaveTextContent("Al-Madina");
+  });
+
+  it("a failed Reprint says so and prints nothing", async () => {
+    vi.mocked(getPurchase)
+      .mockReset()
+      .mockRejectedValue(httpError(undefined, 500));
+    renderWith(<PurchasesPage />, operator);
+    const menu = await openActions(bill.billNo);
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Reprint" }));
+    expect(
+      await screen.findByText("Couldn’t print the parchi. Please try again."),
+    ).toBeInTheDocument();
+    expect(print).not.toHaveBeenCalled();
   });
 
   it("operators only view; managers edit; only the owner cancels", async () => {
@@ -196,47 +265,108 @@ describe("PurchasesPage", () => {
 describe("PurchaseDetailPage", () => {
   beforeEach(() => {
     vi.mocked(getPurchase).mockReset().mockResolvedValue(bill);
-    window.print = vi.fn();
   });
 
   afterEach(() => useSessionStore.getState().clear());
 
-  it("shows the bill with items, each deduction and the rounding line", async () => {
+  it("shows the parchi as it prints: items, each deduction and the rounding line", async () => {
     renderWith(<PurchaseDetailPage id={bill.id} />, operator);
 
     expect(
       await screen.findByRole("heading", { name: `Bill ${bill.billNo}` }),
     ).toBeVisible();
-    const printed = screen.getByRole("article");
-    expect(printed).toHaveAttribute("data-print-area");
-    expect(printed).toHaveTextContent("Demo Mandi");
-    expect(printed).toHaveTextContent("Rafiq Ahmad");
-    expect(printed).toHaveTextContent("25 mn");
-    expect(printed).toHaveTextContent("1,000 kg");
-    expect(printed).toHaveTextContent("Rs 4,000.00 per maund");
-    const lines = within(screen.getByTestId("purchase-breakdown"));
+    const parchi = screen.getByRole("article", {
+      name: `Purchase parchi ${bill.billNo}`,
+    });
+    expect(parchi).toHaveAttribute("data-print-area");
+    expect(parchi).toHaveAttribute("data-parchi", "a4");
+    // Operators can't read Settings: the shop name from their session.
+    expect(getSettings).not.toHaveBeenCalled();
+    expect(within(parchi).getByTestId("parchi-shop")).toHaveTextContent(
+      "Demo Mandi",
+    );
+    expect(parchi).toHaveTextContent("KissanRafiq Ahmad");
+    expect(parchi).toHaveTextContent("25 mn");
+    expect(parchi).toHaveTextContent("1,000 kg");
+    expect(parchi).toHaveTextContent("Rs 4,000.00per maund");
+    const lines = within(screen.getByTestId("parchi-sums"));
     expect(lines.getByText("Rounding").nextSibling).toHaveTextContent(
       "Rs 0.00",
     );
-    expect(screen.getByTestId("purchase-net")).toHaveTextContent(
-      "Rs 97,300.00",
-    );
+    expect(screen.getByTestId("parchi-net")).toHaveTextContent("Rs 97,300.00");
     // Operators can't edit or cancel.
     expect(screen.queryByRole("link", { name: "Edit" })).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Cancel purchase" }),
     ).toBeNull();
-    expect(window.print).not.toHaveBeenCalled();
+    expect(print).not.toHaveBeenCalled();
   });
 
-  it("?print=1 opens the print dialog once", async () => {
+  it("the owner's parchi carries the Settings header and footer", async () => {
+    renderWith(<PurchaseDetailPage id={bill.id} />, owner);
+    const parchi = await screen.findByRole("article", {
+      name: `Purchase parchi ${bill.billNo}`,
+    });
+    await waitFor(() =>
+      expect(within(parchi).getByTestId("parchi-shop")).toHaveTextContent(
+        "Al-Madina",
+      ),
+    );
+    expect(parchi).toHaveTextContent("Shop 12, Grain Market, Okara");
+    expect(within(parchi).getByTestId("parchi-footer")).toHaveTextContent(
+      "Shukriya",
+    );
+  });
+
+  it("picks the paper and language; Print parchi prints that", async () => {
+    renderWith(<PurchaseDetailPage id={bill.id} />, owner);
+    await screen.findByRole("article", {
+      name: `Purchase parchi ${bill.billNo}`,
+    });
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Paper" }));
+    fireEvent.click(
+      await screen.findByRole("option", { name: "80 mm thermal" }),
+    );
+    fireEvent.click(screen.getByRole("combobox", { name: "Parchi language" }));
+    fireEvent.click(await screen.findByRole("option", { name: "اردو" }));
+
+    const parchi = screen.getByRole("article", {
+      name: `خرید کی پرچی ${bill.billNo}`,
+    });
+    expect(parchi).toHaveAttribute("data-parchi", "thermal80");
+    expect(parchi).toHaveAttribute("dir", "rtl");
+    // Remembered for Save & Print and Reprint.
+    expect(useParchiPrefs.getState()).toMatchObject({
+      paper: "thermal80",
+      lang: "ur",
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Print parchi" }));
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
+  });
+
+  it("the shop's Urdu setting is the default language until one is picked", async () => {
+    vi.mocked(getSettings).mockResolvedValue(shopSettings({ language: "ur" }));
+    renderWith(<PurchaseDetailPage id={bill.id} />, owner);
+    expect(
+      await screen.findByRole("article", {
+        name: `خرید کی پرچی ${bill.billNo}`,
+      }),
+    ).toHaveAttribute("lang", "ur");
+  });
+
+  it("?print=1 prints the parchi once, after the shop header has loaded", async () => {
     const { onUrlUpdate } = renderWith(
       <PurchaseDetailPage id={bill.id} />,
       owner,
       "?print=1",
     );
-    await screen.findByRole("article");
-    await waitFor(() => expect(window.print).toHaveBeenCalledTimes(1));
+    await screen.findByRole("article", {
+      name: `Purchase parchi ${bill.billNo}`,
+    });
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
+    expect(getSettings).toHaveBeenCalled();
     await waitFor(() =>
       expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toBe(""),
     );
@@ -244,6 +374,7 @@ describe("PurchaseDetailPage", () => {
     expect(
       screen.getByRole("button", { name: "Cancel purchase" }),
     ).toBeVisible();
+    expect(print).toHaveBeenCalledTimes(1);
   });
 
   it("shows 404 for an unknown bill", async () => {

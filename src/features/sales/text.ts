@@ -28,8 +28,6 @@ const errors = {
 export const saleText = {
   none: purchaseText.none,
   errors,
-  /** Under the shop name on the printed bill. */
-  sectionTitle: "Sale bill (parchi)",
   billOf: purchaseText.billOf,
   list: {
     newButton: "New sale",
@@ -67,7 +65,7 @@ export const saleText = {
     view: "View",
     edit: "Edit",
     cancel: "Cancel sale",
-    print: "Print",
+    reprint: "Reprint",
   },
   form: {
     newTitle: "New sale",

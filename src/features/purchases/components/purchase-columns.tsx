@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Pencil, XCircle } from "lucide-react";
+import { Eye, Pencil, Printer, XCircle } from "lucide-react";
 import Link from "next/link";
 import {
   type DataTableColumn,
@@ -28,6 +28,8 @@ export interface PurchaseRowActions {
   /** `purchase.delete` (owner): cancel. */
   canCancel: boolean;
   onCancel: (purchase: PurchaseSummary) => void;
+  /** Everyone who sees the list: prints the parchi again (cancelled too). */
+  onReprint: (purchase: PurchaseSummary) => void;
 }
 
 function RowActions({
@@ -45,6 +47,10 @@ function RowActions({
           <Eye aria-hidden />
           {a.view}
         </Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => actions.onReprint(purchase)}>
+        <Printer aria-hidden />
+        {a.reprint}
       </DropdownMenuItem>
       {actions.canEdit && active ? (
         <DropdownMenuItem asChild>

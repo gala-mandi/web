@@ -14,6 +14,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { User } from "@/features/auth/types";
 import { listCommodities } from "@/features/commodities/api";
 import { commodityList } from "@/features/commodities/test-data";
+import { getMe } from "@/features/auth/api";
+import { getSettings } from "@/features/settings/api";
+import { shopSettings } from "@/features/settings/test-data";
+import { useParchiPrefs } from "@/stores/parchi";
 import { useSessionStore } from "@/stores/session";
 import { httpError, manager, operator, owner } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
@@ -24,9 +28,16 @@ import { SaleDetailPage } from "./sale-view";
 import { SalesPage } from "./sales-page";
 
 const push = vi.hoisted(() => vi.fn());
+const print = vi.hoisted(() => vi.fn());
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push, replace: vi.fn() }),
 }));
+vi.mock("react-to-print", () => ({ useReactToPrint: () => print }));
+vi.mock("@/features/auth/api", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/features/auth/api")>()),
+  getMe: vi.fn(),
+}));
+vi.mock("@/features/settings/api", () => ({ getSettings: vi.fn() }));
 vi.mock("../api", () => ({
   listSales: vi.fn(),
   getSale: vi.fn(),
@@ -65,6 +76,17 @@ async function openActions(billNo: string) {
   fireEvent.keyDown(trigger, { key: "Enter" });
   return screen.findByRole("menu");
 }
+
+beforeEach(() => {
+  print.mockReset();
+  vi.mocked(getMe).mockImplementation(
+    async () => useSessionStore.getState().user!,
+  );
+  vi.mocked(getSettings)
+    .mockReset()
+    .mockResolvedValue(shopSettings({ displayName: "Al-Madina" }));
+  useParchiPrefs.setState({ paper: "a4", lang: null });
+});
 
 describe("SalesPage", () => {
   beforeEach(() => {
@@ -124,6 +146,27 @@ describe("SalesPage", () => {
     expect(screen.getByRole("combobox", { name: "Beopari" })).toHaveTextContent(
       "Shahid Traders",
     );
+  });
+
+  it("Reprint prints the sale's parchi from the list, cancelled ones watermarked", async () => {
+    vi.mocked(getSale).mockReset().mockResolvedValue(cancelled);
+    useParchiPrefs.setState({ paper: "a5", lang: "en" });
+    renderWith(<SalesPage />, operator);
+    const menu = await openActions(cancelled.billNo);
+    fireEvent.click(within(menu).getByRole("menuitem", { name: "Reprint" }));
+
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
+    expect(getSale).toHaveBeenCalledWith(cancelled.id, expect.anything());
+    const outlet = within(screen.getByTestId("reprint-outlet"));
+    const parchi = outlet.getByRole("article", {
+      name: `Sale parchi ${cancelled.billNo}`,
+      hidden: true,
+    });
+    expect(parchi).toHaveAttribute("data-parchi", "a5");
+    expect(outlet.getByTestId("parchi-watermark")).toHaveTextContent(
+      "CANCELLED",
+    );
+    expect(parchi).toHaveTextContent("BeopariShahid Traders");
   });
 
   it("operators only view", async () => {
@@ -192,52 +235,56 @@ describe("SalesPage", () => {
 describe("SaleDetailPage", () => {
   beforeEach(() => {
     vi.mocked(getSale).mockReset().mockResolvedValue(bill);
-    window.print = vi.fn();
   });
 
   afterEach(() => useSessionStore.getState().clear());
 
-  it("shows the bill with items, each charge added and the rounding line", async () => {
+  it("shows the parchi as it prints: items, each charge added and the rounding line", async () => {
     renderWith(<SaleDetailPage id={bill.id} />, operator);
 
     expect(
       await screen.findByRole("heading", { name: `Bill ${bill.billNo}` }),
     ).toBeVisible();
-    const printed = screen.getByRole("article");
-    expect(printed).toHaveAttribute("data-print-area");
-    expect(printed).toHaveTextContent("Demo Mandi");
-    expect(printed).toHaveTextContent("Sale bill (parchi)");
-    expect(printed).toHaveTextContent("Beopari: Shahid Traders");
-    expect(printed).toHaveTextContent("25 mn");
-    expect(printed).toHaveTextContent("Rs 4,000.00 per maund");
-    const lines = within(screen.getByTestId("sale-breakdown"));
+    const parchi = screen.getByRole("article", {
+      name: `Sale parchi ${bill.billNo}`,
+    });
+    expect(parchi).toHaveAttribute("data-print-area");
+    expect(within(parchi).getByTestId("parchi-shop")).toHaveTextContent(
+      "Demo Mandi",
+    );
+    expect(parchi).toHaveTextContent("BeopariShahid Traders");
+    expect(parchi).toHaveTextContent("25 mn");
+    expect(parchi).toHaveTextContent("Rs 4,000.00per maund");
+    const lines = within(screen.getByTestId("parchi-sums"));
     expect(lines.getByText("Total charges").nextSibling).toHaveTextContent(
       "+Rs 2,700.00",
     );
     expect(lines.getByText("Rounding").nextSibling).toHaveTextContent(
       "Rs 0.00",
     );
-    expect(screen.getByTestId("sale-net")).toHaveTextContent("Rs 102,700.00");
-    // Operators can't edit, cancel or open the Traders page.
+    expect(screen.getByTestId("parchi-net")).toHaveTextContent("Rs 102,700.00");
+    // Operators can't edit, cancel, open the Traders page or read Settings.
     expect(screen.queryByRole("link", { name: "Edit" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Cancel sale" })).toBeNull();
     expect(
       screen.queryByRole("link", { name: "Open beopari’s khata" }),
     ).toBeNull();
-    expect(window.print).not.toHaveBeenCalled();
+    expect(getSettings).not.toHaveBeenCalled();
+    expect(print).not.toHaveBeenCalled();
   });
 
-  it("?print=1 opens the print dialog once; the owner can edit, cancel and open the khata", async () => {
+  it("?print=1 prints the parchi once; the owner can edit, cancel and open the khata", async () => {
     const { onUrlUpdate } = renderWith(
       <SaleDetailPage id={bill.id} />,
       owner,
       "?print=1",
     );
-    await screen.findByRole("article");
-    await waitFor(() => expect(window.print).toHaveBeenCalledTimes(1));
+    await screen.findByRole("article", { name: `Sale parchi ${bill.billNo}` });
+    await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
     await waitFor(() =>
       expect(onUrlUpdate.mock.calls.at(-1)?.[0].queryString).toBe(""),
     );
+    expect(screen.getByTestId("parchi-shop")).toHaveTextContent("Al-Madina");
     expect(screen.getByRole("link", { name: "Edit" })).toHaveAttribute(
       "href",
       `/sales/${bill.id}/edit`,
@@ -246,6 +293,18 @@ describe("SaleDetailPage", () => {
     expect(
       screen.getByRole("link", { name: "Open beopari’s khata" }),
     ).toHaveAttribute("href", `/traders/${BEOPARI.id}`);
+  });
+
+  it("a cancelled sale's parchi is watermarked", async () => {
+    vi.mocked(getSale).mockResolvedValue(cancelled);
+    renderWith(<SaleDetailPage id={cancelled.id} />, owner);
+    await screen.findByRole("article", {
+      name: `Sale parchi ${cancelled.billNo}`,
+    });
+    expect(screen.getByTestId("parchi-watermark")).toHaveTextContent(
+      "CANCELLED",
+    );
+    expect(screen.getByRole("note")).toBeVisible();
   });
 
   it("shows 404 for an unknown bill", async () => {
