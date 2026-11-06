@@ -23,6 +23,11 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Commodity } from "@/features/commodities/types";
+import {
+  useChartDirection,
+  useChartFormat,
+} from "@/features/dashboard/components/chart-parts";
+import { numberFormat } from "@/lib/format";
 import { useFormat } from "@/lib/use-format";
 import { useRateHistory } from "../hooks";
 import {
@@ -33,18 +38,6 @@ import {
   trendStart,
   trendUnit,
 } from "../trend";
-
-/** "6 Nov": a calendar date, so formatted in UTC (no zone shift). */
-const tickDate = new Intl.DateTimeFormat("en-PK", {
-  timeZone: "UTC",
-  day: "numeric",
-  month: "short",
-});
-const tickLabel = (date: string) =>
-  tickDate.format(new Date(`${date}T00:00:00Z`));
-
-/** Axis ticks only: "4,200" from the plot position. */
-const axisNumber = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
 export interface RateTrendChartProps {
   /** Commodities to choose from, in name order. */
@@ -59,6 +52,9 @@ export interface RateTrendChartProps {
  */
 export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
   const t = useTranslations("rates");
+  const { shortDate } = useChartFormat();
+  const direction = useChartDirection();
+  const { locale } = useFormat();
   const [picked, setPicked] = useState<string | null>(null);
   const [days, setDays] = useState<TrendRange>(30);
   const commodityId = picked ?? commodities[0]?.id ?? null;
@@ -145,23 +141,29 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"
-                tickFormatter={tickLabel}
+                tickFormatter={shortDate}
                 tick={{ fontSize: 12 }}
                 minTickGap={16}
+                {...direction.xAxis}
               />
               <YAxis
                 width={72}
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value: number) => axisNumber.format(value)}
+                tickFormatter={(value: number) =>
+                  numberFormat(locale, { maximumFractionDigits: 0 }).format(
+                    value,
+                  )
+                }
                 domain={["auto", "auto"]}
+                {...direction.yAxis}
                 label={{
                   value: t("chart.axis", { unit: trendUnit(rates) }),
-                  angle: -90,
-                  position: "insideLeft",
+                  angle: direction.rtl ? 90 : -90,
+                  position: direction.rtl ? "insideRight" : "insideLeft",
                   style: { fontSize: 12 },
                 }}
               />
-              <Tooltip content={TrendTooltip} />
+              <Tooltip content={<TrendTooltip />} />
               <Area
                 dataKey="band"
                 name={t("chart.band")}

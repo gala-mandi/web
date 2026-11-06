@@ -1,13 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { BadgePercent, ShoppingCart, Store, Wallet } from "lucide-react";
-import { formatRs } from "@/lib/format";
-import { dashboardText } from "../text";
+import { useFormat } from "@/lib/use-format";
 import type { DailySummary } from "../types";
 import { MoneyFigure, SectionError } from "./chart-parts";
 import { HintParts, KpiTile } from "./kpi-tile";
-
-const t = dashboardText.tiles;
 
 export interface KpiTilesProps {
   /** `GET /reports/daily-summary`; undefined while loading. */
@@ -22,24 +20,26 @@ export interface KpiTilesProps {
  * `cash.closingCash`. Nothing is added up in the browser.
  */
 export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
   if (isError && !summary) {
     return (
       <section
-        aria-label={t.label}
+        aria-label={t("tiles.label")}
         className="bg-card rounded-card border px-5"
       >
-        <SectionError message={t.error} onRetry={() => onRetry?.()} />
+        <SectionError message={t("tiles.error")} onRetry={() => onRetry?.()} />
       </section>
     );
   }
 
   const loading = !summary;
   return (
-    <section aria-label={t.label}>
+    <section aria-label={t("tiles.label")}>
       <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         <KpiTile
           id="purchases"
-          label={t.purchases.title}
+          label={t("tiles.purchases.title")}
           icon={ShoppingCart}
           tone="primary"
           loading={loading}
@@ -48,8 +48,8 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
             summary && (
               <HintParts
                 parts={[
-                  dashboardText.bills(summary.purchases.bills),
-                  dashboardText.bags(summary.purchases.bags),
+                  t("bills", { n: summary.purchases.bills }),
+                  t("bags", { n: summary.purchases.bags }),
                 ]}
               />
             )
@@ -57,7 +57,7 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
         />
         <KpiTile
           id="sales"
-          label={t.sales.title}
+          label={t("tiles.sales.title")}
           icon={Store}
           tone="orange"
           loading={loading}
@@ -66,8 +66,8 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
             summary && (
               <HintParts
                 parts={[
-                  dashboardText.bills(summary.sales.bills),
-                  dashboardText.bags(summary.sales.bags),
+                  t("bills", { n: summary.sales.bills }),
+                  t("bags", { n: summary.sales.bags }),
                 ]}
               />
             )
@@ -75,7 +75,7 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
         />
         <KpiTile
           id="commission"
-          label={t.commission.title}
+          label={t("tiles.commission.title")}
           icon={BadgePercent}
           tone="green"
           loading={loading}
@@ -85,10 +85,12 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
               <HintParts
                 stacked
                 parts={[
-                  t.commission.purchases(
-                    formatRs(summary.commission.purchases),
-                  ),
-                  t.commission.sales(formatRs(summary.commission.sales)),
+                  t("tiles.commission.purchases", {
+                    amount: formatRs(summary.commission.purchases),
+                  }),
+                  t("tiles.commission.sales", {
+                    amount: formatRs(summary.commission.sales),
+                  }),
                 ]}
               />
             )
@@ -96,7 +98,7 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
         />
         <KpiTile
           id="cash"
-          label={t.cash.title}
+          label={t("tiles.cash.title")}
           icon={Wallet}
           tone="violet"
           loading={loading}
@@ -106,8 +108,12 @@ export function KpiTiles({ summary, isError, onRetry }: KpiTilesProps) {
               <HintParts
                 stacked
                 parts={[
-                  t.cash.cashIn(formatRs(summary.cash.cashIn)),
-                  t.cash.cashOut(formatRs(summary.cash.cashOut)),
+                  t("tiles.cash.cashIn", {
+                    amount: formatRs(summary.cash.cashIn),
+                  }),
+                  t("tiles.cash.cashOut", {
+                    amount: formatRs(summary.cash.cashOut),
+                  }),
                 ]}
               />
             )

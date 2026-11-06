@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { ShoppingCart, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -12,36 +13,33 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEveryCommodity } from "@/features/rates/hooks";
-import { formatDate, formatRs, karachiToday } from "@/lib/format";
+import { karachiToday } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { panelRoutes, purchaseRoutes, saleRoutes } from "@/lib/routes";
 import { useDayBills, useLiveTodayRates } from "../hooks";
-import { dashboardText } from "../text";
 import { panelClass, SectionEmpty, SectionError } from "./chart-parts";
 import { DashboardEmpty, type EmptyStep } from "./dashboard-empty";
 import { KpiTile } from "./kpi-tile";
 import { RefreshStatus } from "./refresh-status";
 
-const t = dashboardText.operator;
-const r = dashboardText.rates;
-
-const operatorSteps: EmptyStep[] = [
+const operatorSteps = (t: Translator<"dashboard">): EmptyStep[] => [
   {
     key: "purchase",
-    label: t.empty.purchase,
+    label: t("operator.empty.purchase"),
     href: purchaseRoutes.new,
     icon: ShoppingCart,
     permission: "purchase.create",
   },
   {
     key: "sale",
-    label: t.empty.sale,
+    label: t("operator.empty.sale"),
     href: saleRoutes.new,
     icon: Store,
     permission: "sale.create",
   },
   {
     key: "rates",
-    label: dashboardText.empty.seeRates,
+    label: t("empty.seeRates"),
     href: panelRoutes.rates,
     icon: TrendingUp,
     permission: "rate.view",
@@ -55,6 +53,8 @@ const operatorSteps: EmptyStep[] = [
  * no money totals, which are report data.
  */
 export function OperatorDashboard() {
+  const { formatCount, formatDate, formatRs } = useFormat();
+  const t = useTranslations("dashboard");
   const tPanel = useTranslations("panel");
   const today = karachiToday();
   const bills = useDayBills(today);
@@ -74,7 +74,7 @@ export function OperatorDashboard() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title={tPanel("sections.dashboard.label")}
-        description={dashboardText.today(formatDate(`${today}T12:00:00Z`))}
+        description={t("today", { date: formatDate(`${today}T12:00:00Z`) })}
         actions={
           <RefreshStatus
             updatedAt={bills.dataUpdatedAt}
@@ -85,18 +85,18 @@ export function OperatorDashboard() {
 
       {empty ? (
         <DashboardEmpty
-          title={t.empty.title}
-          body={t.empty.body}
-          stepsLabel={dashboardText.empty.steps}
-          steps={operatorSteps}
+          title={t("operator.empty.title")}
+          body={t("operator.empty.body")}
+          stepsLabel={t("empty.steps")}
+          steps={operatorSteps(t)}
         />
       ) : (
         <>
-          <section aria-label={t.tilesLabel}>
+          <section aria-label={t("operator.tilesLabel")}>
             {bills.isError && !bills.data ? (
               <div className="bg-card rounded-card border px-5">
                 <SectionError
-                  message={t.error}
+                  message={t("operator.error")}
                   onRetry={() => bills.refetch()}
                 />
               </div>
@@ -104,21 +104,23 @@ export function OperatorDashboard() {
               <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                 <KpiTile
                   id="purchases-today"
-                  label={t.purchases}
+                  label={t("operator.purchases")}
                   icon={ShoppingCart}
                   tone="primary"
                   loading={!bills.data}
-                  value={bills.data?.purchases.toLocaleString("en-PK")}
-                  hint={t.postedHint}
+                  value={
+                    bills.data ? formatCount(bills.data.purchases) : undefined
+                  }
+                  hint={t("operator.postedHint")}
                 />
                 <KpiTile
                   id="sales-today"
-                  label={t.sales}
+                  label={t("operator.sales")}
                   icon={Store}
                   tone="orange"
                   loading={!bills.data}
-                  value={bills.data?.sales.toLocaleString("en-PK")}
-                  hint={t.postedHint}
+                  value={bills.data ? formatCount(bills.data.sales) : undefined}
+                  hint={t("operator.postedHint")}
                 />
               </dl>
             )}
@@ -135,14 +137,16 @@ export function OperatorDashboard() {
                 id="dash-today-rates-title"
                 className="font-heading text-lg"
               >
-                {t.rates.title}
+                {t("operator.rates.title")}
               </CardTitle>
-              <CardDescription>{t.rates.description}</CardDescription>
+              <CardDescription>
+                {t("operator.rates.description")}
+              </CardDescription>
             </CardHeader>
             <CardContent className="px-5">
               {rates.isError && !rates.data ? (
                 <SectionError
-                  message={r.error}
+                  message={t("rates.error")}
                   onRetry={() => rates.refetch()}
                 />
               ) : !rates.data ? (
@@ -152,7 +156,7 @@ export function OperatorDashboard() {
                   ))}
                 </div>
               ) : dayRates.length === 0 ? (
-                <SectionEmpty>{t.rates.empty}</SectionEmpty>
+                <SectionEmpty>{t("operator.rates.empty")}</SectionEmpty>
               ) : (
                 <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {dayRates.map((rate) => (
@@ -162,19 +166,20 @@ export function OperatorDashboard() {
                       className="bg-surface-muted/50 flex flex-col gap-1 rounded-xl border px-4 py-3"
                     >
                       <span className="font-semibold">
-                        {names.get(rate.commodityId) ?? r.none}
+                        {names.get(rate.commodityId) ?? t("rates.none")}
                       </span>
                       <span className="text-sm tabular-nums">
-                        {r.range(
-                          formatRs(rate.minRate),
-                          formatRs(rate.maxRate),
-                        )}{" "}
+                        {t("rates.range", {
+                          min: formatRs(rate.minRate),
+                          max: formatRs(rate.maxRate),
+                        })}{" "}
                         <span className="text-muted-foreground text-xs">
-                          {r.unit[rate.rateUnit]}
+                          {t(`rates.unit.${rate.rateUnit}`)}
                         </span>
                       </span>
                       <span className="text-muted-foreground text-xs tabular-nums">
-                        {r.avg} {formatRs(rate.avgRate) || r.none}
+                        {t("rates.avg")}{" "}
+                        {formatRs(rate.avgRate) || t("rates.none")}
                       </span>
                     </li>
                   ))}

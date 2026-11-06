@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { ShoppingCart, Store, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { formatDate, karachiToday } from "@/lib/format";
+import { karachiToday } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { panelRoutes, purchaseRoutes, saleRoutes } from "@/lib/routes";
 import {
   useDailySummary,
@@ -12,7 +14,6 @@ import {
   useSalesByDay,
 } from "../hooks";
 import { isEmptyShop, trendFrom } from "../series";
-import { dashboardText } from "../text";
 import { CommodityRates } from "./commodity-rates";
 import { DashboardEmpty, type EmptyStep } from "./dashboard-empty";
 import { KpiTiles } from "./kpi-tiles";
@@ -20,26 +21,24 @@ import { OutstandingList } from "./outstanding-list";
 import { RefreshStatus } from "./refresh-status";
 import { SalesTrendChart } from "./sales-trend-chart";
 
-const e = dashboardText.empty;
-
-const ownerSteps: EmptyStep[] = [
+const ownerSteps = (t: Translator<"dashboard">): EmptyStep[] => [
   {
     key: "rates",
-    label: e.setRates,
+    label: t("empty.setRates"),
     href: panelRoutes.rates,
     icon: TrendingUp,
     permission: "rate.manage",
   },
   {
     key: "purchase",
-    label: e.purchase,
+    label: t("empty.purchase"),
     href: purchaseRoutes.new,
     icon: ShoppingCart,
     permission: "purchase.create",
   },
   {
     key: "sale",
-    label: e.sale,
+    label: t("empty.sale"),
     href: saleRoutes.new,
     icon: Store,
     permission: "sale.create",
@@ -53,6 +52,8 @@ const ownerSteps: EmptyStep[] = [
  * refreshes itself every few minutes.
  */
 export function OwnerDashboard() {
+  const { formatDate } = useFormat();
+  const t = useTranslations("dashboard");
   const tPanel = useTranslations("panel");
   const today = karachiToday();
   const from = trendFrom(today);
@@ -78,9 +79,9 @@ export function OwnerDashboard() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title={tPanel("sections.dashboard.label")}
-        description={dashboardText.today(
-          formatDate(`${summary.data?.date ?? today}T12:00:00Z`),
-        )}
+        description={t("today", {
+          date: formatDate(`${summary.data?.date ?? today}T12:00:00Z`),
+        })}
         actions={
           <RefreshStatus
             updatedAt={summary.dataUpdatedAt}
@@ -91,10 +92,10 @@ export function OwnerDashboard() {
 
       {empty ? (
         <DashboardEmpty
-          title={e.title}
-          body={e.body}
-          stepsLabel={e.steps}
-          steps={ownerSteps}
+          title={t("empty.title")}
+          body={t("empty.body")}
+          stepsLabel={t("empty.steps")}
+          steps={ownerSteps(t)}
         />
       ) : (
         <>

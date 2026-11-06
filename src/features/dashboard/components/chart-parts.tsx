@@ -1,10 +1,17 @@
 "use client";
 
-import { type ReactNode, useSyncExternalStore } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
-import { formatRs, SHOP_TIME_ZONE } from "@/lib/format";
+import type { Locale } from "@/i18n/config";
+import {
+  dateFormat,
+  numberFormat,
+  SHOP_TIME_ZONE,
+  unitWords,
+} from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
-import { dashboardText } from "../text";
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
@@ -33,40 +40,65 @@ export function useChartAnimation() {
   } as const;
 }
 
-/** "6 Nov": a calendar date, so formatted in UTC (no zone shift). */
-const dayMonth = new Intl.DateTimeFormat("en-PK", {
-  timeZone: "UTC",
-  day: "numeric",
-  month: "short",
-});
-export const shortDate = (date: string) =>
-  dayMonth.format(new Date(`${date}T00:00:00Z`));
+/** A calendar date (`YYYY-MM-DD`), so formatted in UTC (no zone shift). */
+const calendarDay = (date: string) => new Date(`${date}T00:00:00Z`);
 
-/** "Fri, 6 Nov 2026": the tooltip's day. */
-const longDay = new Intl.DateTimeFormat("en-PK", {
-  timeZone: "UTC",
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
-export const tooltipDate = (date: string) =>
-  longDay.format(new Date(`${date}T00:00:00Z`));
+/**
+ * Chart words and numbers in the interface language: "6 Nov" / "6 نومبر",
+ * "Fri, 6 Nov 2026", "3:05 pm", axis amounts "1.3M" / "13 لاکھ" (digits
+ * follow the switch in `src/i18n/config.ts`, Western by default).
+ */
+export function chartFormat(locale: Locale) {
+  return {
+    shortDate: (date: string) =>
+      dateFormat(locale, {
+        timeZone: "UTC",
+        day: "numeric",
+        month: "short",
+      }).format(calendarDay(date)),
+    tooltipDate: (date: string) =>
+      dateFormat(locale, {
+        timeZone: "UTC",
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(calendarDay(date)),
+    clockTime: (ms: number) =>
+      dateFormat(locale, {
+        timeZone: SHOP_TIME_ZONE,
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(ms)),
+    axisAmount: (value: number) =>
+      numberFormat(locale, {
+        notation: "compact",
+        maximumFractionDigits: 1,
+      }).format(value),
+  };
+}
 
-const clock = new Intl.DateTimeFormat("en-PK", {
-  timeZone: SHOP_TIME_ZONE,
-  hour: "numeric",
-  minute: "2-digit",
-});
-/** "3:05 pm" in Asia/Karachi. */
-export const clockTime = (ms: number) => clock.format(new Date(ms));
+export function useChartFormat() {
+  const locale = useLocale();
+  return useMemo(() => chartFormat(locale), [locale]);
+}
 
-/** Axis ticks only: "1.3M", "45K" from the plot position. */
-const compact = new Intl.NumberFormat("en-PK", {
-  notation: "compact",
-  maximumFractionDigits: 1,
-});
-export const axisAmount = (value: number) => compact.format(value);
+/**
+ * Recharts draws in SVG coordinates, so a chart sits in a `dir="ltr"` box;
+ * on the Urdu interface time runs right to left (`reversed` x-axis) and the
+ * amount axis stands on the right, as Urdu readers expect.
+ */
+export function useChartDirection() {
+  const rtl = useLocale() === "ur";
+  return {
+    rtl,
+    xAxis: { reversed: rtl },
+    yAxis: { orientation: rtl ? ("right" as const) : ("left" as const) },
+    margin: rtl
+      ? { top: 8, right: 0, bottom: 0, left: 8 }
+      : { top: 8, right: 8, bottom: 0, left: 0 },
+  };
+}
 
 /** Recharts axis styling shared by every chart: quiet ticks, no lines. */
 export const axisProps = {
@@ -86,19 +118,37 @@ export function MoneyFigure({
   value: string;
   className?: string;
 }) {
+  const { formatRs, locale } = useFormat();
   const text = formatRs(value);
-  const match = /^(-?)Rs (.+)\.(\d{2})$/.exec(text);
+  const word = unitWords[locale].rs;
+  // "Rs 1,250.50" in English, "1,250.50 روپے" in Urdu.
+  const match =
+    locale === "ur"
+      ? new RegExp(`^(-?)(.+)\\.(\\d{2}) ${word}$`).exec(text)
+      : /^(-?)Rs (.+)\.(\d{2})$/.exec(text);
   if (!match) return <span className={className}>{text}</span>;
   const [, sign, whole, paisa] = match;
+  const unit = (
+    <span
+      className={cn(
+        "text-muted-foreground text-[0.55em]",
+        locale === "ur" ? "font-urdu ms-1.5" : "me-1",
+      )}
+    >
+      {locale === "ur" ? word : `${sign}${word}`}
+    </span>
+  );
   return (
     <span className={cn("tabular-nums", className)} data-amount={value}>
       <span className="sr-only">{text}</span>
       <span aria-hidden>
-        <span className="text-muted-foreground me-1 text-[0.55em]">
-          {sign}Rs
-        </span>
-        {whole}
-        <span className="text-muted-foreground text-[0.6em]">.{paisa}</span>
+        {locale === "ur" ? null : unit}
+        <bdi dir="ltr">
+          {locale === "ur" ? sign : null}
+          {whole}
+          <span className="text-muted-foreground text-[0.6em]">.{paisa}</span>
+        </bdi>
+        {locale === "ur" ? unit : null}
       </span>
     </span>
   );
@@ -166,6 +216,7 @@ export function SectionError({
   onRetry: () => void;
   className?: string;
 }) {
+  const t = useTranslations("dashboard");
   return (
     <div
       role="alert"
@@ -176,7 +227,7 @@ export function SectionError({
     >
       <p className="text-destructive text-sm">{message}</p>
       <Button variant="outline" size="sm" onClick={onRetry}>
-        {dashboardText.retry}
+        {t("retry")}
       </Button>
     </div>
   );

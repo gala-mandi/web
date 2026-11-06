@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { UseQueryResult } from "@tanstack/react-query";
 import {
   Area,
@@ -7,6 +8,7 @@ import {
   Line,
   ResponsiveContainer,
   Tooltip,
+  XAxis,
   YAxis,
 } from "recharts";
 import {
@@ -23,22 +25,19 @@ import {
   trendUnit,
 } from "@/features/rates/trend";
 import type { Rate } from "@/features/rates/types";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { useRateHistories, useTopCommodities } from "../hooks";
 import type { TopCommodity } from "../series";
-import { dashboardText } from "../text";
 import {
   ChartTooltipCard,
   panelClass,
   SectionEmpty,
   SectionError,
-  shortDate,
-  tooltipDate,
+  useChartDirection,
+  useChartFormat,
   useChartAnimation,
 } from "./chart-parts";
-
-const t = dashboardText.rates;
 
 /** One hue for every commodity: each panel is titled, colour adds nothing. */
 const COLOR = "var(--chart-1)";
@@ -56,6 +55,7 @@ export interface CommodityRatesProps {
  * and the average as a line. A day without a rate is a gap, never a zero.
  */
 export function CommodityRates({ from, to, className }: CommodityRatesProps) {
+  const t = useTranslations("dashboard");
   const top = useTopCommodities(from, to);
   const commodities = top.data ?? [];
   const histories = useRateHistories(commodities, from, to);
@@ -69,13 +69,16 @@ export function CommodityRates({ from, to, className }: CommodityRatesProps) {
     >
       <CardHeader className="px-5">
         <CardTitle id="dash-rates-title" className="font-heading text-lg">
-          {t.title}
+          {t("rates.title")}
         </CardTitle>
-        <CardDescription>{t.description}</CardDescription>
+        <CardDescription>{t("rates.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col px-5">
         {top.isError ? (
-          <SectionError message={t.error} onRetry={() => top.refetch()} />
+          <SectionError
+            message={t("rates.error")}
+            onRetry={() => top.refetch()}
+          />
         ) : top.isPending ? (
           <div className="flex flex-col gap-4">
             {[0, 1, 2].map((i) => (
@@ -83,7 +86,7 @@ export function CommodityRates({ from, to, className }: CommodityRatesProps) {
             ))}
           </div>
         ) : commodities.length === 0 ? (
-          <SectionEmpty className="flex-1">{t.empty}</SectionEmpty>
+          <SectionEmpty className="flex-1">{t("rates.empty")}</SectionEmpty>
         ) : (
           <ul className="divide-border flex flex-col divide-y">
             {commodities.map((c, i) => (
@@ -113,6 +116,10 @@ function CommodityRow({
   from: string;
   to: string;
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
+  const { shortDate } = useChartFormat();
+  const direction = useChartDirection();
   const animation = useChartAnimation();
   const rates = history?.data ?? [];
   const latest = rates.at(-1);
@@ -125,40 +132,45 @@ function CommodityRow({
       className="flex flex-col gap-1.5 py-3 first:pt-0 last:pb-0"
     >
       <div className="flex items-baseline justify-between gap-3">
-        <p className="font-semibold">{commodity.name}</p>
+        <p className="font-semibold">
+          <bdi dir="auto">{commodity.name}</bdi>
+        </p>
         {latest ? (
           <p className="text-muted-foreground shrink-0 text-xs">
-            {t.latest(shortDate(latest.rateDate))}
+            {t("rates.latest", { date: shortDate(latest.rateDate) })}
           </p>
         ) : null}
       </div>
       {latest ? (
         <p className="text-sm">
           <span className="font-semibold tabular-nums">
-            {t.range(formatRs(latest.minRate), formatRs(latest.maxRate))}
+            {t("rates.range", {
+              min: formatRs(latest.minRate),
+              max: formatRs(latest.maxRate),
+            })}
           </span>{" "}
           <span className="text-muted-foreground text-xs">
-            {t.unit[trendUnit(rates)]}
+            {t(`rates.unit.${trendUnit(rates)}`)}
           </span>
         </p>
       ) : null}
 
       {history?.isError ? (
         <SectionError
-          message={t.error}
+          message={t("rates.error")}
           onRetry={() => history.refetch()}
           className="py-4"
         />
       ) : !history || history.isPending ? (
         <Skeleton className="h-20 w-full rounded-lg" />
       ) : rates.length === 0 ? (
-        <SectionEmpty className="h-20 py-0">{t.noRates}</SectionEmpty>
+        <SectionEmpty className="h-20 py-0">{t("rates.noRates")}</SectionEmpty>
       ) : (
         <div
           className="h-20 w-full"
           dir="ltr"
           role="img"
-          aria-label={t.chartLabel(commodity.name)}
+          aria-label={t("rates.chartLabel", { name: commodity.name })}
         >
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
@@ -171,9 +183,10 @@ function CommodityRow({
                   <stop offset="100%" stopColor={COLOR} stopOpacity={0.06} />
                 </linearGradient>
               </defs>
+              <XAxis dataKey="date" hide {...direction.xAxis} />
               <YAxis hide domain={["auto", "auto"]} />
               <Tooltip
-                content={RateTooltip}
+                content={<RateTooltip />}
                 cursor={{
                   stroke: "var(--muted-foreground)",
                   strokeOpacity: 0.4,
@@ -183,7 +196,10 @@ function CommodityRow({
               <Area
                 type="monotone"
                 dataKey="band"
-                name={t.range(t.min, t.max)}
+                name={t("rates.range", {
+                  min: t("rates.min"),
+                  max: t("rates.max"),
+                })}
                 stroke="none"
                 fill={`url(#${gradient})`}
                 connectNulls={false}
@@ -193,7 +209,7 @@ function CommodityRow({
               <Line
                 type="monotone"
                 dataKey="avg"
-                name={t.avg}
+                name={t("rates.avg")}
                 stroke={COLOR}
                 strokeWidth={2}
                 dot={false}
@@ -221,6 +237,9 @@ function RateTooltip({
   active?: boolean;
   payload?: readonly { payload?: unknown }[];
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
+  const { tooltipDate } = useChartFormat();
   const point = payload?.[0]?.payload as TrendPoint | undefined;
   if (!active || !point) return null;
   if (point.minRate === null) {
@@ -228,7 +247,7 @@ function RateTooltip({
       <ChartTooltipCard
         title={tooltipDate(point.date)}
         rows={[]}
-        note={t.noRate}
+        note={t("rates.noRate")}
       />
     );
   }
@@ -236,14 +255,14 @@ function RateTooltip({
     <ChartTooltipCard
       title={tooltipDate(point.date)}
       rows={[
-        { key: "max", label: t.max, value: formatRs(point.maxRate) },
+        { key: "max", label: t("rates.max"), value: formatRs(point.maxRate) },
         {
           key: "avg",
-          label: t.avg,
-          value: formatRs(point.avgRate) || t.none,
+          label: t("rates.avg"),
+          value: formatRs(point.avgRate) || t("rates.none"),
           color: COLOR,
         },
-        { key: "min", label: t.min, value: formatRs(point.minRate) },
+        { key: "min", label: t("rates.min"), value: formatRs(point.minRate) },
       ]}
     />
   );
