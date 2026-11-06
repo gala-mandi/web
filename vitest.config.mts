@@ -1,7 +1,19 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
+  resolve: {
+    tsconfigPaths: true,
+    // Every component test renders inside the next-intl provider.
+    alias: [
+      {
+        find: /^@testing-library\/react$/,
+        replacement: fileURLToPath(
+          new URL("./src/test/rtl.tsx", import.meta.url),
+        ),
+      },
+    ],
+  },
   oxc: { jsx: { runtime: "automatic" } },
   test: {
     environment: "jsdom",
