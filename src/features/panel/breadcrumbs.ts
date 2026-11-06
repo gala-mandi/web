@@ -65,6 +65,10 @@ const detailCrumbs: Partial<
     panelText.crumbs.purchase,
     panelText.crumbs.editPurchase,
   ),
+  ledger: (parts) =>
+    parts.length === 1 && parts[0] === "balances"
+      ? panelText.crumbs.balances
+      : null,
   sales: billCrumbs(
     panelText.crumbs.newSale,
     panelText.crumbs.sale,
