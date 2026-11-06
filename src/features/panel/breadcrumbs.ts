@@ -42,6 +42,15 @@ export function breadcrumbsFor(
   ];
 }
 
+/** `new`, `:id` and `:id/edit` below a bill section (purchases, sales). */
+function billCrumbs(newBill: string, bill: string, editBill: string) {
+  return ([id, page, ...rest]: string[]): string | null => {
+    if (rest.length > 0) return null;
+    if (page === undefined) return id === "new" ? newBill : bill;
+    return page === "edit" && id !== "new" ? editBill : null;
+  };
+}
+
 /**
  * Pages below a section, by section: the crumb for the rest of the path
  * (`["abc"]` for `/traders/abc`), or null when the section has no such page.
@@ -51,17 +60,16 @@ const detailCrumbs: Partial<
 > = {
   traders: (parts) =>
     parts.length === 1 ? panelText.crumbs.traderProfile : null,
-  purchases: ([id, page, ...rest]) => {
-    if (rest.length > 0) return null;
-    if (page === undefined) {
-      return id === "new"
-        ? panelText.crumbs.newPurchase
-        : panelText.crumbs.purchase;
-    }
-    return page === "edit" && id !== "new"
-      ? panelText.crumbs.editPurchase
-      : null;
-  },
+  purchases: billCrumbs(
+    panelText.crumbs.newPurchase,
+    panelText.crumbs.purchase,
+    panelText.crumbs.editPurchase,
+  ),
+  sales: billCrumbs(
+    panelText.crumbs.newSale,
+    panelText.crumbs.sale,
+    panelText.crumbs.editSale,
+  ),
 };
 
 /** `/traders/abc` → "Trader profile"; null for the section page itself. */

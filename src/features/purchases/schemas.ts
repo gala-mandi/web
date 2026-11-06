@@ -8,6 +8,7 @@ import { purchaseText } from "./text";
 import type {
   CreatePurchaseInput,
   Purchase,
+  PurchaseItem,
   PurchaseItemInput,
   RateUnit,
 } from "./types";
@@ -132,20 +133,24 @@ export function isCompleteItem(item: PurchaseItemFormValues): boolean {
   return !isBlankItem(item) && itemIssues(item).length === 0;
 }
 
-const itemSchema = z
-  .object({
-    commodity: z.custom<CommodityLookupItem | null>(),
-    bags: z.string(),
-    weight: z.string(),
-    weightUnit: z.enum(weightUnits),
-    rate: z.string(),
-    rateUnit: z.enum(RATE_UNITS),
-  })
-  .superRefine((item, ctx) => {
-    for (const { field, message } of itemIssues(item)) {
-      ctx.addIssue({ code: "custom", path: [field], message });
-    }
-  });
+/** The zod fields of one item row; a sale row adds its own. */
+export const itemFormShape = {
+  commodity: z.custom<CommodityLookupItem | null>(),
+  bags: z.string(),
+  weight: z.string(),
+  weightUnit: z.enum(weightUnits),
+  rate: z.string(),
+  rateUnit: z.enum(RATE_UNITS),
+};
+
+/** Adds the errors of one row (see `itemIssues`) to its fields. */
+export function checkItem(item: PurchaseItemFormValues, ctx: z.RefinementCtx) {
+  for (const { field, message } of itemIssues(item)) {
+    ctx.addIssue({ code: "custom", path: [field], message });
+  }
+}
+
+const itemSchema = z.object(itemFormShape).superRefine(checkItem);
 
 /** The form's schema; `today` (Asia/Karachi) is the latest date allowed. */
 export function purchaseFormSchema(today: string) {
@@ -227,27 +232,38 @@ const headerFields: Record<string, "trader" | "purchaseDate" | "notes"> = {
 };
 
 /**
- * Where a server field error goes: `traderId` → `trader`, `items.1.weightKg`
- * → `items.<form row>.weight`, `items.1` (the whole item) → its rate, `items`
- * → the items list. Null for errors no field shows (they go in the alert).
+ * Where a server item error goes: `items.1.weightKg` → `items.<form
+ * row>.weight`, `items.1` (the whole item) → its rate, `items` → the items
+ * list. Null for any other field. `extra` maps more item fields (a sale's).
  */
-export function toFormField(
+export function toItemFormField(
   field: string,
   rowIndexes: readonly number[],
+  extra: Record<string, string> = {},
 ): string | null {
-  if (headerFields[field]) return headerFields[field];
   if (field === "items") return "items";
   const match = /^items\.(\d+)(?:\.(\w+))?$/.exec(field);
   if (!match) return null;
   const row = rowIndexes[Number(match[1])];
   if (row === undefined) return null;
   // "charges are more than the gross amount" is about the whole item.
-  const name = match[2] ? itemFields[match[2]] : "rate";
+  const name = match[2] ? (itemFields[match[2]] ?? extra[match[2]]) : "rate";
   return name ? `items.${row}.${name}` : null;
 }
 
+/**
+ * Where a server field error goes: `traderId` → `trader`, items as in
+ * `toItemFormField`. Null for errors no field shows (they go in the alert).
+ */
+export function toFormField(
+  field: string,
+  rowIndexes: readonly number[],
+): string | null {
+  return headerFields[field] ?? toItemFormField(field, rowIndexes);
+}
+
 /** "1000.000" → "1000", "12.500" → "12.5": a stored decimal as typed. */
-function trimDecimal(value: string): string {
+export function trimDecimal(value: string): string {
   return value.includes(".") ? value.replace(/\.?0+$/, "") : value;
 }
 
@@ -271,20 +287,31 @@ export function toPurchaseFormValues(
       village: null,
     },
     notes: purchase.notes ?? "",
-    items: purchase.items.map((item) => ({
-      commodity: {
-        id: item.commodityId,
-        name: item.commodityName,
-        nameUr: null,
-        defaultUnit: item.rateUnit,
-        bagWeightKg: null,
-        charges,
-      },
-      bags: item.bags === null ? "" : String(item.bags),
-      weight: trimDecimal(item.weightKg),
-      weightUnit: "kg",
-      rate: trimDecimal(item.rate),
-      rateUnit: item.rateUnit,
-    })),
+    items: purchase.items.map((item) => toItemFormValues(item, charges)),
+  };
+}
+
+/**
+ * A saved item (purchase or sale) as a form row: the weight in kg, as
+ * stored, and the commodity carrying `charges` for the live total.
+ */
+export function toItemFormValues(
+  item: Omit<PurchaseItem, "id" | "amount">,
+  charges: CommodityLookupItem["charges"],
+): PurchaseItemFormValues {
+  return {
+    commodity: {
+      id: item.commodityId,
+      name: item.commodityName,
+      nameUr: null,
+      defaultUnit: item.rateUnit,
+      bagWeightKg: null,
+      charges,
+    },
+    bags: item.bags === null ? "" : String(item.bags),
+    weight: trimDecimal(item.weightKg),
+    weightUnit: "kg",
+    rate: trimDecimal(item.rate),
+    rateUnit: item.rateUnit,
   };
 }

@@ -20,8 +20,8 @@ describe("breadcrumbsFor", () => {
   });
 
   it("adds no detail crumb for sections without one or deeper paths", () => {
-    expect(breadcrumbsFor("/sales/42", owner).at(-1)).toEqual({
-      label: "Sales",
+    expect(breadcrumbsFor("/ledger/42", owner).at(-1)).toEqual({
+      label: "Ledger",
       href: null,
     });
     expect(breadcrumbsFor("/traders/a/b", owner).at(-1)).toEqual({
@@ -46,5 +46,17 @@ describe("breadcrumbsFor", () => {
       label: "Purchases",
       href: null,
     });
+  });
+
+  it("names the sale pages below Sales", () => {
+    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
+    expect(breadcrumbsFor("/sales/new", owner)).toEqual([
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Sales", href: "/sales" },
+      { label: "New sale", href: null },
+    ]);
+    expect(last("/sales/abc")).toEqual({ label: "Sale", href: null });
+    expect(last("/sales/abc/edit")).toEqual({ label: "Edit sale", href: null });
+    expect(last("/sales/new/edit")).toEqual({ label: "Sales", href: null });
   });
 });

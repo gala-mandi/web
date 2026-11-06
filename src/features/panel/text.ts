@@ -81,6 +81,9 @@ export const panelText = {
     newPurchase: "New purchase",
     purchase: "Purchase",
     editPurchase: "Edit purchase",
+    newSale: "New sale",
+    sale: "Sale",
+    editSale: "Edit sale",
   },
   comingSoon: {
     title: "Nothing here yet",
