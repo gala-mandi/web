@@ -56,6 +56,7 @@ describe("sections", () => {
     expect(sectionsFor(manager)).not.toContain("staff");
     expect(sectionsFor(manager)).not.toContain("settings");
     expect(sectionsFor(operator)).toEqual([
+      "dashboard",
       "rates",
       "purchases",
       "sales",
@@ -73,7 +74,10 @@ describe("sections", () => {
 
   it("only blocks panel pages the user lacks the permission for", () => {
     expect(canOpenPath(operator, "/settings")).toBe(false);
-    expect(canOpenPath(operator, "/dashboard")).toBe(false);
+    expect(canOpenPath(operator, "/dashboard")).toBe(true);
+    expect(canOpenPath({ permissions: ["rate.view"] }, "/dashboard")).toBe(
+      false,
+    );
     expect(canOpenPath(operator, "/payments")).toBe(true);
     expect(canOpenPath(operator, "/change-password")).toBe(true);
   });

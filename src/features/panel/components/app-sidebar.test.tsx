@@ -156,7 +156,7 @@ describe("AppSidebar", () => {
     fireEvent.click(screen.getByRole("button", { name: "Toggle menu" }));
 
     const drawer = screen.getByRole("dialog");
-    expect(within(drawer).getAllByRole("link")).toHaveLength(5); // brand + 4
+    expect(within(drawer).getAllByRole("link")).toHaveLength(6); // brand + 5
     fireEvent.click(within(drawer).getByRole("link", { name: "Sales" }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
