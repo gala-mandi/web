@@ -1,3 +1,4 @@
+import { testTranslator } from "@/test/intl";
 import {
   act,
   fireEvent,
@@ -19,7 +20,6 @@ import { useSessionStore } from "@/stores/session";
 import { manager, operator, owner } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
 import { getDayRates, getTodayRates, listAllRates } from "../api";
-import { rateText } from "../text";
 import {
   dayRates,
   gandum,
@@ -31,6 +31,8 @@ import {
 } from "../test-data";
 import { RatesPage } from "./rates-page";
 
+const tr = testTranslator("rates");
+
 vi.mock("../api", () => ({
   getTodayRates: vi.fn(),
   getDayRates: vi.fn(),
@@ -38,8 +40,6 @@ vi.mock("../api", () => ({
   saveRates: vi.fn(),
 }));
 vi.mock("@/features/commodities/api", () => ({ listCommodities: vi.fn() }));
-
-const t = rateText;
 
 function renderPage(user: User = manager, searchParams = "") {
   useSessionStore.getState().setSession({ accessToken: "t", user });
@@ -93,9 +93,11 @@ describe("RatesPage", () => {
     expect(
       await screen.findByLabelText("Min rate for Gandum"),
     ).toHaveTextContent("Rs 4,000.00");
-    expect(screen.getByText(t.date.today("6 Nov 2026"))).toBeInTheDocument();
-    expect(screen.queryByLabelText(t.date.label)).toBeNull();
-    expect(screen.queryByRole("button", { name: t.grid.save })).toBeNull();
+    expect(
+      screen.getByText(tr("date.today", { date: "6 Nov 2026" })),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText(tr("date.label"))).toBeNull();
+    expect(screen.queryByRole("button", { name: tr("grid.save") })).toBeNull();
     expect(document.querySelectorAll("input[data-rate-cell]")).toHaveLength(0);
   });
 
@@ -109,7 +111,7 @@ describe("RatesPage", () => {
 
   it("manager picks a past day: its rates and the day before load, the URL keeps it", async () => {
     const { onUrlUpdate } = renderPage(manager);
-    const picker = await screen.findByLabelText(t.date.label);
+    const picker = await screen.findByLabelText(tr("date.label"));
     expect(picker).toHaveAttribute("max", TODAY);
     expect(picker).toHaveValue(TODAY);
 
@@ -123,17 +125,23 @@ describe("RatesPage", () => {
     expect((await minGandum()).value).toBe("3000.00");
     expect(getDayRates).toHaveBeenCalledWith("2026-11-01", expect.anything());
     expect(getDayRates).toHaveBeenCalledWith("2026-10-31", expect.anything());
-    expect(screen.getByText(t.date.pastHint)).toBeInTheDocument();
+    expect(screen.getByText(tr("date.pastHint"))).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: t.date.backToToday }));
-    await waitFor(() => expect(screen.queryByText(t.date.pastHint)).toBeNull());
+    fireEvent.click(
+      screen.getByRole("button", { name: tr("date.backToToday") }),
+    );
+    await waitFor(() =>
+      expect(screen.queryByText(tr("date.pastHint"))).toBeNull(),
+    );
     expect((await minGandum()).value).toBe("4000.00");
   });
 
   it("owner can open a past day straight from the URL", async () => {
     renderPage(owner, "?date=2026-11-02");
     expect((await minGandum()).value).toBe("3000.00");
-    expect(screen.getByText(t.date.showing("2 Nov 2026"))).toBeInTheDocument();
+    expect(
+      screen.getByText(tr("date.showing", { date: "2 Nov 2026" })),
+    ).toBeInTheDocument();
   });
 
   it("a future ?date= shows today", async () => {
@@ -146,14 +154,14 @@ describe("RatesPage", () => {
     const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
     renderPage(manager);
     fireEvent.change(await minGandum(), { target: { value: "4100" } });
-    await screen.findByText(t.grid.unsaved);
+    await screen.findByText(tr("grid.unsaved"));
 
     const link = screen.getByRole("link", { name: "Purchases" });
     const click = new MouseEvent("click", { bubbles: true, cancelable: true });
     act(() => {
       link.dispatchEvent(click);
     });
-    expect(confirm).toHaveBeenCalledWith(t.grid.leaveWarning);
+    expect(confirm).toHaveBeenCalledWith(tr("grid.leaveWarning"));
     expect(click.defaultPrevented).toBe(true);
 
     // Reload / close tab: the browser's own prompt.
@@ -162,7 +170,7 @@ describe("RatesPage", () => {
     expect(unload.defaultPrevented).toBe(true);
 
     // Another date asks too, and staying keeps the typed rate.
-    fireEvent.change(screen.getByLabelText(t.date.label), {
+    fireEvent.change(screen.getByLabelText(tr("date.label")), {
       target: { value: "2026-11-01" },
     });
     expect(confirm).toHaveBeenCalledTimes(2);
@@ -187,15 +195,15 @@ describe("RatesPage", () => {
     vi.mocked(listCommodities).mockResolvedValue(commodityList([]));
     vi.mocked(getTodayRates).mockResolvedValue(todayRates());
     renderPage(owner);
-    expect(await screen.findByText(t.grid.empty.title)).toBeInTheDocument();
+    expect(await screen.findByText(tr("grid.empty.title"))).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: t.grid.empty.action }),
+      screen.getByRole("link", { name: tr("grid.empty.action") }),
     ).toHaveAttribute("href", "/commodities");
   });
 
   it("the trend chart asks for the first commodity's last 30 days, oldest first", async () => {
     renderPage(operator);
-    expect(await screen.findByText(t.chart.noData)).toBeInTheDocument();
+    expect(await screen.findByText(tr("chart.noData"))).toBeInTheDocument();
     expect(listAllRates).toHaveBeenCalledWith(
       {
         commodity: gandum.id,
@@ -206,7 +214,9 @@ describe("RatesPage", () => {
       expect.anything(),
     );
 
-    fireEvent.click(screen.getByRole("button", { name: t.chart.range(7) }));
+    fireEvent.click(
+      screen.getByRole("button", { name: tr("chart.range", { days: 7 }) }),
+    );
     await waitFor(() =>
       expect(listAllRates).toHaveBeenLastCalledWith(
         expect.objectContaining({ from: "2026-10-31", to: TODAY }),
@@ -214,7 +224,7 @@ describe("RatesPage", () => {
       ),
     );
     expect(
-      screen.getByRole("button", { name: t.chart.range(7) }),
+      screen.getByRole("button", { name: tr("chart.range", { days: 7 }) }),
     ).toHaveAttribute("aria-pressed", "true");
   });
 
@@ -225,15 +235,15 @@ describe("RatesPage", () => {
     ]);
     renderPage(operator);
     expect(await screen.findByTestId("rate-trend-chart")).toBeInTheDocument();
-    expect(screen.queryByText(t.chart.noData)).toBeNull();
+    expect(screen.queryByText(tr("chart.noData"))).toBeNull();
   });
 
   it("a load error offers a retry", async () => {
     vi.mocked(getTodayRates).mockRejectedValue(new Error("down"));
     renderPage(manager);
-    expect(await screen.findByText(t.grid.loadError)).toBeInTheDocument();
+    expect(await screen.findByText(tr("grid.loadError"))).toBeInTheDocument();
     vi.mocked(getTodayRates).mockResolvedValue(todayRates([rate()]));
-    fireEvent.click(screen.getByRole("button", { name: t.grid.retry }));
+    fireEvent.click(screen.getByRole("button", { name: tr("grid.retry") }));
     expect((await minGandum()).value).toBe("4000.00");
   });
 });

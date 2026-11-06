@@ -1,3 +1,4 @@
+import { testTranslator } from "@/test/intl";
 import {
   act,
   fireEvent,
@@ -9,7 +10,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { httpError } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
 import { saveRates } from "../api";
-import { rateText } from "../text";
 import {
   dayRates,
   gandum,
@@ -22,15 +22,14 @@ import {
 import type { Rate } from "../types";
 import { RatesGrid, type RatesGridProps } from "./rates-grid";
 
+const tr = testTranslator("rates");
+
 vi.mock("../api", () => ({
   saveRates: vi.fn(),
   getTodayRates: vi.fn(),
   getDayRates: vi.fn(),
   listAllRates: vi.fn(),
 }));
-
-const t = rateText.grid;
-const e = rateText.errors;
 
 function renderGrid(props: Partial<RatesGridProps> = {}) {
   const onDirtyChange = vi.fn();
@@ -124,7 +123,7 @@ describe("RatesGrid", () => {
     typeAndEnter("");
     typeAndEnter("");
     typeAndEnter("");
-    const save = screen.getByRole("button", { name: t.save });
+    const save = screen.getByRole("button", { name: tr("grid.save") });
     expect(document.activeElement).toBe(save);
     expect(saveRates).not.toHaveBeenCalled();
     expect(onDirtyChange).toHaveBeenLastCalledWith(true);
@@ -150,7 +149,7 @@ describe("RatesGrid", () => {
         },
       ],
     });
-    expect(await screen.findByText(t.saved)).toBeInTheDocument();
+    expect(await screen.findByText(tr("grid.saved"))).toBeInTheDocument();
     await waitFor(() => expect(onDirtyChange).toHaveBeenLastCalledWith(false));
   });
 
@@ -160,7 +159,7 @@ describe("RatesGrid", () => {
     typeAndEnter("");
     expect(saveRates).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(
-      screen.getByRole("button", { name: t.save }),
+      screen.getByRole("button", { name: tr("grid.save") }),
     );
   });
 
@@ -171,18 +170,24 @@ describe("RatesGrid", () => {
     fireEvent.change(cell("Min", "Kapas"), { target: { value: "100" } });
     fireEvent.change(cell("Avg", "Makai"), { target: { value: "12.345" } });
 
-    fireEvent.click(screen.getByRole("button", { name: t.save }));
+    fireEvent.click(screen.getByRole("button", { name: tr("grid.save") }));
 
-    expect(await screen.findByText(e.maxBelowMin)).toBeInTheDocument();
+    expect(
+      await screen.findByText(tr("errors.maxBelowMin")),
+    ).toBeInTheDocument();
     // Kapas has no max; Makai has neither min nor max.
-    expect(screen.getAllByText(e.maxRequired)).toHaveLength(2);
-    expect(screen.getAllByText(e.minRequired)).toHaveLength(1);
-    expect(screen.getByText(e.money)).toBeInTheDocument();
+    expect(screen.getAllByText(tr("errors.maxRequired"))).toHaveLength(2);
+    expect(screen.getAllByText(tr("errors.minRequired"))).toHaveLength(1);
+    expect(screen.getByText(tr("errors.money"))).toBeInTheDocument();
     expect(cell("Max", "Gandum")).toHaveAttribute("aria-invalid", "true");
-    expect(cell("Max", "Gandum")).toHaveAccessibleDescription(e.maxBelowMin);
+    expect(cell("Max", "Gandum")).toHaveAccessibleDescription(
+      tr("errors.maxBelowMin"),
+    );
     expect(cell("Max", "Kapas")).toHaveAttribute("aria-invalid", "true");
     // Makai: the bad avg plus the missing min and max.
-    expect(cell("Avg", "Makai")).toHaveAccessibleDescription(e.money);
+    expect(cell("Avg", "Makai")).toHaveAccessibleDescription(
+      tr("errors.money"),
+    );
     expect(saveRates).not.toHaveBeenCalled();
     // The first wrong cell gets the focus.
     await waitFor(() =>
@@ -193,9 +198,9 @@ describe("RatesGrid", () => {
   it("a cell is checked when it's left, not while typing", async () => {
     renderGrid();
     fireEvent.change(cell("Min", "Gandum"), { target: { value: "4,000" } });
-    expect(screen.queryByText(e.money)).toBeNull();
+    expect(screen.queryByText(tr("errors.money"))).toBeNull();
     fireEvent.blur(cell("Min", "Gandum"));
-    expect(await screen.findByText(e.money)).toBeInTheDocument();
+    expect(await screen.findByText(tr("errors.money"))).toBeInTheDocument();
   });
 
   it("the server's field errors land on the matching cell", async () => {
@@ -209,7 +214,7 @@ describe("RatesGrid", () => {
     // Only Kapas is filled, so it is rates[0] on the wire.
     fireEvent.change(cell("Min", "Kapas"), { target: { value: "100" } });
     fireEvent.change(cell("Max", "Kapas"), { target: { value: "120" } });
-    fireEvent.click(screen.getByRole("button", { name: t.save }));
+    fireEvent.click(screen.getByRole("button", { name: tr("grid.save") }));
 
     expect(await screen.findByText("Server says no")).toBeInTheDocument();
     expect(cell("Max", "Kapas")).toHaveAccessibleDescription("Server says no");
@@ -222,8 +227,10 @@ describe("RatesGrid", () => {
     renderGrid({ date: "2026-11-01" });
     fireEvent.change(cell("Min", "Kapas"), { target: { value: "100" } });
     fireEvent.change(cell("Max", "Kapas"), { target: { value: "120" } });
-    fireEvent.click(screen.getByRole("button", { name: t.save }));
-    expect(await screen.findByRole("alert")).toHaveTextContent(e.pastDay);
+    fireEvent.click(screen.getByRole("button", { name: tr("grid.save") }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      tr("errors.pastDay"),
+    );
   });
 
   it("Copy yesterday fills the empty rows only and marks the form unsaved", async () => {
@@ -239,7 +246,9 @@ describe("RatesGrid", () => {
     });
     expect(cell("Min", "Kapas").value).toBe("9000.00");
 
-    fireEvent.click(screen.getByRole("button", { name: t.copyYesterday }));
+    fireEvent.click(
+      screen.getByRole("button", { name: tr("grid.copyYesterday") }),
+    );
 
     expect(cell("Min", "Gandum").value).toBe("4000.00");
     expect(cell("Max", "Gandum").value).toBe("4200.00");
@@ -247,16 +256,18 @@ describe("RatesGrid", () => {
     // Kapas was saved today: not overwritten. Makai had nothing yesterday.
     expect(cell("Min", "Kapas").value).toBe("9000.00");
     expect(cell("Min", "Makai").value).toBe("");
-    expect(await screen.findByText(t.copied(1))).toBeInTheDocument();
+    expect(
+      await screen.findByText(tr("grid.copied", { count: 1 })),
+    ).toBeInTheDocument();
     expect(screen.getByRole("status", { name: "" })).toHaveTextContent(
-      t.unsaved,
+      tr("grid.unsaved"),
     );
   });
 
   it("Copy yesterday is off when nothing was saved the day before", () => {
     renderGrid();
     expect(
-      screen.getByRole("button", { name: t.copyYesterday }),
+      screen.getByRole("button", { name: tr("grid.copyYesterday") }),
     ).toBeDisabled();
   });
 
@@ -266,8 +277,10 @@ describe("RatesGrid", () => {
       rates: [rate({ avgRate: "4100.50" })],
     });
     expect(document.querySelectorAll("input")).toHaveLength(0);
-    expect(screen.queryByRole("button", { name: t.save })).toBeNull();
-    expect(screen.queryByRole("button", { name: t.copyYesterday })).toBeNull();
+    expect(screen.queryByRole("button", { name: tr("grid.save") })).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: tr("grid.copyYesterday") }),
+    ).toBeNull();
     expect(screen.getByLabelText("Min rate for Gandum")).toHaveTextContent(
       "Rs 4,000.00",
     );
@@ -275,6 +288,6 @@ describe("RatesGrid", () => {
       "Rs 4,100.50",
     );
     expect(screen.getByLabelText("Min rate for Kapas")).toHaveTextContent("—");
-    expect(screen.getByText(t.readOnly)).toBeInTheDocument();
+    expect(screen.getByText(tr("grid.readOnly"))).toBeInTheDocument();
   });
 });

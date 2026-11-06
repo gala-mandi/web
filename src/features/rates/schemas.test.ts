@@ -1,17 +1,18 @@
+import { testTranslator } from "@/test/intl";
 import { describe, expect, it } from "vitest";
 import {
   copyRates,
   gridCommodities,
   type RateRowValues,
-  ratesFormSchema,
+  ratesFormSchema as makeRatesFormSchema,
   toFormField,
   toRatesFormValues,
   toSaveInput,
 } from "./schemas";
-import { rateText } from "./text";
 import { gandum, kapas, makai, rate } from "./test-data";
 
-const e = rateText.errors;
+const tr = testTranslator("rates");
+const ratesFormSchema = makeRatesFormSchema(tr);
 
 const row = (over: Partial<RateRowValues> = {}): RateRowValues => ({
   commodityId: gandum.id,
@@ -40,11 +41,11 @@ describe("ratesFormSchema", () => {
 
   it("a half-filled row needs both min and max", () => {
     expect(errorsOf([row({ minRate: "4000" })])).toEqual([
-      `rows.0.maxRate → ${e.maxRequired}`,
+      `rows.0.maxRate → ${tr("errors.maxRequired")}`,
     ]);
     expect(errorsOf([row({ avgRate: "4100" })])).toEqual([
-      `rows.0.minRate → ${e.minRequired}`,
-      `rows.0.maxRate → ${e.maxRequired}`,
+      `rows.0.minRate → ${tr("errors.minRequired")}`,
+      `rows.0.maxRate → ${tr("errors.maxRequired")}`,
     ]);
   });
 
@@ -53,7 +54,7 @@ describe("ratesFormSchema", () => {
       [],
     );
     expect(errorsOf([row({ minRate: "1000", maxRate: "999.99" })])).toEqual([
-      `rows.0.maxRate → ${e.maxBelowMin}`,
+      `rows.0.maxRate → ${tr("errors.maxBelowMin")}`,
     ]);
   });
 
@@ -61,15 +62,15 @@ describe("ratesFormSchema", () => {
     expect(
       errorsOf([row({ minRate: "-1", maxRate: "4200.555", avgRate: "abc" })]),
     ).toEqual([
-      `rows.0.minRate → ${e.money}`,
-      `rows.0.maxRate → ${e.money}`,
-      `rows.0.avgRate → ${e.money}`,
+      `rows.0.minRate → ${tr("errors.money")}`,
+      `rows.0.maxRate → ${tr("errors.money")}`,
+      `rows.0.avgRate → ${tr("errors.money")}`,
     ]);
   });
 
   it("a saved rate can't be emptied (the API has no delete)", () => {
     expect(errorsOf([row({ saved: true })])).toEqual([
-      `rows.0.minRate → ${e.cannotClear}`,
+      `rows.0.minRate → ${tr("errors.cannotClear")}`,
     ]);
   });
 });

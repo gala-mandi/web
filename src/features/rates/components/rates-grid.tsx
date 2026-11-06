@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createColumnHelper,
@@ -37,7 +38,7 @@ import {
 import { CommodityName } from "@/features/commodities/components/commodity-name";
 import type { Commodity } from "@/features/commodities/types";
 import { toApiError } from "@/lib/api-error";
-import { formatDate, formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { useSaveRates } from "../hooks";
 import {
@@ -50,10 +51,7 @@ import {
   toRatesFormValues,
   toSaveInput,
 } from "../schemas";
-import { perUnitText, rateText } from "../text";
 import type { DayRates } from "../types";
-
-const t = rateText.grid;
 
 /** Marks the rate inputs that Enter walks through, in DOM order. */
 const CELL_ATTRIBUTE = "data-rate-cell";
@@ -95,6 +93,8 @@ export function RatesGrid({
   canManage,
   onDirtyChange,
 }: RatesGridProps) {
+  const { formatDate } = useFormat();
+  const t = useTranslations("rates");
   const [formError, setFormError] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const saveRef = useRef<HTMLButtonElement>(null);
@@ -102,7 +102,7 @@ export function RatesGrid({
   const save = useSaveRates();
 
   const form = useForm<RatesFormValues>({
-    resolver: zodResolver(ratesFormSchema),
+    resolver: zodResolver(ratesFormSchema(t)),
     defaultValues: toRatesFormValues(commodities, rates),
     mode: "onTouched",
   });
@@ -129,7 +129,7 @@ export function RatesGrid({
     () => [
       col.display({
         id: "commodity",
-        header: t.columns.commodity,
+        header: t("grid.columns.commodity"),
         cell: ({ row }) => (
           <CommodityCell
             control={form.control}
@@ -143,10 +143,10 @@ export function RatesGrid({
           id: field,
           header: () => (
             <>
-              {t.columns[field]}
+              {t(`grid.columns.${field}`)}
               {field === "avgRate" ? (
                 <span className="text-muted-foreground ms-1 font-normal normal-case">
-                  ({t.optional})
+                  ({t("grid.optional")})
                 </span>
               ) : null}
             </>
@@ -193,7 +193,7 @@ export function RatesGrid({
   const copyYesterday = () => {
     const copied = copyRates(form.getValues("rows"), yesterday.data);
     if (copied.length === 0) {
-      toast.info(t.nothingToCopy);
+      toast.info(t("grid.nothingToCopy"));
       return;
     }
     for (const { index, row } of copied) {
@@ -203,20 +203,20 @@ export function RatesGrid({
         });
       }
     }
-    toast.success(t.copied(copied.length));
+    toast.success(t("grid.copied", { count: copied.length }));
   };
 
   const submit = async (values: RatesFormValues) => {
     setFormError(null);
     const { input, rowIndexes } = toSaveInput(values);
     if (input.rates.length === 0) {
-      toast.info(t.nothingChanged);
+      toast.info(t("grid.nothingChanged"));
       return;
     }
     try {
       const saved = await save.mutateAsync({ date, input });
       form.reset(toRatesFormValues(commodities, saved.data));
-      toast.success(t.saved);
+      toast.success(t("grid.saved"));
     } catch (error) {
       const e = toApiError(error);
       let applied = 0;
@@ -225,7 +225,7 @@ export function RatesGrid({
         if (!name) continue;
         form.setError(
           name,
-          { type: "server", message: message || rateText.errors.generic },
+          { type: "server", message: message || t("errors.generic") },
           { shouldFocus: applied === 0 },
         );
         applied += 1;
@@ -233,10 +233,10 @@ export function RatesGrid({
       if (applied > 0) return;
       setFormError(
         e.status === 0
-          ? rateText.errors.network
+          ? t("errors.network")
           : e.status === 403
-            ? rateText.errors.pastDay
-            : (e.message ?? rateText.errors.generic),
+            ? t("errors.pastDay")
+            : (e.message ?? t("errors.generic")),
       );
     }
   };
@@ -265,7 +265,7 @@ export function RatesGrid({
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted-foreground text-sm">
-          {canManage ? t.keyboardHint : t.readOnly}
+          {canManage ? t("grid.keyboardHint") : t("grid.readOnly")}
         </p>
         {canManage ? (
           <Button
@@ -275,13 +275,13 @@ export function RatesGrid({
             disabled={yesterday.data.length === 0 || busy}
             title={
               yesterday.data.length === 0
-                ? t.noYesterday
-                : t.copyYesterdayHint(yesterdayLabel)
+                ? t("grid.noYesterday")
+                : t("grid.copyYesterdayHint", { date: yesterdayLabel })
             }
             onClick={copyYesterday}
           >
             <ClipboardCopy aria-hidden />
-            {t.copyYesterday}
+            {t("grid.copyYesterday")}
           </Button>
         ) : null}
       </div>
@@ -302,7 +302,7 @@ export function RatesGrid({
         className="bg-card text-card-foreground rounded-card overflow-hidden border"
       >
         <Table>
-          <TableCaption className="sr-only">{t.caption}</TableCaption>
+          <TableCaption className="sr-only">{t("grid.caption")}</TableCaption>
           <TableHeader className="bg-surface-muted/60">
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id} className="hover:bg-transparent">
@@ -352,7 +352,7 @@ export function RatesGrid({
               className="text-muted-foreground me-auto text-sm"
               role="status"
             >
-              {t.unsaved}
+              {t("grid.unsaved")}
             </span>
           ) : null}
           <Button
@@ -364,7 +364,7 @@ export function RatesGrid({
               form.reset();
             }}
           >
-            {t.discard}
+            {t("grid.discard")}
           </Button>
           <Button
             ref={saveRef}
@@ -373,7 +373,7 @@ export function RatesGrid({
             className="gap-2 font-semibold"
           >
             {busy ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {busy ? t.saving : t.save}
+            {busy ? t("grid.saving") : t("grid.save")}
           </Button>
         </div>
       ) : null}
@@ -390,6 +390,7 @@ function CommodityCell({
   index: number;
   commodity: Commodity;
 }) {
+  const t = useTranslations("rates");
   const unit = useWatch({ control, name: `rows.${index}.rateUnit` });
   return (
     <div className="flex min-w-36 flex-col py-1.5">
@@ -398,7 +399,9 @@ function CommodityCell({
         nameUr={commodity.nameUr}
         className="font-semibold"
       />
-      <span className="text-muted-foreground text-xs">{perUnitText[unit]}</span>
+      <span className="text-muted-foreground text-xs">
+        {t(`perUnit.${unit}`)}
+      </span>
     </div>
   );
 }
@@ -416,17 +419,19 @@ function RateCell({
   name: string;
   readOnly: boolean;
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("rates");
   const { field: input, fieldState } = useController({
     control,
     name: `rows.${index}.${field}`,
   });
-  const label = t.inputLabel(field, name);
+  const label = t("grid.inputLabel", { column: field, name });
   const errorId = `rate-${index}-${field}-error`;
 
   if (readOnly) {
     return (
       <span aria-label={label} className="inline-block py-2 tabular-nums">
-        {formatRs(input.value) || rateText.none}
+        {formatRs(input.value) || t("none")}
       </span>
     );
   }
@@ -442,7 +447,7 @@ function RateCell({
         inputMode="decimal"
         autoComplete="off"
         dir="ltr"
-        placeholder={field === "avgRate" ? rateText.none : "0"}
+        placeholder={field === "avgRate" ? t("none") : "0"}
         onFocus={(event) => event.currentTarget.select()}
         className="rounded-field bg-card h-10 text-end tabular-nums"
       />

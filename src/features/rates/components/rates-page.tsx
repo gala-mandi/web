@@ -16,16 +16,13 @@ import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
-import { formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { panelRoutes } from "@/lib/routes";
 import { useEveryCommodity, usePastDayRates, useTodayRates } from "../hooks";
 import { gridCommodities } from "../schemas";
-import { rateText } from "../text";
 import { isCalendarDate } from "../values";
 import { RateTrendChart } from "./rate-trend-chart";
 import { RatesGrid } from "./rates-grid";
-
-const t = rateText;
 
 /** `/rates`: everyone with `rate.view`; entry needs `rate.manage`. */
 export function RatesPage() {
@@ -42,6 +39,8 @@ export function RatesPage() {
  * picker; it lives in the URL (`?date=`), so reload keeps it.
  */
 function DailyRates() {
+  const { formatDate } = useFormat();
+  const t = useTranslations("rates");
   const tPanel = useTranslations("panel");
   const section = useTranslations("panel.sections.rates");
   const canManage = useCanWrite("rate.manage");
@@ -49,7 +48,7 @@ function DailyRates() {
   const [dirty, setDirty] = useState(false);
   const [dateParam, setDateParam] = useQueryState("date", parseAsString);
 
-  useUnsavedChangesWarning(dirty, t.grid.leaveWarning);
+  useUnsavedChangesWarning(dirty, t("grid.leaveWarning"));
 
   const today = useTodayRates();
   const todayDate = today.data?.date;
@@ -69,7 +68,7 @@ function DailyRates() {
   const date = pastDate ?? todayDate;
 
   const pickDate = (next: string) => {
-    if (dirty && !window.confirm(t.grid.leaveWarning)) return;
+    if (dirty && !window.confirm(t("grid.leaveWarning"))) return;
     void setDateParam(next && todayDate && next < todayDate ? next : null);
   };
 
@@ -83,7 +82,7 @@ function DailyRates() {
     canManage && todayDate ? (
       <div className="flex flex-wrap items-end gap-2">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="rates-date">{t.date.label}</Label>
+          <Label htmlFor="rates-date">{t("date.label")}</Label>
           <Input
             id="rates-date"
             type="date"
@@ -101,7 +100,7 @@ function DailyRates() {
             className="h-10"
             onClick={() => pickDate("")}
           >
-            {t.date.backToToday}
+            {t("date.backToToday")}
           </Button>
         ) : null}
       </div>
@@ -116,8 +115,8 @@ function DailyRates() {
         description={
           date
             ? pastDate
-              ? t.date.showing(formatDate(date))
-              : t.date.today(formatDate(date))
+              ? t("date.showing", { date: formatDate(date) })
+              : t("date.today", { date: formatDate(date) })
             : section("description")
         }
         actions={datePicker}
@@ -125,7 +124,7 @@ function DailyRates() {
 
       {pastDate ? (
         <p role="note" className="text-sm font-semibold">
-          {t.date.pastHint}
+          {t("date.pastHint")}
         </p>
       ) : null}
 
@@ -134,14 +133,14 @@ function DailyRates() {
           role="alert"
           className="bg-card rounded-card flex flex-col items-center gap-3 border px-6 py-12 text-center"
         >
-          <p className="font-heading font-bold">{t.grid.loadError}</p>
+          <p className="font-heading font-bold">{t("grid.loadError")}</p>
           <Button
             variant="outline"
             onClick={() =>
               queries.forEach((q) => q.isError && void q.refetch())
             }
           >
-            {t.grid.retry}
+            {t("grid.retry")}
           </Button>
         </div>
       ) : !day.data || !commodities.data || !date ? (
@@ -186,17 +185,20 @@ function DayGrid({
   canAddCommodities: boolean;
   onDirtyChange: (dirty: boolean) => void;
 }) {
+  const t = useTranslations("rates");
   const rows = gridCommodities(commodities, day.data);
   if (rows.length === 0) {
     return (
       <EmptyState
         icon={Wheat}
-        title={t.grid.empty.title}
-        body={t.grid.empty.body}
+        title={t("grid.empty.title")}
+        body={t("grid.empty.body")}
         action={
           canAddCommodities ? (
             <Button asChild variant="outline">
-              <Link href={panelRoutes.commodities}>{t.grid.empty.action}</Link>
+              <Link href={panelRoutes.commodities}>
+                {t("grid.empty.action")}
+              </Link>
             </Button>
           ) : null
         }

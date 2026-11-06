@@ -1101,5 +1101,76 @@
       "generic": "Something went wrong. Please try again.",
       "network": "Can’t reach the server. Check your internet and try again."
     }
+  },
+  "rates": {
+    "perUnit": {
+      "maund": "per maund",
+      "kg": "per kg"
+    },
+    "none": "—",
+    "errors": {
+      "money": "Enter a rate in rupees (up to 2 decimals)",
+      "minRequired": "Enter the min rate",
+      "maxRequired": "Enter the max rate",
+      "maxBelowMin": "Max rate must be at least the min rate",
+      "cannotClear": "A saved rate can’t be cleared; enter min and max",
+      "pastDay": "Only the owner or a manager can change the rates of a past day",
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server. Check your internet and try again."
+    },
+    "date": {
+      "label": "Date",
+      "today": "Today, {date}",
+      "showing": "Rates of {date}",
+      "backToToday": "Back to today",
+      "pastHint": "You’re changing the rates of a past day."
+    },
+    "grid": {
+      "caption": "Rates per commodity",
+      "columns": {
+        "commodity": "Commodity",
+        "minRate": "Min",
+        "maxRate": "Max",
+        "avgRate": "Avg"
+      },
+      "inputLabel": "{column, select, minRate {Min} maxRate {Max} other {Avg}} rate for {name}",
+      "optional": "optional",
+      "keyboardHint": "Tab or Enter moves to the next cell, Shift+Enter goes back. Leave a commodity empty to skip it.",
+      "readOnly": "You can view the rates; only the owner or a manager can change them.",
+      "copyYesterday": "Copy yesterday",
+      "copyYesterdayHint": "Fill the empty rows with the rates of {date}",
+      "noYesterday": "No rates were saved the day before.",
+      "copied": "{count, plural, one {Copied # rate from the day before. Check it and save.} other {Copied # rates from the day before. Check them and save.}}",
+      "nothingToCopy": "Every row with a rate the day before is already filled.",
+      "save": "Save rates",
+      "saving": "Saving…",
+      "discard": "Discard changes",
+      "unsaved": "You have unsaved changes",
+      "saved": "Rates saved.",
+      "nothingChanged": "Nothing to save: enter at least one rate.",
+      "leaveWarning": "You have unsaved rates. Leave this page and lose them?",
+      "loadError": "Couldn’t load the rates.",
+      "retry": "Try again",
+      "empty": {
+        "title": "No commodities yet",
+        "body": "Add the commodities your shop trades, then enter their rates here.",
+        "action": "Add commodities"
+      }
+    },
+    "chart": {
+      "title": "Rate trend",
+      "description": "Average rate with the min–max band. Days without a rate are left empty.",
+      "commodityLabel": "Commodity",
+      "rangeLabel": "Period",
+      "range": "{days, number} days",
+      "band": "Min–max",
+      "avg": "Avg",
+      "min": "Min",
+      "max": "Max",
+      "noRate": "No rate",
+      "noData": "No rates in this period.",
+      "loadError": "Couldn’t load the trend.",
+      "axis": "{unit, select, kg {Rs per kg} other {Rs per maund}}"
+    }
   }
 }

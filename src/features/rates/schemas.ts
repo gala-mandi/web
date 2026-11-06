@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Commodity } from "@/features/commodities/types";
-import { rateText } from "./text";
+import type { Translator } from "@/i18n/types";
 import {
   type Rate,
   type RateInput,
@@ -10,17 +10,19 @@ import {
 } from "./types";
 import { compareMoney, MONEY } from "./values";
 
-const e = rateText.errors;
+/** Messages come from the `rates` messages of the interface language. */
+export type RatesTranslator = Translator<"rates">;
 
 /** The rate cells of a row, in the order Tab/Enter walks through them. */
 export const rateFields = ["minRate", "maxRate", "avgRate"] as const;
 export type RateField = (typeof rateFields)[number];
 
 /** "" or a rupee string with up to 2 decimals. */
-const money = z
-  .string()
-  .trim()
-  .refine((v) => v === "" || MONEY.test(v), e.money);
+const money = (t: RatesTranslator) =>
+  z
+    .string()
+    .trim()
+    .refine((v) => v === "" || MONEY.test(v), t("errors.money"));
 
 /**
  * One commodity's row. All three cells empty = skip the commodity (unless it
@@ -28,60 +30,62 @@ const money = z
  * are needed, avg is optional, and max must be at least min, as the server
  * checks.
  */
-export const rateRowSchema = z
-  .object({
-    commodityId: z.string(),
-    minRate: money,
-    maxRate: money,
-    avgRate: money,
-    rateUnit: z.enum(rateUnits),
-    /** The day already has a rate for this commodity. */
-    saved: z.boolean(),
-  })
-  .superRefine((row, ctx) => {
-    const { minRate, maxRate, avgRate } = row;
-    if (minRate === "" && maxRate === "" && avgRate === "") {
-      if (row.saved) {
+export const rateRowSchema = (t: RatesTranslator) =>
+  z
+    .object({
+      commodityId: z.string(),
+      minRate: money(t),
+      maxRate: money(t),
+      avgRate: money(t),
+      rateUnit: z.enum(rateUnits),
+      /** The day already has a rate for this commodity. */
+      saved: z.boolean(),
+    })
+    .superRefine((row, ctx) => {
+      const { minRate, maxRate, avgRate } = row;
+      if (minRate === "" && maxRate === "" && avgRate === "") {
+        if (row.saved) {
+          ctx.addIssue({
+            code: "custom",
+            message: t("errors.cannotClear"),
+            path: ["minRate"],
+          });
+        }
+        return;
+      }
+      if (minRate === "") {
         ctx.addIssue({
           code: "custom",
-          message: e.cannotClear,
+          message: t("errors.minRequired"),
           path: ["minRate"],
         });
       }
-      return;
-    }
-    if (minRate === "") {
-      ctx.addIssue({
-        code: "custom",
-        message: e.minRequired,
-        path: ["minRate"],
-      });
-    }
-    if (maxRate === "") {
-      ctx.addIssue({
-        code: "custom",
-        message: e.maxRequired,
-        path: ["maxRate"],
-      });
-    }
-    // Only when both are well-formed; otherwise their own message shows.
-    if (
-      MONEY.test(minRate) &&
-      MONEY.test(maxRate) &&
-      compareMoney(minRate, maxRate) > 0
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        message: e.maxBelowMin,
-        path: ["maxRate"],
-      });
-    }
-  });
+      if (maxRate === "") {
+        ctx.addIssue({
+          code: "custom",
+          message: t("errors.maxRequired"),
+          path: ["maxRate"],
+        });
+      }
+      // Only when both are well-formed; otherwise their own message shows.
+      if (
+        MONEY.test(minRate) &&
+        MONEY.test(maxRate) &&
+        compareMoney(minRate, maxRate) > 0
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("errors.maxBelowMin"),
+          path: ["maxRate"],
+        });
+      }
+    });
 
-export const ratesFormSchema = z.object({ rows: z.array(rateRowSchema) });
+export const ratesFormSchema = (t: RatesTranslator) =>
+  z.object({ rows: z.array(rateRowSchema(t)) });
 
-export type RateRowValues = z.infer<typeof rateRowSchema>;
-export type RatesFormValues = z.infer<typeof ratesFormSchema>;
+export type RateRowValues = z.infer<ReturnType<typeof rateRowSchema>>;
+export type RatesFormValues = z.infer<ReturnType<typeof ratesFormSchema>>;
 
 /** A commodity counted in kg is priced per kg; everything else per maund. */
 function defaultRateUnit(commodity: Commodity): RateUnit {
