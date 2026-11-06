@@ -86,6 +86,7 @@ describe("CommandPalette", () => {
     pressCtrlK();
 
     expect(pageOptions()).toEqual([
+      "Dashboard",
       "Daily rates",
       "Purchases",
       "Sales",

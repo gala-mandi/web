@@ -11,13 +11,11 @@ import {
 } from "./routes";
 
 describe("landing page", () => {
-  it("is the dashboard for owners and managers", () => {
+  it("is the dashboard for owners, managers and operators", () => {
     expect(landingPathFor(owner)).toBe("/dashboard");
     expect(landingPathFor(manager)).toBe("/dashboard");
-  });
-
-  it("is Daily rates for an operator, who has no dashboard", () => {
-    expect(landingPathFor(operator)).toBe("/rates");
+    // Operators have `dashboard.view` and get the simpler dashboard.
+    expect(landingPathFor(operator)).toBe("/dashboard");
   });
 
   it("is the first menu page the permissions allow", () => {
@@ -41,7 +39,7 @@ describe("homePathFor (after sign-in)", () => {
   });
 
   it("falls back to the landing page for a ?next= the user may not open", () => {
-    expect(homePathFor(operator, "/settings")).toBe("/rates");
+    expect(homePathFor(operator, "/settings")).toBe("/dashboard");
     expect(homePathFor(manager, "/staff")).toBe("/dashboard");
   });
 

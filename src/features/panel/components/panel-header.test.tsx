@@ -149,14 +149,14 @@ describe("PanelHeader", () => {
       );
     });
 
-    it("starts from Daily rates for an operator", () => {
+    it("starts from the dashboard for an operator too", () => {
       me = operator;
       pathname.current = "/sales";
       renderPanel("page", operator);
 
       expect(
-        within(breadcrumbs()).getByRole("link", { name: "Daily rates" }),
-      ).toHaveAttribute("href", "/rates");
+        within(breadcrumbs()).getByRole("link", { name: "Dashboard" }),
+      ).toHaveAttribute("href", "/dashboard");
     });
 
     it("says page not found for an unknown URL", () => {
