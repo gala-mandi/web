@@ -1,6 +1,7 @@
 /**
- * A new Idempotency-Key (UUID v4) for one purchase form. The same key goes
- * with every retry of that save, so the server saves it once.
+ * A new Idempotency-Key (UUID v4) for one parchi form (purchase or sale).
+ * The same key goes with every retry of that save, so the server saves it
+ * once.
  * `crypto.randomUUID` needs a secure context (https or localhost); the
  * fallback covers a shop opening the panel over plain http on its network.
  */
