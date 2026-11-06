@@ -63,7 +63,7 @@ describe("SubscriptionBanner", () => {
     const banner = await screen.findByTestId("subscription-banner");
     expect(banner).toHaveAttribute("role", "alert");
     expect(banner).toHaveTextContent(
-      "Full access for 4 days more, then read-only after 11 Nov 2026.",
+      "Full access for 4 more days, then read-only after 11 Nov 2026.",
     );
     expect(
       screen.queryByRole("button", { name: "Hide for today" }),

@@ -16,7 +16,7 @@ export const subscriptionText = {
     grace: (endsOn: string, left: number, graceEndsOn: string) =>
       left === 0
         ? `Your plan ended on ${endsOn}. Today is the last day of full access; from tomorrow the shop is read-only.`
-        : `Your plan ended on ${endsOn}. Full access for ${days(left)} more, then read-only after ${graceEndsOn}.`,
+        : `Your plan ended on ${endsOn}. Full access for ${left} more ${left === 1 ? "day" : "days"}, then read-only after ${graceEndsOn}.`,
     readOnly: (endsOn: string) =>
       `Your plan ended on ${endsOn}. The shop is read-only: you can view and print, but not add or change anything.`,
     renewOwner: "Contact Galla Mandi support to renew.",
