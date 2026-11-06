@@ -293,7 +293,9 @@ test.describe("Ledger (khata)", () => {
     await page.getByText("Paid on purchase PUR-2026-27-000001").click();
     await expect(page).toHaveURL(`/purchases/${purchase.id}`);
     await expect(
-      page.getByRole("article", { name: "Bill PUR-2026-27-000001" }),
+      page.getByRole("article", {
+        name: "Purchase parchi PUR-2026-27-000001",
+      }),
     ).toBeVisible();
   });
 
