@@ -26,6 +26,15 @@ export const operator = {
   permissions: rolePermissions.operator,
 };
 
+export const manager = {
+  ...owner,
+  id: "u2",
+  name: "Nadeem",
+  phone: "03000000003",
+  role: "manager",
+  permissions: rolePermissions.manager,
+};
+
 /** The shop's settings as `GET /settings` returns them. */
 export const shopSettings = {
   name: "Demo Mandi",
@@ -59,7 +68,7 @@ function cors(origin: string | null): Record<string, string> {
     "access-control-allow-origin": origin ?? "*",
     "access-control-allow-credentials": "true",
     "access-control-allow-headers": "authorization, content-type, accept",
-    "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
+    "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
     "access-control-expose-headers": "retry-after, x-ratelimit-remaining",
   };
 }
