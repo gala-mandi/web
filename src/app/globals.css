@@ -159,3 +159,25 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Printing a page that has a print area (e.g. a purchase): only that area is
+ * printed, at the top of the paper, without the sidebar and header.
+ */
+@media print {
+  body:has([data-print-area]) * {
+    visibility: hidden;
+  }
+  body:has([data-print-area]) [data-print-area],
+  body:has([data-print-area]) [data-print-area] * {
+    visibility: visible;
+  }
+  [data-print-area] {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+  }
+}

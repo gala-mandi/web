@@ -55,12 +55,13 @@ export function useEveryCommodity() {
 }
 
 /** `GET /rates/today`: today's date (Asia/Karachi), its rates and yesterday's. */
-export function useTodayRates() {
+export function useTodayRates(enabled = true) {
   return useQuery({
     queryKey: rateKeys.today(),
     queryFn: ({ signal }) => getTodayRates(signal),
     staleTime: 30_000,
     retry: retryUnlessClientError,
+    enabled,
   });
 }
 

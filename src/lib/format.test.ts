@@ -6,9 +6,19 @@ import {
   formatMaund,
   formatRelative,
   formatRs,
+  karachiToday,
 } from "./format";
 
 describe("format", () => {
+  it("gives today's date in Karachi as YYYY-MM-DD", () => {
+    expect(karachiToday(new Date("2026-11-05T19:30:00.000Z"))).toBe(
+      "2026-11-06",
+    );
+    expect(karachiToday(new Date("2026-11-05T18:59:00.000Z"))).toBe(
+      "2026-11-05",
+    );
+  });
+
   it("shows dates in Pakistan time", () => {
     // 20:00 UTC is already the next day in Karachi (UTC+5).
     expect(formatDate("2026-10-27T20:00:00.000Z")).toBe("28 Oct 2026");

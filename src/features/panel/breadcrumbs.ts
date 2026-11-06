@@ -42,14 +42,31 @@ export function breadcrumbsFor(
   ];
 }
 
-/** Pages one level below a section, by section. */
-const detailCrumbs: Partial<Record<PanelSection, string>> = {
-  traders: panelText.crumbs.traderProfile,
+/**
+ * Pages below a section, by section: the crumb for the rest of the path
+ * (`["abc"]` for `/traders/abc`), or null when the section has no such page.
+ */
+const detailCrumbs: Partial<
+  Record<PanelSection, (parts: string[]) => string | null>
+> = {
+  traders: (parts) =>
+    parts.length === 1 ? panelText.crumbs.traderProfile : null,
+  purchases: ([id, page, ...rest]) => {
+    if (rest.length > 0) return null;
+    if (page === undefined) {
+      return id === "new"
+        ? panelText.crumbs.newPurchase
+        : panelText.crumbs.purchase;
+    }
+    return page === "edit" && id !== "new"
+      ? panelText.crumbs.editPurchase
+      : null;
+  },
 };
 
 /** `/traders/abc` → "Trader profile"; null for the section page itself. */
 function detailCrumb(section: PanelSection, pathname: string): string | null {
   const rest = pathname.slice(panelRoutes[section].length).replace(/\/$/, "");
-  if (!/^\/[^/]+$/.test(rest)) return null;
-  return detailCrumbs[section] ?? null;
+  if (!/^(\/[^/]+)+$/.test(rest)) return null;
+  return detailCrumbs[section]?.(rest.slice(1).split("/")) ?? null;
 }

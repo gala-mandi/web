@@ -29,4 +29,22 @@ describe("breadcrumbsFor", () => {
       href: null,
     });
   });
+
+  it("names the purchase pages below Purchases", () => {
+    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
+    expect(breadcrumbsFor("/purchases/new", owner)).toEqual([
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Purchases", href: "/purchases" },
+      { label: "New purchase", href: null },
+    ]);
+    expect(last("/purchases/abc")).toEqual({ label: "Purchase", href: null });
+    expect(last("/purchases/abc/edit")).toEqual({
+      label: "Edit purchase",
+      href: null,
+    });
+    expect(last("/purchases/abc/other")).toEqual({
+      label: "Purchases",
+      href: null,
+    });
+  });
 });

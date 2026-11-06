@@ -78,6 +78,9 @@ export const panelText = {
   /** Last breadcrumb of a page below a section (`/traders/:id`). */
   crumbs: {
     traderProfile: "Trader profile",
+    newPurchase: "New purchase",
+    purchase: "Purchase",
+    editPurchase: "Edit purchase",
   },
   comingSoon: {
     title: "Nothing here yet",
