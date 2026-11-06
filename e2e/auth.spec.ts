@@ -32,7 +32,10 @@ test.describe("auth", () => {
     await expect(page.getByTestId("shop-name")).toHaveText("Demo Mandi");
     await expect(page.getByTestId("user-name")).toHaveText("Haji Aslam");
     await expect(page.getByTestId("user-role")).toHaveText("Owner");
-    await expect(page.getByText("Welcome, Haji Aslam")).toBeVisible();
+    // The dashboard (ticket 31) replaced the "Welcome" placeholder.
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Dashboard" }),
+    ).toBeVisible();
     expect(logins).toHaveLength(1);
     expect(logins[0].postDataJSON()).toEqual({
       identifier: "03000000002",
@@ -76,7 +79,12 @@ test.describe("auth", () => {
     await signIn(page);
 
     await expect(page).toHaveURL("/dashboard");
-    await expect(page.getByText("Welcome, Haji Aslam")).toBeVisible();
+    // The dashboard (ticket 31) replaced the "Welcome" placeholder.
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Dashboard" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("user-name")).toHaveText("Haji Aslam");
+    await expect.poll(() => meCalls.length).toBe(2);
     expect(refreshes).toHaveLength(1);
     expect(meCalls.map(bearer)).toEqual(["expired-token", "fresh-token"]);
   });
@@ -97,7 +105,11 @@ test.describe("auth", () => {
 
     await page.goto("/dashboard");
 
-    await expect(page.getByText("Welcome, Haji Aslam")).toBeVisible();
+    // The dashboard (ticket 31) replaced the "Welcome" placeholder.
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Dashboard" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("user-name")).toHaveText("Haji Aslam");
     expect(refreshes).toHaveLength(1);
   });
 

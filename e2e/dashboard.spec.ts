@@ -59,8 +59,18 @@ const newShop: ShopData = {
   outstanding: emptyShop.outstanding,
 };
 
-async function signedIn(page: Page, context: BrowserContext, user: object) {
-  await page.clock.install({ time: NOW });
+/**
+ * `timers: true` fakes the timers too (to fast-forward the auto refresh);
+ * otherwise only the date is fixed and the chart's own timers run freely.
+ */
+async function signedIn(
+  page: Page,
+  context: BrowserContext,
+  user: object,
+  { timers = false } = {},
+) {
+  if (timers) await page.clock.install({ time: NOW });
+  else await page.clock.setFixedTime(NOW);
   await setRefreshCookie(context);
   await mockEndpoint(page, "POST", "/auth/refresh", () => ({
     status: 200,
@@ -210,19 +220,28 @@ test.describe("owner dashboard", () => {
 
     const chart = page.getByTestId("sales-trend-chart");
     await expect(chart.locator(".recharts-area-area").first()).toBeVisible();
-    const box = (await chart.boundingBox())!;
-    // The last day sits at the right edge of the plot.
-    await page.mouse.move(box.x + box.width - 10, box.y + box.height / 2);
+    // Wait for the rates card too: the chart grows to its height.
+    await expect(
+      page.getByTestId("commodity-rates").getByRole("img"),
+    ).toHaveCount(3);
 
     const today = purchasesByDay.rows.at(-1)!;
     const tooltip = chart.locator(".recharts-tooltip-wrapper");
-    await expect(tooltip).toContainText("6 Nov 2026");
+    await expect(async () => {
+      const box = (await chart.boundingBox())!;
+      // `hover` scrolls the chart into view; the last day is at the right edge.
+      await chart.hover({ position: { x: box.width / 2, y: box.height / 2 } });
+      await chart.hover({
+        position: { x: box.width - 14, y: box.height / 2 },
+      });
+      await expect(tooltip).toContainText("6 Nov 2026", { timeout: 1000 });
+    }).toPass();
     await expect(tooltip).toContainText(formatRs(today.netAmount));
     await expect(tooltip).toContainText(`${today.bills} bills`);
   });
 
   test("refreshes itself every 3 minutes", async ({ page, context }) => {
-    await signedIn(page, context, owner);
+    await signedIn(page, context, owner, { timers: true });
     let data = busyShop;
     const calls = await mockReports(page, () => data);
     await page.goto("/dashboard");
