@@ -164,8 +164,16 @@ export const purchaseText = {
     net: "Net payable to kissan",
     paid: "Paid now",
     empty: "Add an item with weight and rate to see the total.",
-    /** The calculator's own reason, e.g. "the net amount comes to Rs 0". */
-    invalid: (reason: string) => `Can’t total this bill: ${reason}.`,
+    /** Why the calculator can't total the bill (the server refuses it too). */
+    reasons: {
+      itemChargesOverGross: (n: number) =>
+        `Can’t total this bill: the charges of item ${n} are more than its amount.`,
+      deductionsOverGross:
+        "Can’t total this bill: the deductions are more than the gross amount.",
+      netZero: "Can’t total this bill: the net amount comes to Rs 0.",
+      tooLarge: "Can’t total this bill: an amount is too large.",
+      other: "Can’t total this bill. Check the weights and rates.",
+    },
     preview: "Live preview; the saved bill is calculated by the server.",
   },
   view: {

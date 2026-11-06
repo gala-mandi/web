@@ -455,9 +455,7 @@ export function PurchaseForm({ today, purchase }: PurchaseFormProps) {
                 live.error ? "text-destructive" : "text-muted-foreground",
               )}
             >
-              {live.error
-                ? purchaseText.breakdown.invalid(live.error)
-                : purchaseText.breakdown.empty}
+              {live.error ?? purchaseText.breakdown.empty}
             </p>
           )}
         </div>

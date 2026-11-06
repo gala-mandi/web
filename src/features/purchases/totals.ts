@@ -9,6 +9,7 @@ import {
   type PurchaseTotals,
 } from "@/lib/charges/purchase-totals";
 import { MAUND_KG } from "@/lib/units";
+import { purchaseText } from "./text";
 import {
   isCompleteItem,
   type PurchaseItemFormValues,
@@ -83,12 +84,27 @@ export function savedItemCharges(
   };
 }
 
+/** The calculator's refusal in the form's words (see `text.ts`). */
+function reasonOf(
+  error: InvalidQuantityError,
+  rows: readonly number[],
+): string {
+  const r = purchaseText.breakdown.reasons;
+  const item = /^items\.(\d+)$/.exec(error.field);
+  if (item) return r.itemChargesOverGross(rows[Number(item[1])] + 1);
+  if (error.message.includes("Rs 0")) return r.netZero;
+  if (error.message.includes("too large")) return r.tooLarge;
+  if (error.message.includes("more than the gross"))
+    return r.deductionsOverGross;
+  return r.other;
+}
+
 export interface LiveTotals {
   /** Null until one row is complete, or when the bill can't be totalled. */
   totals: PurchaseTotals | null;
   /** Each form row's amount, or null for a blank or unfinished row. */
   itemAmounts: (string | null)[];
-  /** Why the bill can't be totalled, e.g. "the net amount comes to Rs 0". */
+  /** Why the bill can't be totalled, ready to show. */
   error: string | null;
 }
 
@@ -128,10 +144,6 @@ export function liveTotals(
     return { totals, itemAmounts, error: null };
   } catch (error) {
     if (!(error instanceof InvalidQuantityError)) throw error;
-    return {
-      totals: null,
-      itemAmounts,
-      error: error.message.slice(error.field.length + 2),
-    };
+    return { totals: null, itemAmounts, error: reasonOf(error, rows) };
   }
 }
