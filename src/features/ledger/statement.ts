@@ -9,21 +9,12 @@ import type { Statement, StatementEntry } from "./types";
  * Urdu. Amounts are the server's strings, only formatted: no money maths.
  */
 
-const urduDay = new Intl.DateTimeFormat("ur-PK", {
-  timeZone: SHOP_TIME_ZONE,
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
 /** A `YYYY-MM-DD` day (or a timestamp) in the statement's language. */
 export function statementDay(
   value: string | Date,
   lang: StatementLanguage,
 ): string {
-  if (lang === "en") return formatDate(value);
-  const date = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(date.getTime()) ? "" : urduDay.format(date);
+  return formatDate(value, lang);
 }
 
 /** "-60000.00" → `{ amount: "Rs 60,000.00", side: "Cr" }` ("" when settled). */
@@ -34,7 +25,7 @@ export function statementBalance(
   const { kind, amount } = readBalance(balance);
   const w = statementText[lang];
   return {
-    amount: formatRs(amount),
+    amount: formatRs(amount, lang),
     side: kind === "receivable" ? w.dr : kind === "payable" ? w.cr : "",
   };
 }
@@ -62,7 +53,8 @@ export function statementDetails(
   return entry.narration ? `${source} — ${entry.narration}` : source;
 }
 
-const side = (amount: string) => (/[1-9]/.test(amount) ? formatRs(amount) : "");
+const side = (amount: string, lang: StatementLanguage) =>
+  /[1-9]/.test(amount) ? formatRs(amount, lang) : "";
 
 /** The statement as sheet rows: heading lines, the table, closing balance. */
 export function statementRows(
@@ -92,8 +84,8 @@ export function statementRows(
       return [
         statementDay(entry.entryDate, lang),
         statementDetails(entry, lang),
-        side(entry.debit),
-        side(entry.credit),
+        side(entry.debit, lang),
+        side(entry.credit, lang),
         balance.amount,
         balance.side,
       ];

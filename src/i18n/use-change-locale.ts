@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useCallback, useTransition } from "react";
+import { useParchiPrefs } from "@/stores/parchi";
 import { useSessionStore } from "@/stores/session";
 import type { Locale } from "./config";
 import { saveLocaleChoice } from "./client";
@@ -26,6 +27,8 @@ export function useChangeLocale(): {
     (next: Locale) => {
       saveLocaleChoice(next, userId);
       if (next === locale) return;
+      // Prints follow the new language unless picked again on a parchi.
+      useParchiPrefs.getState().setLang(null);
       startTransition(() => router.refresh());
     },
     [locale, router, userId],

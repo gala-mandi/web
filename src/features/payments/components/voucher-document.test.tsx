@@ -90,8 +90,9 @@ describe("VoucherDocument", () => {
     expect(voucher).toHaveTextContent("واؤچر نمبر");
     expect(voucher).toHaveTextContent("بذریعہنقد");
     const amount = screen.getByTestId("voucher-amount");
-    expect(amount.querySelector("[dir=ltr]")).toHaveTextContent(
-      "Rs 100,000.00",
+    // "100,000.00 روپے": the word follows the number, read right to left.
+    expect(amount.querySelector("[dir=auto]")).toHaveTextContent(
+      "100,000.00 روپے",
     );
   });
 

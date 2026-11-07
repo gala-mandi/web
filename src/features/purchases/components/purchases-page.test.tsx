@@ -18,6 +18,7 @@ import { getMe } from "@/features/auth/api";
 import { getSettings } from "@/features/settings/api";
 import { shopSettings } from "@/features/settings/test-data";
 import { useParchiPrefs } from "@/stores/parchi";
+import { setTestLocale } from "@/test/intl";
 import { useSessionStore } from "@/stores/session";
 import { httpError, manager, operator, owner } from "@/test/fake-api";
 import { TestProviders } from "@/test/render-panel";
@@ -346,8 +347,10 @@ describe("PurchaseDetailPage", () => {
     await waitFor(() => expect(print).toHaveBeenCalledTimes(1));
   });
 
-  it("the shop's Urdu setting is the default language until one is picked", async () => {
-    vi.mocked(getSettings).mockResolvedValue(shopSettings({ language: "ur" }));
+  it("the parchi prints in the interface language until one is picked", async () => {
+    // The shop default reaches the parchi through the interface language
+    // (see LocaleSync), so the Urdu interface prints an Urdu parchi.
+    setTestLocale("ur");
     renderWith(<PurchaseDetailPage id={bill.id} />, owner);
     expect(
       await screen.findByRole("article", {

@@ -64,7 +64,7 @@ describe("statementRows (Excel)", () => {
       "سابقہ بقایا",
       "",
       "",
-      "Rs 10,000.00",
+      "10,000.00 روپے",
       "بنام",
     ]);
     expect(rows.at(-3)).toEqual([
@@ -72,7 +72,7 @@ describe("statementRows (Excel)", () => {
       "موجودہ بقایا",
       "",
       "",
-      "Rs 20,500.00",
+      "20,500.00 روپے",
       "جمع",
     ]);
     expect(rows[7][0]).toMatch(/2026/);
@@ -97,7 +97,7 @@ describe("statement helpers", () => {
       side: "",
     });
     expect(statementBalance("-5.50", "ur")).toEqual({
-      amount: "Rs 5.50",
+      amount: "5.50 روپے",
       side: "جمع",
     });
   });

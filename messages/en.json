@@ -2148,5 +2148,20 @@
         "empty": "No rates saved for this day."
       }
     }
+  },
+  "parchi": {
+    "paperLabel": "Paper",
+    "languageLabel": "Parchi language",
+    "print": "Print parchi",
+    "preparing": "Preparing…",
+    "reprint": "Reprint",
+    "failed": "Couldn’t print the parchi. Please try again.",
+    "preview": "Parchi {billNo}",
+    "previewHint": "This is how the parchi prints.",
+    "papers": {
+      "a4": "A4",
+      "a5": "A5",
+      "thermal80": "80 mm thermal"
+    }
   }
 }

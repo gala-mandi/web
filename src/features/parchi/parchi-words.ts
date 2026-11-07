@@ -3,37 +3,15 @@ import type {
   ChargeType,
 } from "@/lib/charges/calculate-transaction";
 import type { RateUnit } from "@/features/purchases/types";
-import type { PaperSize, ParchiKind, ParchiLanguage } from "./types";
+import type { ParchiKind, ParchiLanguage } from "./types";
 
 /**
- * Every user-facing string of the parchi. The panel controls around it are
- * English (the screens are English for now); the printed parchi itself is
- * handed to the trader, so it has English and Urdu words (`parchiWords`).
+ * Words printed on the parchi, in English and Urdu. The parchi is handed to
+ * the trader and prints in the interface language unless the picker on the
+ * parchi screen says otherwise, so both dictionaries stay here (the browser
+ * only loads the messages of the interface language). The screen controls
+ * around it are in the `parchi` messages.
  */
-
-export const parchiText = {
-  paperLabel: "Paper",
-  languageLabel: "Parchi language",
-  print: "Print parchi",
-  preparing: "Preparing…",
-  reprint: "Reprint",
-  failed: "Couldn’t print the parchi. Please try again.",
-  preview: (billNo: string) => `Parchi ${billNo}`,
-  previewHint: "This is how the parchi prints.",
-} as const;
-
-/** Paper names in the picker. */
-export const paperText = {
-  a4: "A4",
-  a5: "A5",
-  thermal80: "80 mm thermal",
-} as const satisfies Record<PaperSize, string>;
-
-/** The language picker shows each language in its own script. */
-export const parchiLanguageNames = {
-  en: "English",
-  ur: "اردو",
-} as const satisfies Record<ParchiLanguage, string>;
 
 export interface ParchiWords {
   title: Record<ParchiKind, string>;
@@ -78,8 +56,9 @@ function chargeLabel(
   rtl = false,
 ): string {
   const amount = `${value}${basis === "percent" ? "%" : ""}`;
-  // In Urdu the amount is isolated left to right: "2%", not "%2".
-  const shown = rtl ? `\u2066${amount}\u2069` : amount;
+  // In Urdu a percentage is isolated left to right: "2%", not "%2"; a
+  // rupee amount ("20.00 روپے") keeps its own right-to-left order.
+  const shown = rtl && basis === "percent" ? `\u2066${amount}\u2069` : amount;
   if (basis === "per_bag") return `${name} ${shown} ${perBag}`;
   return `${name} ${shown}`;
 }

@@ -223,7 +223,7 @@ describe("KhataPage", () => {
     expect(doc).toHaveTextContent("کھاتہ اسٹیٹمنٹ");
     expect(
       doc.querySelector("[data-testid=statement-closing]"),
-    ).toHaveTextContent("Rs 20,500.00 جمع");
+    ).toHaveTextContent("20,500.00 روپے جمع");
     expect(
       await screen.findByText("In the print window, choose “Save as PDF”."),
     ).toBeVisible();

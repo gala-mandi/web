@@ -13,7 +13,7 @@ import {
   parchiSignedRs,
   parchiWeight,
 } from "../parchi";
-import { type ParchiWords, parchiWords } from "../text";
+import { type ParchiWords, parchiWords } from "../parchi-words";
 import type {
   PaperSize,
   ParchiBill,
@@ -119,6 +119,25 @@ interface LayoutProps {
 
 /** Numbers and codes: never split or reordered by the Urdu layout. */
 export function Ltr({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span dir="ltr" className={cn("tabular-nums whitespace-nowrap", className)}>
+      {children}
+    </span>
+  );
+}
+
+/**
+ * A rupee amount in the paper's language: "Rs 1,200.00" reads left to
+ * right, "1,200.00 روپے" right to left (the word follows the number), so
+ * the amount takes its direction from its own text.
+ */
+export function Amount({
   children,
   className,
 }: {
@@ -460,14 +479,14 @@ function SheetRow({
       </td>
       <td className={cn(td, "px-[0.5em] text-end")}>
         <span className="block">
-          <Ltr>{parchiRs(item.rate)}</Ltr>
+          <Amount>{parchiRs(item.rate, lang)}</Amount>
         </span>
         <span className={cn("text-ink-muted block text-[0.85em]", sub)}>
           {w.perUnit[item.rateUnit]}
         </span>
       </td>
       <td className={cn(td, "ps-[0.5em] text-end font-bold")}>
-        <Ltr>{parchiRs(item.amount)}</Ltr>
+        <Amount>{parchiRs(item.amount, lang)}</Amount>
       </td>
     </tr>
   );
@@ -546,9 +565,12 @@ function RollLayout({ bill, shop, lang, w }: LayoutProps) {
                   {/* Isolated, so Urdu keeps the brackets round "1,010 کلو". */}
                   <bdi className="text-ink-muted">({weight.kg})</bdi>
                   {" · "}
-                  <Ltr>{parchiRs(item.rate)}</Ltr> {w.perUnit[item.rateUnit]}
+                  <Amount>{parchiRs(item.rate, lang)}</Amount>{" "}
+                  {w.perUnit[item.rateUnit]}
                 </span>
-                <Ltr className="ms-auto font-bold">{parchiRs(item.amount)}</Ltr>
+                <Amount className="ms-auto font-bold">
+                  {parchiRs(item.amount, lang)}
+                </Amount>
               </div>
             </li>
           );
@@ -610,7 +632,11 @@ function Sums({
         className,
       )}
     >
-      <SumLine label={w.gross} value={parchiRs(bill.grossAmount)} strong />
+      <SumLine
+        label={w.gross}
+        value={parchiRs(bill.grossAmount, lang)}
+        strong
+      />
       {/* A charge that came to Rs 0 (e.g. a 0% fee) is left off the paper. */}
       {bill.charges
         .filter((charge) => isNonZero(charge.amount))
@@ -618,26 +644,30 @@ function Sums({
           <SumLine
             key={`${charge.type}|${charge.basis}|${charge.value}`}
             label={parchiChargeLabel(charge, lang)}
-            value={`${sign}${parchiRs(charge.amount)}`}
+            value={`${sign}${parchiRs(charge.amount, lang)}`}
             muted
           />
         ))}
       <SumLine
         label={w.totalCharges[bill.kind]}
-        value={`${sign}${parchiRs(bill.totalCharges)}`}
+        value={`${sign}${parchiRs(bill.totalCharges, lang)}`}
         className="border-ink-rule border-t pt-[0.25em]"
       />
-      <SumLine label={w.rounding} value={parchiSignedRs(bill.rounding)} muted />
+      <SumLine
+        label={w.rounding}
+        value={parchiSignedRs(bill.rounding, lang)}
+        muted
+      />
       <div className="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold">
         <dt>{w.net[bill.kind]}</dt>
         <dd data-testid="parchi-net">
-          <Ltr>{parchiRs(bill.netAmount)}</Ltr>
+          <Amount>{parchiRs(bill.netAmount, lang)}</Amount>
         </dd>
       </div>
       {isNonZero(bill.settledAmount) ? (
         <SumLine
           label={w.settled[bill.kind]}
-          value={parchiRs(bill.settledAmount)}
+          value={parchiRs(bill.settledAmount, lang)}
           className="pt-[0.2em]"
         />
       ) : null}
@@ -669,7 +699,7 @@ function SumLine({
     >
       <dt className="min-w-0">{label}</dt>
       <dd>
-        <Ltr>{value}</Ltr>
+        <Amount>{value}</Amount>
       </dd>
     </div>
   );
