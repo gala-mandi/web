@@ -375,7 +375,8 @@ test.describe("Ledger (khata)", () => {
       "موجودہ بقایا",
       "",
       "",
-      "Rs 30,000.00",
+      // The Urdu statement writes the rupee word after the amount.
+      "30,000.00 روپے",
       "جمع",
     ]);
   });

@@ -19,7 +19,11 @@ export function usePrintOnce(print: () => void, ready = true) {
   useEffect(() => {
     if (flag !== "1" || printed.current || !ready) return;
     printed.current = true;
-    void setFlag(null, { history: "replace" });
+    // After this commit: on a fresh navigation the router may not have
+    // written the new URL yet, and nuqs would see no flag to drop.
+    setTimeout(() => {
+      void setFlag(null, { history: "replace" });
+    }, 0);
     printRef.current();
   }, [flag, ready, setFlag]);
 }
