@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { categoryLabel, suggestedCategories } from "../categories";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -130,7 +131,7 @@ export function CommodityFormSheet({
         <SheetHeader className="border-b px-5 py-4 pe-12">
           <SheetTitle className="font-heading text-lg font-bold">
             {commodity
-              ? t("form.editTitle", { name: commodity.name })
+              ? t("form.editTitle", { name: bidi(commodity.name) })
               : t("form.addTitle")}
           </SheetTitle>
           <SheetDescription>
@@ -192,10 +193,10 @@ function CommodityForm({
           return;
         }
         saved = await update.mutateAsync({ id: commodity.id, input });
-        toast.success(t("form.saved", { name: saved.name }));
+        toast.success(t("form.saved", { name: bidi(saved.name) }));
       } else {
         saved = await create.mutateAsync(toCreateInput(values));
-        toast.success(t("form.added", { name: saved.name }));
+        toast.success(t("form.added", { name: bidi(saved.name) }));
       }
       onSaved(saved);
     } catch (error) {

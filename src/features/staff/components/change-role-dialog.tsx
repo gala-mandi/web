@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Loader2 } from "lucide-react";
@@ -102,7 +103,7 @@ export function ChangeRoleDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-lg font-bold">
-            {t("changeRole.title", { name: member.name })}
+            {t("changeRole.title", { name: bidi(member.name) })}
           </DialogTitle>
           <DialogDescription>{t("changeRole.description")}</DialogDescription>
         </DialogHeader>

@@ -29,7 +29,7 @@ export function ShopIdentity() {
         className="font-heading truncate text-[15px] font-extrabold"
         data-testid="shop-name"
       >
-        {name}
+        <bdi dir="auto">{name}</bdi>
       </span>
     </div>
   );

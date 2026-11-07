@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -50,7 +51,9 @@ export function CommodityStatusDialog({
       { id: commodity.id, input: { isActive: action === "activate" } },
       {
         onSuccess: (updated) => {
-          toast.success(t(`status.${action}.done`, { name: updated.name }));
+          toast.success(
+            t(`status.${action}.done`, { name: bidi(updated.name) }),
+          );
           onClose();
         },
         onError: (error) =>
@@ -70,7 +73,7 @@ export function CommodityStatusDialog({
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
             <bdi dir="auto">
-              {t(`status.${action}.title`, { name: commodity.name })}
+              {t(`status.${action}.title`, { name: bidi(commodity.name) })}
             </bdi>
           </AlertDialogTitle>
           <AlertDialogDescription>
@@ -125,7 +128,7 @@ export function DeleteCommodityDialog({
     if (pending) return;
     mutation.mutate(commodity.id, {
       onSuccess: () => {
-        toast.success(t("delete.done", { name: commodity.name }));
+        toast.success(t("delete.done", { name: bidi(commodity.name) }));
         onClose();
       },
       onError: (error) => {
@@ -149,7 +152,9 @@ export function DeleteCommodityDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            <bdi dir="auto">{t("delete.title", { name: commodity.name })}</bdi>
+            <bdi dir="auto">
+              {t("delete.title", { name: bidi(commodity.name) })}
+            </bdi>
           </AlertDialogTitle>
           <AlertDialogDescription>{t("delete.body")}</AlertDialogDescription>
         </AlertDialogHeader>

@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { MoreHorizontal, UserCheck, UserCog, UserX, Users } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -47,7 +48,7 @@ function RowActions({
         <Button
           variant="ghost"
           size="icon"
-          aria-label={t("actions.menu", { name: member.name })}
+          aria-label={t("actions.menu", { name: bidi(member.name) })}
         >
           <MoreHorizontal aria-hidden />
         </Button>

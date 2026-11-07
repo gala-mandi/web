@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { MoreHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
@@ -29,7 +30,7 @@ export function DataTableRowActions({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={t("rowActions", { name: rowName })}
+          aria-label={t("rowActions", { name: bidi(rowName) })}
         >
           <MoreHorizontal aria-hidden />
         </Button>

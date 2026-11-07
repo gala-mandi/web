@@ -1,3 +1,4 @@
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Check, Lock, PauseCircle } from "lucide-react";
 import { AuthCard, TextLink, SubLine } from "./auth-ui";
@@ -19,7 +20,7 @@ export function ShopSuspended({
           {t("badge")}
         </span>
         <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-          {shopName ? t("title", { shop: shopName }) : t("titleNoShop")}
+          {shopName ? t("title", { shop: bidi(shopName) }) : t("titleNoShop")}
         </h2>
         <p className="text-muted-foreground text-[14.5px]/relaxed">
           {t("body")}

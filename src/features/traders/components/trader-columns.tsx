@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Eye, Pencil, Trash2, UserCheck, UserX } from "lucide-react";
 import Link from "next/link";
@@ -100,7 +101,7 @@ export function traderColumns(
         label: t("list.columns.name"),
         exportValue: (row: Trader) =>
           row.fatherName
-            ? `${row.name} (${t("fatherOf", { name: row.fatherName })})`
+            ? `${row.name} (${t("fatherOf", { name: bidi(row.fatherName) })})`
             : row.name,
       },
       cell: ({ row }) => (

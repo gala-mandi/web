@@ -1,6 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { bidi } from "@/i18n/bidi";
+import { useLocale, useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { CommodityName } from "@/features/commodities/components/commodity-name";
+import { useEveryCommodity } from "@/features/rates/hooks";
 import type { UseQueryResult } from "@tanstack/react-query";
 import {
   Area,
@@ -58,6 +62,12 @@ export function CommodityRates({ from, to, className }: CommodityRatesProps) {
   const t = useTranslations("dashboard");
   const top = useTopCommodities(from, to);
   const commodities = top.data ?? [];
+  // The report names a commodity in English; the list has its Urdu name.
+  const every = useEveryCommodity();
+  const urduNames = useMemo(
+    () => new Map((every.data ?? []).map((c) => [c.id, c.nameUr])),
+    [every.data],
+  );
   const histories = useRateHistories(commodities, from, to);
 
   return (
@@ -93,6 +103,7 @@ export function CommodityRates({ from, to, className }: CommodityRatesProps) {
               <CommodityRow
                 key={c.id}
                 commodity={c}
+                nameUr={urduNames.get(c.id) ?? null}
                 history={histories[i]}
                 from={from}
                 to={to}
@@ -107,17 +118,20 @@ export function CommodityRates({ from, to, className }: CommodityRatesProps) {
 
 function CommodityRow({
   commodity,
+  nameUr,
   history,
   from,
   to,
 }: {
   commodity: TopCommodity;
+  nameUr: string | null;
   history: UseQueryResult<Rate[]> | undefined;
   from: string;
   to: string;
 }) {
   const { formatRs } = useFormat();
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const { shortDate } = useChartFormat();
   const direction = useChartDirection();
   const animation = useChartAnimation();
@@ -132,9 +146,11 @@ function CommodityRow({
       className="flex flex-col gap-1.5 py-3 first:pt-0 last:pb-0"
     >
       <div className="flex items-baseline justify-between gap-3">
-        <p className="font-semibold">
-          <bdi dir="auto">{commodity.name}</bdi>
-        </p>
+        <CommodityName
+          name={commodity.name}
+          nameUr={nameUr}
+          className="min-w-0"
+        />
         {latest ? (
           <p className="text-muted-foreground shrink-0 text-xs">
             {t("rates.latest", { date: shortDate(latest.rateDate) })}
@@ -170,7 +186,9 @@ function CommodityRow({
           className="h-20 w-full"
           dir="ltr"
           role="img"
-          aria-label={t("rates.chartLabel", { name: commodity.name })}
+          aria-label={t("rates.chartLabel", {
+            name: bidi(locale === "ur" && nameUr ? nameUr : commodity.name),
+          })}
         >
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart

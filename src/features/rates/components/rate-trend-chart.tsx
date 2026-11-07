@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { CommodityName } from "@/features/commodities/components/commodity-name";
 import { useState } from "react";
 import {
   Area,
@@ -95,7 +96,7 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
             <SelectContent>
               {commodities.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
-                  {c.name}
+                  <CommodityName name={c.name} nameUr={c.nameUr} />
                 </SelectItem>
               ))}
             </SelectContent>

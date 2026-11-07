@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { categoryLabel } from "../categories";
 import { CircleCheck, CircleOff, Pencil, Trash2 } from "lucide-react";
@@ -128,7 +129,9 @@ export function commodityColumns(
           <button
             type="button"
             onClick={() => actions.onEdit(row.original)}
-            aria-label={t("actions.editName", { name: row.original.name })}
+            aria-label={t("actions.editName", {
+              name: bidi(row.original.name),
+            })}
             className="text-foreground focus-visible:ring-ring/50 w-fit rounded-sm text-start font-semibold outline-none hover:underline focus-visible:ring-3"
           >
             <TraderName name={row.original.name} />

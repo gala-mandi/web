@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -224,7 +225,7 @@ export function CommodityCombobox({
               >
                 <bdi dir="auto">
                   {q
-                    ? t("combobox.empty", { query: q })
+                    ? t("combobox.empty", { query: bidi(q) })
                     : t("combobox.emptyAll")}
                 </bdi>
               </p>

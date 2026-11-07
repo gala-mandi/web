@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, CircleAlert, Pencil, ReceiptText } from "lucide-react";
 import Link from "next/link";
@@ -268,9 +269,9 @@ function BalanceCard({ trader }: { trader: TraderDetail }) {
   const { kind, amount } = readBalance(trader.balance);
   const hint =
     kind === "receivable"
-      ? t("profile.balance.receivableHint", { name: trader.name })
+      ? t("profile.balance.receivableHint", { name: bidi(trader.name) })
       : kind === "payable"
-        ? t("profile.balance.payableHint", { name: trader.name })
+        ? t("profile.balance.payableHint", { name: bidi(trader.name) })
         : t("profile.balance.settledHint");
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -425,7 +426,7 @@ function RateCell({
     control,
     name: `rows.${index}.${field}`,
   });
-  const label = t("grid.inputLabel", { column: field, name });
+  const label = t("grid.inputLabel", { column: field, name: bidi(name) });
   const errorId = `rate-${index}-${field}-error`;
 
   if (readOnly) {

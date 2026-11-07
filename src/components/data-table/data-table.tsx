@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import type { Translator } from "@/i18n/types";
 import { useTranslations } from "next-intl";
 import {
@@ -207,7 +208,7 @@ function selectColumn<TData extends RowData>(
     cell: ({ row }) => (
       <Checkbox
         aria-label={t("selection.selectRow", {
-          name: getRowLabel(row.original, row.id),
+          name: bidi(getRowLabel(row.original, row.id)),
         })}
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(value === true)}

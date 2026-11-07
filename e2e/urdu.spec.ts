@@ -9,10 +9,12 @@ import {
 import ur from "../messages/ur.json";
 import { commodity, lookupItem } from "../src/features/commodities/test-data";
 import {
+  commodityList,
   dailySummary,
   outstanding,
   purchasesByCommodity,
   purchasesByDay,
+  rateHistories,
   salesByDay,
 } from "../src/features/dashboard/test-data";
 import { statement } from "../src/features/ledger/test-data";
@@ -92,11 +94,14 @@ function answer(method: string, path: string, url: URL): unknown {
       }),
     ]);
   }
-  if (path === "/rates")
-    return { data: [], meta: { page: 1, limit: 100, total: 0 } };
+  if (path === "/rates") {
+    const data = rateHistories[url.searchParams.get("commodity") ?? ""] ?? [];
+    return { data, meta: { page: 1, limit: 500, total: data.length } };
+  }
   if (path === "/commodities/lookup") return { data: [lookupItem(gandum)] };
   if (path === "/commodities") {
-    return { data: [gandum], meta: { page: 1, limit: 100, total: 1 } };
+    const data = [...commodityList, gandum];
+    return { data, meta: { page: 1, limit: 100, total: data.length } };
   }
   if (path === "/traders/lookup") {
     const kissan = { ...KISSAN, name: "محمد رفیق" };

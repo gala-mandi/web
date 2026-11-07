@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Clock, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
@@ -49,7 +50,7 @@ export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
           {t("locked.title")}
         </h2>
         <p className="text-muted-foreground text-[15px]/relaxed">
-          {who ? t("locked.body", { who }) : t("locked.bodyGeneric")}
+          {who ? t("locked.body", { who: bidi(who) }) : t("locked.bodyGeneric")}
         </p>
         <SubLine>{t("locked.subline")}</SubLine>
       </div>

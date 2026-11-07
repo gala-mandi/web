@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { Check, PauseCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AuthCard, SubLine } from "@/features/auth/components/auth-ui";
@@ -35,7 +36,7 @@ export function ReadOnlyNotice() {
           </span>
           <h1 className="font-heading text-[26px] font-extrabold tracking-tight">
             {user?.tenant?.name
-              ? t("title", { shop: user.tenant.name })
+              ? t("title", { shop: bidi(user.tenant.name) })
               : t("titleNoShop")}
           </h1>
           <p className="text-muted-foreground text-[14.5px]/relaxed">

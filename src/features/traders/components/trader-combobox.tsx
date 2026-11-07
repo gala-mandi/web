@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -271,7 +272,7 @@ export function TraderCombobox({
                 >
                   <bdi dir="auto">
                     {q
-                      ? t("combobox.empty", { query: q })
+                      ? t("combobox.empty", { query: bidi(q) })
                       : t("combobox.emptyAll")}
                   </bdi>
                 </p>
@@ -284,7 +285,9 @@ export function TraderCombobox({
                     className="text-primary font-semibold"
                   >
                     <Plus aria-hidden />
-                    <bdi dir="auto">{t("combobox.quickAdd", { query: q })}</bdi>
+                    <bdi dir="auto">
+                      {t("combobox.quickAdd", { query: bidi(q) })}
+                    </bdi>
                   </CommandItem>
                 </CommandGroup>
               ) : null}

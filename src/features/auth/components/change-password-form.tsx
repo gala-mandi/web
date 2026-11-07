@@ -107,7 +107,9 @@ export function ChangePasswordForm() {
             <span className="text-muted-foreground text-[13px]">
               {t("changePassword.greeting")}
             </span>
-            <span className="font-bold">{user.name}</span>
+            <bdi dir="auto" className="font-bold">
+              {user.name}
+            </bdi>
           </div>
         </div>
       ) : null}

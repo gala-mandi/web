@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { AlertCircle, Check, MailWarning, User } from "lucide-react";
@@ -69,7 +70,7 @@ function Joined({ result }: { result: AcceptInviteResult }) {
       </div>
       <div role="status" className="flex flex-col gap-1.5">
         <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-          {s("title", { shop: result.shopName })}
+          {s("title", { shop: bidi(result.shopName) })}
         </h2>
         <p className="text-muted-foreground text-[15px]/relaxed">{s("body")}</p>
         <SubLine>{s("subline")}</SubLine>

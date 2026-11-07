@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -38,7 +39,9 @@ export function StatusDialog({
       { id: member.id, action },
       {
         onSuccess: (updated) => {
-          toast.success(t(`status.${action}.done`, { name: updated.name }));
+          toast.success(
+            t(`status.${action}.done`, { name: bidi(updated.name) }),
+          );
           onClose();
         },
         onError: (error) => {
@@ -59,7 +62,7 @@ export function StatusDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            {t(`status.${action}.title`, { name: member.name })}
+            {t(`status.${action}.title`, { name: bidi(member.name) })}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {t(`status.${action}.body`)}

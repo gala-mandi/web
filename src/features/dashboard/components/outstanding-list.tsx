@@ -1,6 +1,8 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
+import { TraderName } from "@/features/traders/components/trader-name";
 import Link from "next/link";
 import {
   Card,
@@ -134,15 +136,15 @@ export function OutstandingList({
                         <Link
                           href={ledgerRoutes.khata(trader.traderId)}
                           aria-label={t("outstanding.openKhata", {
-                            name: trader.name,
+                            name: bidi(trader.name),
                           })}
                           className="hover:text-primary focus-visible:ring-ring/50 min-w-0 truncate rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-[3px]"
                         >
-                          {trader.name}
+                          <TraderName name={trader.name} />
                         </Link>
                       ) : (
                         <span className="min-w-0 truncate font-medium">
-                          {trader.name}
+                          <TraderName name={trader.name} />
                         </span>
                       )}
                       {/* On a phone the name gets the room; the khata shows the type. */}

@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { BookOpenText, CircleAlert, Scale, UserX } from "lucide-react";
 import Link from "next/link";
@@ -183,7 +184,9 @@ function Khata() {
         <>
           {statement ? (
             <section
-              aria-label={t("khata.caption", { name: statement.trader.name })}
+              aria-label={t("khata.caption", {
+                name: bidi(statement.trader.name),
+              })}
               className="flex flex-col gap-4"
             >
               <div className="flex flex-wrap items-center gap-2">
@@ -224,7 +227,7 @@ function Khata() {
           <DataTable
             caption={
               statement
-                ? t("khata.caption", { name: statement.trader.name })
+                ? t("khata.caption", { name: bidi(statement.trader.name) })
                 : t("khata.entriesTitle")
             }
             columns={columns}

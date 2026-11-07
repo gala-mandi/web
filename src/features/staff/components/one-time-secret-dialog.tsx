@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import {
   Copy,
@@ -85,7 +86,7 @@ export function OneTimeSecretDialog({
             {isLink
               ? t("oneTime.linkBody", { phone: result.invitation.phone })
               : t("oneTime.passwordBody", {
-                  name: result.user.name,
+                  name: bidi(result.user.name),
                   phone: result.user.phone,
                 })}
           </AlertDialogDescription>

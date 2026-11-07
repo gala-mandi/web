@@ -1,5 +1,6 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import type { Translator } from "@/i18n/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -541,7 +542,7 @@ function CreditLimitWarning({
         <p>
           <bdi dir="auto">
             {t("credit.body", {
-              name: buyerName,
+              name: bidi(buyerName),
               owed: formatRs(warning.owed),
               limit: formatRs(warning.creditLimit),
             })}
