@@ -162,7 +162,7 @@ describe("Dashboard", () => {
       const rates = within(await screen.findByTestId("commodity-rates"));
       expect(
         (await rates.findAllByRole("listitem")).map(
-          (li) => li.querySelector("p")?.textContent,
+          (li) => li.querySelector("bdi")?.textContent,
         ),
       ).toEqual(["Gandum", "Chawal (Basmati)", "Makai"]);
       expect(vi.mocked(listAllRates).mock.calls.map(([q]) => q)).toEqual(

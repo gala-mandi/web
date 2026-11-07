@@ -1,3 +1,4 @@
+import { bidi } from "@/i18n/bidi";
 import {
   fireEvent,
   render,
@@ -59,7 +60,8 @@ const lastQuery = () => vi.mocked(listTraders).mock.calls.at(-1)?.[0];
 
 async function openActions(name: string) {
   const trigger = await screen.findByRole("button", {
-    name: `Actions for ${name}`,
+    // An Urdu name is isolated inside the English label (FSI…PDI).
+    name: `Actions for ${bidi(name)}`,
   });
   fireEvent.keyDown(trigger, { key: "Enter" });
   return screen.findByRole("menu");

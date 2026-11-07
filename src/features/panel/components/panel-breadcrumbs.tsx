@@ -38,12 +38,12 @@ export function PanelBreadcrumbs({
                     href={crumb.href}
                     className="focus-visible:ring-ring/50 rounded-sm whitespace-nowrap outline-none focus-visible:ring-3"
                   >
-                    <bdi dir="auto">{crumb.label}</bdi>
+                    {crumb.label}
                   </Link>
                 </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage className="truncate font-semibold">
-                  <bdi dir="auto">{crumb.label}</bdi>
+                  {crumb.label}
                 </BreadcrumbPage>
               )}
             </BreadcrumbItem>
