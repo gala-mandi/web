@@ -151,7 +151,8 @@ export function ItemRow<T extends ItemsFormValues>({
     : null;
 
   // Visible labels say "Bags"; screen readers hear "Bags, Item 2".
-  const name = (text: string) => `${text}, ${t("form.itemLabel", { n })}`;
+  const name = (text: string) =>
+    t("form.fieldOfItem", { field: text, item: t("form.itemLabel", { n }) });
 
   return (
     <fieldset
@@ -232,7 +233,7 @@ export function ItemRow<T extends ItemsFormValues>({
           <UnitSelect
             control={control}
             name={`items.${index}.weightUnit`}
-            label={`${t("form.weightUnit")}, ${t("form.itemLabel", { n })}`}
+            label={name(t("form.weightUnit"))}
             units={weightUnits}
             onPick={(unit) => onWeightUnit(unit as WeightUnit)}
           />
@@ -272,7 +273,7 @@ export function ItemRow<T extends ItemsFormValues>({
           <UnitSelect
             control={control}
             name={`items.${index}.rateUnit`}
-            label={`${t("form.rateUnit")}, ${t("form.itemLabel", { n })}`}
+            label={name(t("form.rateUnit"))}
             units={["maund", "kg", "bag"]}
             onPick={(unit) => setRow("rateUnit", unit as RateUnit)}
           />

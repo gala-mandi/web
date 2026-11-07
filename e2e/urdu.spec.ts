@@ -11,6 +11,7 @@ import { commodity, lookupItem } from "../src/features/commodities/test-data";
 import {
   dailySummary,
   outstanding,
+  purchasesByCommodity,
   purchasesByDay,
   salesByDay,
 } from "../src/features/dashboard/test-data";
@@ -71,7 +72,11 @@ function answer(method: string, path: string, url: URL): unknown {
   if (path === "/settings") return shopSettings;
   if (path === "/subscription") return shopStates.quiet;
   if (path === "/reports/daily-summary") return dailySummary;
-  if (path === "/reports/purchases") return purchasesByDay;
+  if (path === "/reports/purchases") {
+    return url.searchParams.get("groupBy") === "commodity"
+      ? purchasesByCommodity
+      : purchasesByDay;
+  }
   if (path === "/reports/sales") return salesByDay;
   if (path === "/reports/outstanding") return outstanding;
   if (path === "/payments/cash-book" || path === "/reports/cash-book") {
@@ -160,6 +165,8 @@ async function urduBrowser(context: BrowserContext, signedIn = true) {
 
 async function prepare(page: Page, context: BrowserContext, signedIn = true) {
   await page.clock.setFixedTime(NOW);
+  // Charts draw at once (no entry animation) for stable pictures.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await urduBrowser(context, signedIn);
   await shopApi(page);
   // react-to-print prints from an iframe: record what would print.

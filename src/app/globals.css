@@ -274,3 +274,37 @@ html:lang(ur) :where([lang="en"]) {
 [dir="rtl"] :is(.lucide-arrow-up-right, .lucide-arrow-down-left) {
   scale: -1 1;
 }
+
+/*
+ * Fixed-height chips and menu rows grow to fit Nastaliq instead of cutting
+ * its tall letters (the English sizes stay as designed).
+ */
+html:lang(ur) [data-slot="badge"] {
+  height: auto;
+  min-height: 1.25rem;
+  padding-block: 0;
+  line-height: 1.8;
+}
+html:lang(ur) [data-slot="sidebar-menu-button"] {
+  height: auto;
+  min-height: 2.25rem;
+}
+html:lang(ur) [data-collapsible="icon"] [data-slot="sidebar-menu-button"] {
+  min-height: 0;
+}
+html:lang(ur) [data-slot="checkbox"] {
+  line-height: 1;
+}
+
+/*
+ * Text cut with "…" (truncate) clips at its own box; Nastaliq rises and
+ * falls far past the line, so the clip box gets room without moving
+ * anything.
+ */
+html:lang(ur) .truncate {
+  padding-block: 0.3em;
+  margin-block: -0.3em;
+}
+[dir="rtl"] :is(.lucide-trending-up, .lucide-trending-down) {
+  scale: -1 1;
+}

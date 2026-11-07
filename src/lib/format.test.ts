@@ -153,8 +153,9 @@ describe("format in Urdu", () => {
     expect(formatDate("2026-10-27T20:00:00.000Z", "ur")).toBe(
       "28 اکتوبر، 2026",
     );
-    expect(formatDateTime("2026-10-27T10:30:00.000Z", "ur")).toMatch(
-      /^27 اکتوبر، 2026، 3:30/,
+    // The Latin clock is isolated left to right inside the Urdu text.
+    expect(formatDateTime("2026-10-27T10:30:00.000Z", "ur")).toBe(
+      "27 اکتوبر، 2026، \u20663:30 PM\u2069",
     );
     const now = Date.parse("2026-10-28T10:00:00.000Z");
     expect(formatRelative("2026-10-28T07:00:00.000Z", now, "ur")).toBe(

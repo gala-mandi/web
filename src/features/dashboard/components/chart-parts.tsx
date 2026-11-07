@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { Locale } from "@/i18n/config";
 import {
   dateFormat,
+  isolateClock,
   numberFormat,
   SHOP_TIME_ZONE,
   unitWords,
@@ -65,11 +66,14 @@ export function chartFormat(locale: Locale) {
         year: "numeric",
       }).format(calendarDay(date)),
     clockTime: (ms: number) =>
-      dateFormat(locale, {
-        timeZone: SHOP_TIME_ZONE,
-        hour: "numeric",
-        minute: "2-digit",
-      }).format(new Date(ms)),
+      isolateClock(
+        dateFormat(locale, {
+          timeZone: SHOP_TIME_ZONE,
+          hour: "numeric",
+          minute: "2-digit",
+        }).format(new Date(ms)),
+        locale,
+      ),
     axisAmount: (value: number) =>
       numberFormat(locale, {
         notation: "compact",

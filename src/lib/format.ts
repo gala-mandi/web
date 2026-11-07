@@ -107,13 +107,28 @@ function toDate(value: string | Date): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+/**
+ * In Urdu the clock keeps its Latin "3:05 PM": isolated left to right, so
+ * it doesn't read "PM 3:05" inside right-to-left text.
+ */
+export function isolateClock(text: string, locale: Locale): string {
+  return locale === "ur"
+    ? text.replace(
+        /\d{1,2}:\d{2}(?:\s?[AP]M)?/g,
+        (time) => `\u2066${time}\u2069`,
+      )
+    : text;
+}
+
 /** `12 Oct 2026, 3:05 pm` / `12 اکتوبر، 2026، 3:05 PM` in Asia/Karachi. */
 export function formatDateTime(
   value: string | Date,
   locale: Locale = defaultLocale,
 ): string {
   const date = toDate(value);
-  return date ? dateFormat(locale, DATE_TIME).format(date) : "";
+  return date
+    ? isolateClock(dateFormat(locale, DATE_TIME).format(date), locale)
+    : "";
 }
 
 /** `12 Oct 2026` / `12 اکتوبر، 2026` in Asia/Karachi. */

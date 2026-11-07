@@ -1385,6 +1385,7 @@
       "notesPlaceholder": "اختیاری، مثلاً ٹرک نمبر",
       "items": "آئٹم",
       "itemLabel": "آئٹم {n, number}",
+      "fieldOfItem": "{field}، {item}",
       "commodity": "جنس",
       "commodityPlaceholder": "چنیں…",
       "bags": "بوریاں",
