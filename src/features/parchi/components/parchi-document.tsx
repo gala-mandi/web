@@ -126,7 +126,10 @@ export function Ltr({
   className?: string;
 }) {
   return (
-    <span dir="ltr" className={cn("tabular-nums whitespace-nowrap", className)}>
+    <span
+      dir="auto"
+      className={cn("tabular-nums whitespace-nowrap", className)}
+    >
       {children}
     </span>
   );

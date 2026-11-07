@@ -249,7 +249,7 @@ export function TraderCombobox({
                         {item.phone || item.village ? (
                           <span className="text-muted-foreground flex gap-2 text-xs">
                             {item.phone ? (
-                              <span dir="ltr" className="tabular-nums">
+                              <span dir="auto" className="tabular-nums">
                                 {item.phone}
                               </span>
                             ) : null}

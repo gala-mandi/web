@@ -42,7 +42,7 @@ export const balanceColumns = (
       enableSorting: false,
       meta: { label: t("balances.columns.phone") },
       cell: ({ getValue }) => (
-        <span dir="ltr" className="tabular-nums">
+        <span dir="auto" className="tabular-nums">
           {getValue()}
         </span>
       ),

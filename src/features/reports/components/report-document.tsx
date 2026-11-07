@@ -1,12 +1,12 @@
+import { useTranslations } from "next-intl";
 import { type Ref } from "react";
-import { formatDate } from "@/lib/format";
+import { localeDirection } from "@/i18n/config";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { isNumeric } from "../cell-format";
-import type { ReportSheet, ReportTable } from "../sheet";
-import { reportText } from "../text";
+import type { ReportSheet, ReportTable, SheetWords } from "../sheet";
 import { ReportCellView } from "./report-cell";
 
-const w = reportText.document;
 const cell = "border-b px-2 py-1.5 align-top";
 
 function DocumentTable({
@@ -134,11 +134,16 @@ export function ReportDocument({
   printedAt,
   ref,
 }: ReportDocumentProps) {
+  const { formatDate, locale } = useFormat();
+  const t = useTranslations("reports");
   const pairs = sheet.tables.filter((t) => t.layout === "pairs");
   const tables = sheet.tables.filter((t) => t.layout === "table");
   return (
     <div
       ref={ref}
+      // The print frame doesn't inherit <html lang dir>: the document says it.
+      lang={locale}
+      dir={localeDirection[locale]}
       data-report-document={sheet.slug}
       className="bg-card text-card-foreground text-[11px] leading-relaxed"
     >
@@ -152,7 +157,7 @@ export function ReportDocument({
           <h1 className="text-base font-bold">{sheet.title}</h1>
         </div>
         <dl className="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5">
-          <dt className="text-muted-foreground">{w.period}</dt>
+          <dt className="text-muted-foreground">{t("document.period")}</dt>
           <dd className="font-semibold">{sheet.period}</dd>
           {sheet.filters.map(([name, value]) => (
             <div key={name} className="contents">
@@ -162,7 +167,7 @@ export function ReportDocument({
               </dd>
             </div>
           ))}
-          <dt className="text-muted-foreground">{w.printedOn}</dt>
+          <dt className="text-muted-foreground">{t("document.printedOn")}</dt>
           <dd>{formatDate(printedAt)}</dd>
         </dl>
       </header>
@@ -188,13 +193,13 @@ export function ReportDocument({
  * `@page` rules of a printed report: A4, a page number at the foot of every
  * sheet, headings repeated, no line split over two sheets.
  */
-export function reportPageStyle(): string {
+export function reportPageStyle(t: SheetWords["t"]): string {
   return `
 @page {
   size: A4;
   margin: 12mm 10mm 16mm;
   @bottom-center {
-    content: "${w.page} " counter(page) " ${w.of} " counter(pages);
+    content: "${t("document.page")} " counter(page) " ${t("document.of")} " counter(pages);
     font-size: 9pt;
   }
 }

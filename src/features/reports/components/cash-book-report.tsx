@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useSheetWords } from "../use-sheet-words";
 import { HandCoins } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -14,7 +16,6 @@ import { paymentRoutes } from "@/lib/routes";
 import { useCashBookReport } from "../hooks";
 import { useReportRange } from "../search-params";
 import { cashBookSheet } from "../sheet";
-import { reportText } from "../text";
 import { ReportRangeFilter } from "./range-filter";
 import { ReportFrame, useReportShop } from "./report-frame";
 
@@ -33,13 +34,15 @@ export function CashBookReportPage() {
  * PDF. The cash vouchers behind it stay on the Payments page.
  */
 function CashBookReportView() {
+  const t = useTranslations("reports");
   const range = useReportRange();
   const { shopName, maundKg } = useReportShop();
   const canSeeVouchers = useCan("payment.view");
   const book = useCashBookReport(range.range);
+  const words = useSheetWords();
   const sheet = useMemo(
-    () => (book.data ? cashBookSheet(book.data) : null),
-    [book.data],
+    () => (book.data ? cashBookSheet(words, book.data) : null),
+    [words, book.data],
   );
 
   return (
@@ -65,7 +68,7 @@ function CashBookReportView() {
                 )}
               >
                 <HandCoins aria-hidden />
-                {reportText.cashBook.vouchers}
+                {t("cashBook.vouchers")}
               </Link>
             </Button>
           ) : null}

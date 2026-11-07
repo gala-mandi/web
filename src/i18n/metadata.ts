@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import type { ReportSlug } from "@/lib/routes";
 import type { MessageKey } from "./types";
 
 /** `<title>` of a page, "<page> — Galla Mandi", in the interface language. */
@@ -19,5 +20,14 @@ export function pageMetadata(key: MessageKey) {
       key: MessageKey,
     ) => string;
     return { title: await pageTitle(t(key)) };
+  };
+}
+
+/** `generateMetadata` of a report page: "Purchases report — Galla Mandi". */
+export function reportMetadata(slug: ReportSlug) {
+  return async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations("reports");
+    const title = t("documentTitle", { title: t(`reports.${slug}.title`) });
+    return { title: await pageTitle(title) };
   };
 }

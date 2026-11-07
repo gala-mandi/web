@@ -179,7 +179,7 @@ export function commodityColumns(
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? (
-          <span dir="ltr" className="tabular-nums">
+          <span dir="auto" className="tabular-nums">
             {formatKg(value)}
           </span>
         ) : (

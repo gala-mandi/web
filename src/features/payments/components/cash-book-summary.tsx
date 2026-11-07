@@ -123,7 +123,7 @@ function Stat({
         {label}
       </dt>
       <dd
-        dir="ltr"
+        dir="auto"
         data-testid={testId}
         className="font-heading text-2xl font-extrabold tabular-nums sm:text-[1.65rem]"
       >
@@ -251,7 +251,7 @@ function Money({
         className,
       )}
     >
-      <span dir="ltr">{formatRs(value)}</span>
+      <span dir="auto">{formatRs(value)}</span>
     </td>
   );
 }

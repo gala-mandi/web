@@ -53,7 +53,7 @@ export function BalanceAmount({
       className={cn("inline-flex flex-col", balanceTone[kind], className)}
     >
       <span className="font-semibold whitespace-nowrap tabular-nums">
-        <span dir="ltr">{formatRs(amount)}</span>
+        <span dir="auto">{formatRs(amount)}</span>
         {side ? (
           <>
             {" "}
@@ -85,7 +85,7 @@ export function SideAmount({
   if (!/[1-9]/.test(amount)) return null;
   return (
     <span
-      dir="ltr"
+      dir="auto"
       data-side={side}
       className={cn("font-semibold tabular-nums", sideTone[side])}
     >

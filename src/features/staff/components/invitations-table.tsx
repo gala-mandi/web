@@ -98,7 +98,7 @@ function invitationColumns(
     col.accessor("phone", {
       header: t("invitations.phone"),
       cell: ({ getValue }) => (
-        <span dir="ltr" className="font-semibold tabular-nums">
+        <span dir="auto" className="font-semibold tabular-nums">
           {getValue()}
         </span>
       ),

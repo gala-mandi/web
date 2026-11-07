@@ -1880,5 +1880,273 @@
         "clear": "Clear filters"
       }
     }
+  },
+  "reports": {
+    "none": "—",
+    "total": "Total",
+    "retry": "Try again",
+    "loading": "Loading the report…",
+    "bills": "{n, plural, one {# bill} other {# bills}}",
+    "bags": "{n, plural, one {# bag} other {# bags}}",
+    "traders": "{n, plural, one {# trader} other {# traders}}",
+    "vouchers": "{n, plural, one {# voucher} other {# vouchers}}",
+    "totalOf": "Total · {what}",
+    "hub": {
+      "title": "Reports",
+      "description": "Daily, purchase, sale, commission, outstanding and cash reports. Each one prints and exports to Excel or PDF.",
+      "open": "Open the {title} report"
+    },
+    "reports": {
+      "daily-summary": {
+        "title": "Daily summary",
+        "description": "One day at a glance: bills, commission, vouchers, the cash book and rates.",
+        "file": "daily-summary"
+      },
+      "purchases": {
+        "title": "Purchases",
+        "description": "Grain bought from kissans, by day, commodity or kissan, with deductions and net.",
+        "file": "purchases-report"
+      },
+      "sales": {
+        "title": "Sales",
+        "description": "Grain sold to beoparis, by day, commodity or beopari, with charges and net.",
+        "file": "sales-report"
+      },
+      "commission": {
+        "title": "Commission",
+        "description": "The shop’s commission income per day, with market fee and labour shown apart.",
+        "file": "commission-report"
+      },
+      "outstanding": {
+        "title": "Outstanding",
+        "description": "Who owes the shop and whom the shop owes, from the khata, largest first.",
+        "file": "outstanding-report"
+      },
+      "cash-book": {
+        "title": "Cash book",
+        "description": "Opening cash, cash received and paid each day, and the cash in hand.",
+        "file": "cash-book"
+      }
+    },
+    "documentTitle": "{title} report",
+    "range": {
+      "label": "Dates",
+      "presetsLabel": "Date range",
+      "presets": {
+        "today": "Today",
+        "week": "This week",
+        "month": "This month",
+        "custom": "Custom"
+      },
+      "period": "{from} – {to}",
+      "tooLong": "Choose at most {days, number} days."
+    },
+    "day": {
+      "label": "Date",
+      "previous": "Previous day",
+      "next": "Next day",
+      "today": "Today"
+    },
+    "asOf": {
+      "label": "Balances at the end of",
+      "now": "Now",
+      "period": "At the end of {day}",
+      "periodNow": "Up to now"
+    },
+    "filters": {
+      "groupBy": "Group by",
+      "groups": {
+        "day": "Day",
+        "commodity": "Commodity",
+        "trader": "Trader"
+      },
+      "commodity": "Commodity",
+      "allCommodities": "All commodities",
+      "kissan": "Kissan",
+      "beopari": "Beopari",
+      "allKissans": "All kissans",
+      "allBeoparis": "All beoparis",
+      "traderType": "Trader type",
+      "allTypes": "All types",
+      "clear": "Clear filters"
+    },
+    "traderTypes": {
+      "kissan": "Kissan",
+      "beopari": "Beopari",
+      "arhti": "Arhti"
+    },
+    "actions": {
+      "label": "Report actions",
+      "print": "Print",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "preparing": "Preparing…",
+      "pdfHint": "Choose “Save as PDF” as the printer to save the report.",
+      "failed": "Couldn’t prepare the report. Try again."
+    },
+    "document": {
+      "shop": "Shop",
+      "period": "Period",
+      "printedOn": "Printed on",
+      "page": "Page",
+      "of": "of",
+      "rupees": "(Rs)",
+      "kg": "(kg)",
+      "item": "Item",
+      "value": "Value"
+    },
+    "error": {
+      "title": "Couldn’t load the report",
+      "body": "Check your internet and try again."
+    },
+    "cards": {
+      "bills": "Bills",
+      "weight": "Weight",
+      "gross": "Gross amount",
+      "net": "Net amount",
+      "deductions": "Deductions",
+      "charges": "Charges",
+      "commission": "Commission",
+      "commissionHint": "The shop’s income for these dates",
+      "onPurchases": "On purchases",
+      "onSales": "On sales",
+      "receivable": "Receivable",
+      "payable": "Payable",
+      "cashInHand": "Cash in hand",
+      "netHint": {
+        "purchases": "Owed to kissans",
+        "sales": "Owed by beoparis"
+      },
+      "bagsHint": "{bags, plural, one {# bag} other {# bags}}",
+      "perBill": "Not split by commodity",
+      "receivableHint": "Traders who owe the shop",
+      "payableHint": "Traders the shop owes"
+    },
+    "book": {
+      "caption": "{title} by group",
+      "group": {
+        "day": "Date",
+        "commodity": "Commodity",
+        "trader": {
+          "purchases": "Kissan",
+          "sales": "Beopari"
+        }
+      },
+      "bills": "Bills",
+      "bags": "Bags",
+      "weight": "Weight",
+      "gross": "Gross",
+      "deductions": "Deductions",
+      "charges": "Charges",
+      "net": "Net",
+      "empty": {
+        "purchases": "No posted purchases on these dates.",
+        "sales": "No posted sales on these dates."
+      },
+      "perBillNote": "Deductions, charges and net are worked out per bill, so they are left out when bills are split by commodity."
+    },
+    "commission": {
+      "title": "Commission per day",
+      "caption": "Commission per day",
+      "date": "Date",
+      "onPurchases": "On purchases",
+      "onSales": "On sales",
+      "total": "Total",
+      "empty": "No commission on these dates.",
+      "other": {
+        "title": "Other charges (not shop income)",
+        "caption": "Other charges of the same bills",
+        "charge": "Charge",
+        "marketFee": "Market fee",
+        "labour": "Labour",
+        "other": "Other"
+      },
+      "otherNote": "Market fee goes to the market committee and labour to the labourers; they are not the shop’s income."
+    },
+    "outstanding": {
+      "receivable": {
+        "title": "Receivable",
+        "caption": "Traders who owe the shop",
+        "empty": "No one owes the shop money."
+      },
+      "payable": {
+        "title": "Payable",
+        "caption": "Traders the shop owes",
+        "empty": "The shop owes no one."
+      },
+      "trader": "Trader",
+      "type": "Type",
+      "phone": "Phone",
+      "amount": "Amount",
+      "openKhata": "Open {name}’s khata"
+    },
+    "cashBook": {
+      "title": "Cash in and out each day",
+      "vouchers": "See the cash vouchers"
+    },
+    "daily": {
+      "purchases": {
+        "title": "Purchases",
+        "bills": "Bills",
+        "bags": "Bags",
+        "weight": "Weight",
+        "gross": "Gross amount",
+        "deductions": "Deductions",
+        "net": "Net (owed to kissans)",
+        "paidOnBills": "Paid on the bills"
+      },
+      "sales": {
+        "title": "Sales",
+        "bills": "Bills",
+        "bags": "Bags",
+        "weight": "Weight",
+        "gross": "Gross amount",
+        "charges": "Charges",
+        "net": "Net (owed by beoparis)",
+        "receivedOnBills": "Received on the bills"
+      },
+      "commission": {
+        "title": "Commission",
+        "hint": "The shop’s income for the day",
+        "onPurchases": "On purchases",
+        "onSales": "On sales",
+        "total": "Total"
+      },
+      "payments": {
+        "title": "Vouchers",
+        "paidCount": "Payments to kissans",
+        "paidAmount": "Paid",
+        "receivedCount": "Receipts from beoparis",
+        "receivedAmount": "Received"
+      },
+      "cash": {
+        "title": "Cash book",
+        "opening": "Opening cash",
+        "cashIn": "Cash in",
+        "cashOut": "Cash out",
+        "closing": "Cash in hand",
+        "hint": "At the close of the day"
+      },
+      "cancelled": {
+        "title": "Cancelled (left out of every total)",
+        "purchases": "Purchases",
+        "sales": "Sales",
+        "payments": "Vouchers"
+      },
+      "rates": {
+        "title": "Rates of the day",
+        "caption": "Rates of the day",
+        "commodity": "Commodity",
+        "unit": "Per",
+        "min": "Min",
+        "max": "Max",
+        "avg": "Avg",
+        "units": {
+          "maund": "Maund",
+          "kg": "kg"
+        },
+        "empty": "No rates saved for this day."
+      }
+    }
   }
 }

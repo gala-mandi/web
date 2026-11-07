@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useSheetWords } from "../use-sheet-words";
 import { FileDown, FileSpreadsheet, Printer } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -7,10 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { exportReportToExcel, reportFileBase } from "../excel";
 import type { ReportSheet } from "../sheet";
-import { reportText } from "../text";
 import { ReportDocument, reportPageStyle } from "./report-document";
-
-const t = reportText.actions;
 
 type Action = "print" | "pdf" | "excel";
 
@@ -53,6 +52,8 @@ export function ReportActions({
   shopName,
   maundKg,
 }: ReportActionsProps) {
+  const words = useSheetWords();
+  const t = useTranslations("reports");
   const [busy, setBusy] = useState<Action | null>(null);
   const [job, setJob] = useState<PrintJob | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -61,14 +62,14 @@ export function ReportActions({
   const print = useReactToPrint({
     contentRef,
     documentTitle: title,
-    pageStyle: reportPageStyle(),
+    pageStyle: reportPageStyle(t),
     // The fonts are CSS variables on <html>; the print iframe needs them too.
     bodyClass:
       typeof document === "undefined"
         ? undefined
         : document.documentElement.className,
     print: (iframe) => printWhenReady(iframe, title),
-    onPrintError: () => toast.error(t.failed),
+    onPrintError: () => toast.error(t("actions.failed")),
   });
 
   // Print once the job's document is on the page (react-to-print copies it).
@@ -82,16 +83,16 @@ export function ReportActions({
   async function run(action: Action) {
     if (!sheet) return;
     if (action !== "excel") {
-      if (action === "pdf") toast.info(t.pdfHint);
+      if (action === "pdf") toast.info(t("actions.pdfHint"));
       printPending.current = true;
       setJob({ sheet, printedAt: new Date() });
       return;
     }
     setBusy(action);
     try {
-      await exportReportToExcel(sheet, shopName);
+      await exportReportToExcel(words, sheet, shopName);
     } catch {
-      toast.error(t.failed);
+      toast.error(t("actions.failed"));
     } finally {
       setBusy(null);
     }
@@ -107,15 +108,19 @@ export function ReportActions({
       onClick={() => void run(action)}
     >
       <Icon aria-hidden />
-      {busy === action ? t.preparing : label}
+      {busy === action ? t("actions.preparing") : label}
     </Button>
   );
 
   return (
-    <div role="group" aria-label={t.label} className="flex flex-wrap gap-2">
-      {button("print", Printer, t.print)}
-      {button("excel", FileSpreadsheet, t.excel)}
-      {button("pdf", FileDown, t.pdf)}
+    <div
+      role="group"
+      aria-label={t("actions.label")}
+      className="flex flex-wrap gap-2"
+    >
+      {button("print", Printer, t("actions.print"))}
+      {button("excel", FileSpreadsheet, t("actions.excel"))}
+      {button("pdf", FileDown, t("actions.pdf"))}
       {job ? (
         <div className="hidden">
           <ReportDocument

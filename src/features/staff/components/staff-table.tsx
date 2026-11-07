@@ -118,7 +118,7 @@ function staffColumns(
     col.accessor("phone", {
       header: t("table.phone"),
       cell: ({ getValue }) => (
-        <span dir="ltr" className="tabular-nums">
+        <span dir="auto" className="tabular-nums">
           {getValue()}
         </span>
       ),

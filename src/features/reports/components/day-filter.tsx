@@ -1,13 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { shiftDay } from "../range";
-import { reportText } from "../text";
-
-const t = reportText.day;
 
 export interface ReportDayFilterProps {
   label: string;
@@ -31,10 +29,11 @@ export function ReportDayFilter({
   value,
   today,
   onChange,
-  resetLabel = t.today,
+  resetLabel,
   nullIsToday = true,
   className,
 }: ReportDayFilterProps) {
+  const t = useTranslations("reports");
   const id = useId();
   const day = value ?? today;
   const pick = (next: string) => onChange(next > today ? today : next);
@@ -61,7 +60,7 @@ export function ReportDayFilter({
           variant="outline"
           size="icon"
           className="size-10"
-          aria-label={t.previous}
+          aria-label={t("day.previous")}
           onClick={() => pick(shiftDay(day, -1))}
         >
           <ChevronLeft aria-hidden className="rtl:rotate-180" />
@@ -71,7 +70,7 @@ export function ReportDayFilter({
           variant="outline"
           size="icon"
           className="size-10"
-          aria-label={t.next}
+          aria-label={t("day.next")}
           disabled={day >= today}
           onClick={() => pick(shiftDay(day, 1))}
         >
@@ -84,7 +83,7 @@ export function ReportDayFilter({
           disabled={value === null}
           onClick={() => onChange(null)}
         >
-          {resetLabel}
+          {resetLabel ?? t("day.today")}
         </Button>
       </div>
     </div>

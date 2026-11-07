@@ -164,13 +164,13 @@ export function AllocationTable({
                 {t("bills.total")}
               </th>
               <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
-                <span dir="ltr">{formatRs(totalOutstanding(bills))}</span>
+                <span dir="auto">{formatRs(totalOutstanding(bills))}</span>
               </td>
               <td
                 className="px-3 py-3 text-end whitespace-nowrap tabular-nums"
                 data-testid="allocation-total"
               >
-                <span dir="ltr">{formatRs(totals.allocated)}</span>
+                <span dir="auto">{formatRs(totals.allocated)}</span>
               </td>
               <td />
             </tr>
@@ -221,7 +221,7 @@ function BillRow({
         scope="row"
         className="px-4 py-3 text-start font-semibold whitespace-nowrap"
       >
-        <span dir="ltr" className="block tabular-nums">
+        <span dir="auto" className="block tabular-nums">
           {bill.billNo}
         </span>
         <time
@@ -232,10 +232,10 @@ function BillRow({
         </time>
       </th>
       <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
-        <span dir="ltr">{formatRs(bill.netAmount)}</span>
+        <span dir="auto">{formatRs(bill.netAmount)}</span>
       </td>
       <td className="px-3 py-3 text-end font-semibold whitespace-nowrap tabular-nums">
-        <span dir="ltr">{formatRs(bill.outstanding)}</span>
+        <span dir="auto">{formatRs(bill.outstanding)}</span>
       </td>
       <td className="px-3 py-2">
         <Input
@@ -262,7 +262,7 @@ function BillRow({
       </td>
       <td className="px-4 py-3 text-end">
         <span className="flex flex-col items-end gap-1">
-          <span dir="ltr" className="whitespace-nowrap tabular-nums">
+          <span dir="auto" className="whitespace-nowrap tabular-nums">
             {formatRs(left)}
           </span>
           {settled ? (

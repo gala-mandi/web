@@ -565,7 +565,7 @@ function Summary({
           {t("summary.amount")} · {method}
         </p>
         <p
-          dir="ltr"
+          dir="auto"
           data-testid="payment-amount-total"
           className="font-heading text-2xl font-extrabold tabular-nums"
         >
@@ -576,7 +576,7 @@ function Summary({
         <div className="flex items-baseline justify-between gap-3">
           <dt className="text-muted-foreground">{t("summary.allocated")}</dt>
           <dd
-            dir="ltr"
+            dir="auto"
             data-testid="payment-allocated"
             className="font-semibold tabular-nums"
           >
@@ -586,7 +586,7 @@ function Summary({
         <div className="flex items-baseline justify-between gap-3 border-t pt-2">
           <dt className="text-muted-foreground">{t("summary.advance")}</dt>
           <dd
-            dir="ltr"
+            dir="auto"
             data-testid="payment-advance"
             className={cn(
               "font-semibold tabular-nums",
@@ -637,7 +637,7 @@ function TraderBalance({ id, traderId }: { id: string; traderId: string }) {
     >
       {t("balance.label")}:{" "}
       <span
-        dir="ltr"
+        dir="auto"
         className={cn("font-semibold tabular-nums", balanceTone[kind])}
       >
         {formatRs(amount)}

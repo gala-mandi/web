@@ -263,7 +263,7 @@ describe.each(pages)(
       ).toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: "Excel" }));
       await waitFor(() => expect(exportReportToExcel).toHaveBeenCalledTimes(1));
-      expect(vi.mocked(exportReportToExcel).mock.calls[0][1]).toBe(
+      expect(vi.mocked(exportReportToExcel).mock.calls[0][2]).toBe(
         "Demo Mandi",
       );
     });

@@ -64,7 +64,7 @@ export function ParchiPreview({
               </p>
             ) : null}
             {values.phone.trim() ? (
-              <p className="text-xs" dir="ltr" data-testid="preview-phone">
+              <p className="text-xs" dir="auto" data-testid="preview-phone">
                 {t("preview.phone")}: {values.phone.trim()}
               </p>
             ) : null}
@@ -74,7 +74,7 @@ export function ParchiPreview({
           <span>
             {t("preview.bill")}{" "}
             <span
-              dir="ltr"
+              dir="auto"
               className="font-semibold"
               data-testid="preview-bill"
             >

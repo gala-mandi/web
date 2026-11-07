@@ -1880,5 +1880,273 @@
         "clear": "فلٹر ہٹائیں"
       }
     }
+  },
+  "reports": {
+    "none": "—",
+    "total": "کل",
+    "retry": "دوبارہ کوشش کریں",
+    "loading": "رپورٹ لوڈ ہو رہی ہے…",
+    "bills": "{n, plural, one {# بل} other {# بل}}",
+    "bags": "{n, plural, one {# بوری} other {# بوریاں}}",
+    "traders": "{n, plural, one {# پارٹی} other {# پارٹیاں}}",
+    "vouchers": "{n, plural, one {# واؤچر} other {# واؤچر}}",
+    "totalOf": "کل · {what}",
+    "hub": {
+      "title": "رپورٹیں",
+      "description": "روزانہ، خریداری، فروخت، کمیشن، بقایا اور نقد کی رپورٹیں۔ ہر رپورٹ پرنٹ ہوتی ہے اور ایکسل یا PDF میں ایکسپورٹ ہوتی ہے۔",
+      "open": "{title} رپورٹ کھولیں"
+    },
+    "reports": {
+      "daily-summary": {
+        "title": "روزانہ خلاصہ",
+        "description": "ایک دن ایک نظر میں: بل، کمیشن، واؤچر، کیش بک اور ریٹ۔",
+        "file": "daily-summary"
+      },
+      "purchases": {
+        "title": "خریداری",
+        "description": "کسانوں سے خریدا گیا غلہ، دن، جنس یا کسان کے حساب سے، کٹوتی اور خالص رقم کے ساتھ۔",
+        "file": "purchases-report"
+      },
+      "sales": {
+        "title": "فروخت",
+        "description": "بیوپاریوں کو بیچا گیا غلہ، دن، جنس یا بیوپاری کے حساب سے، اخراجات اور خالص رقم کے ساتھ۔",
+        "file": "sales-report"
+      },
+      "commission": {
+        "title": "کمیشن",
+        "description": "دکان کی روزانہ کمیشن آمدنی، مارکیٹ فیس اور مزدوری الگ دکھا کر۔",
+        "file": "commission-report"
+      },
+      "outstanding": {
+        "title": "بقایا",
+        "description": "کس نے دکان کو دینا ہے اور دکان نے کس کو دینا ہے، کھاتے سے، بڑی رقم پہلے۔",
+        "file": "outstanding-report"
+      },
+      "cash-book": {
+        "title": "کیش بک",
+        "description": "ابتدائی نقد، ہر دن کی نقد آمد اور ادائیگی، اور ہاتھ میں نقد رقم۔",
+        "file": "cash-book"
+      }
+    },
+    "documentTitle": "{title} رپورٹ",
+    "range": {
+      "label": "تاریخیں",
+      "presetsLabel": "تاریخوں کی حد",
+      "presets": {
+        "today": "آج",
+        "week": "اس ہفتے",
+        "month": "اس مہینے",
+        "custom": "اپنی مرضی"
+      },
+      "period": "{from} – {to}",
+      "tooLong": "زیادہ سے زیادہ {days, number} دن چنیں۔"
+    },
+    "day": {
+      "label": "تاریخ",
+      "previous": "پچھلا دن",
+      "next": "اگلا دن",
+      "today": "آج"
+    },
+    "asOf": {
+      "label": "اس دن کے اختتام پر بقایا",
+      "now": "ابھی",
+      "period": "{day} کے اختتام پر",
+      "periodNow": "اب تک"
+    },
+    "filters": {
+      "groupBy": "گروپ بندی",
+      "groups": {
+        "day": "دن",
+        "commodity": "جنس",
+        "trader": "پارٹی"
+      },
+      "commodity": "جنس",
+      "allCommodities": "تمام اجناس",
+      "kissan": "کسان",
+      "beopari": "بیوپاری",
+      "allKissans": "تمام کسان",
+      "allBeoparis": "تمام بیوپاری",
+      "traderType": "پارٹی کی قسم",
+      "allTypes": "تمام قسمیں",
+      "clear": "فلٹر ہٹائیں"
+    },
+    "traderTypes": {
+      "kissan": "کسان",
+      "beopari": "بیوپاری",
+      "arhti": "آڑھتی"
+    },
+    "actions": {
+      "label": "رپورٹ کے اختیارات",
+      "print": "پرنٹ",
+      "excel": "ایکسل",
+      "pdf": "PDF",
+      "preparing": "تیار ہو رہی ہے…",
+      "pdfHint": "رپورٹ محفوظ کرنے کے لیے پرنٹر میں “Save as PDF” چنیں۔",
+      "failed": "رپورٹ تیار نہیں ہو سکی۔ دوبارہ کوشش کریں۔"
+    },
+    "document": {
+      "shop": "دکان",
+      "period": "مدت",
+      "printedOn": "پرنٹ کی تاریخ",
+      "page": "صفحہ",
+      "of": "از",
+      "rupees": "(روپے)",
+      "kg": "(کلو)",
+      "item": "مد",
+      "value": "رقم"
+    },
+    "error": {
+      "title": "رپورٹ لوڈ نہیں ہو سکی",
+      "body": "اپنا انٹرنیٹ چیک کریں اور دوبارہ کوشش کریں۔"
+    },
+    "cards": {
+      "bills": "بل",
+      "weight": "وزن",
+      "gross": "کل رقم",
+      "net": "خالص رقم",
+      "deductions": "کٹوتی",
+      "charges": "اخراجات",
+      "commission": "کمیشن",
+      "commissionHint": "ان تاریخوں میں دکان کی آمدنی",
+      "onPurchases": "خریداری پر",
+      "onSales": "فروخت پر",
+      "receivable": "لینا",
+      "payable": "دینا",
+      "cashInHand": "نقد رقم ہاتھ میں",
+      "netHint": {
+        "purchases": "کسانوں کو دینا",
+        "sales": "بیوپاریوں سے لینا"
+      },
+      "bagsHint": "{bags, plural, one {# بوری} other {# بوریاں}}",
+      "perBill": "جنس کے حساب سے تقسیم نہیں",
+      "receivableHint": "جن پارٹیوں نے دکان کو دینا ہے",
+      "payableHint": "جن پارٹیوں کو دکان نے دینا ہے"
+    },
+    "book": {
+      "caption": "{title} گروپ کے حساب سے",
+      "group": {
+        "day": "تاریخ",
+        "commodity": "جنس",
+        "trader": {
+          "purchases": "کسان",
+          "sales": "بیوپاری"
+        }
+      },
+      "bills": "بل",
+      "bags": "بوریاں",
+      "weight": "وزن",
+      "gross": "کل رقم",
+      "deductions": "کٹوتی",
+      "charges": "اخراجات",
+      "net": "خالص",
+      "empty": {
+        "purchases": "ان تاریخوں میں کوئی پوسٹ شدہ خریداری نہیں۔",
+        "sales": "ان تاریخوں میں کوئی پوسٹ شدہ فروخت نہیں۔"
+      },
+      "perBillNote": "کٹوتی، اخراجات اور خالص رقم ہر بل کے حساب سے بنتے ہیں، اس لیے جنس کے حساب سے تقسیم میں شامل نہیں۔"
+    },
+    "commission": {
+      "title": "روزانہ کمیشن",
+      "caption": "روزانہ کمیشن",
+      "date": "تاریخ",
+      "onPurchases": "خریداری پر",
+      "onSales": "فروخت پر",
+      "total": "کل",
+      "empty": "ان تاریخوں میں کوئی کمیشن نہیں۔",
+      "other": {
+        "title": "دیگر اخراجات (دکان کی آمدنی نہیں)",
+        "caption": "انہی بلوں کے دیگر اخراجات",
+        "charge": "خرچ",
+        "marketFee": "مارکیٹ فیس",
+        "labour": "مزدوری",
+        "other": "دیگر"
+      },
+      "otherNote": "مارکیٹ فیس مارکیٹ کمیٹی کو اور مزدوری مزدوروں کو جاتی ہے؛ یہ دکان کی آمدنی نہیں۔"
+    },
+    "outstanding": {
+      "receivable": {
+        "title": "لینا",
+        "caption": "جن پارٹیوں نے دکان کو دینا ہے",
+        "empty": "کسی نے دکان کو کچھ نہیں دینا۔"
+      },
+      "payable": {
+        "title": "دینا",
+        "caption": "جن پارٹیوں کو دکان نے دینا ہے",
+        "empty": "دکان نے کسی کو کچھ نہیں دینا۔"
+      },
+      "trader": "پارٹی",
+      "type": "قسم",
+      "phone": "فون",
+      "amount": "رقم",
+      "openKhata": "{name} کا کھاتہ کھولیں"
+    },
+    "cashBook": {
+      "title": "ہر دن کی نقد آمد اور ادائیگی",
+      "vouchers": "نقد واؤچر دیکھیں"
+    },
+    "daily": {
+      "purchases": {
+        "title": "خریداری",
+        "bills": "بل",
+        "bags": "بوریاں",
+        "weight": "وزن",
+        "gross": "کل رقم",
+        "deductions": "کٹوتی",
+        "net": "خالص (کسانوں کو دینا)",
+        "paidOnBills": "بلوں پر ادا"
+      },
+      "sales": {
+        "title": "فروخت",
+        "bills": "بل",
+        "bags": "بوریاں",
+        "weight": "وزن",
+        "gross": "کل رقم",
+        "charges": "اخراجات",
+        "net": "خالص (بیوپاریوں سے لینا)",
+        "receivedOnBills": "بلوں پر وصول"
+      },
+      "commission": {
+        "title": "کمیشن",
+        "hint": "اس دن دکان کی آمدنی",
+        "onPurchases": "خریداری پر",
+        "onSales": "فروخت پر",
+        "total": "کل"
+      },
+      "payments": {
+        "title": "واؤچر",
+        "paidCount": "کسانوں کو ادائیگیاں",
+        "paidAmount": "ادا کیا",
+        "receivedCount": "بیوپاریوں سے وصولیاں",
+        "receivedAmount": "وصول کیا"
+      },
+      "cash": {
+        "title": "کیش بک",
+        "opening": "ابتدائی نقد",
+        "cashIn": "نقد آمد",
+        "cashOut": "نقد ادائیگی",
+        "closing": "نقد رقم ہاتھ میں",
+        "hint": "دن کے اختتام پر"
+      },
+      "cancelled": {
+        "title": "منسوخ (کسی کل میں شامل نہیں)",
+        "purchases": "خریداری",
+        "sales": "فروخت",
+        "payments": "واؤچر"
+      },
+      "rates": {
+        "title": "دن کے ریٹ",
+        "caption": "دن کے ریٹ",
+        "commodity": "جنس",
+        "unit": "فی",
+        "min": "کم",
+        "max": "زیادہ",
+        "avg": "اوسط",
+        "units": {
+          "maund": "من",
+          "kg": "کلو"
+        },
+        "empty": "اس دن کوئی ریٹ محفوظ نہیں ہوا۔"
+      }
+    }
   }
 }

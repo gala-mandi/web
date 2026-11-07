@@ -294,7 +294,7 @@ export function ItemRow<T extends ItemsFormValues>({
             {t("form.amount")}
           </span>
           <span
-            dir="ltr"
+            dir="auto"
             className="font-semibold tabular-nums"
             data-testid={`${idPrefix}-item-${index}-amount`}
           >

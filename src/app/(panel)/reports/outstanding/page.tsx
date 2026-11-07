@@ -1,13 +1,7 @@
-import type { Metadata } from "next";
-import { pageTitle } from "@/features/panel/text";
+import { reportMetadata } from "@/i18n/metadata";
 import { OutstandingReportPage } from "@/features/reports/components/outstanding-report";
-import { reportText } from "@/features/reports/text";
 
-export const metadata: Metadata = {
-  title: pageTitle(
-    reportText.documentTitle(reportText.reports["outstanding"].title),
-  ),
-};
+export const generateMetadata = reportMetadata("outstanding");
 
 export default function Page() {
   return <OutstandingReportPage />;

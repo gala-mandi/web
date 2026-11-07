@@ -91,7 +91,7 @@ const money = (
     },
     cell: ({ getValue }) => (
       <span
-        dir="ltr"
+        dir="auto"
         className={
           key === "netAmount" ? "font-semibold tabular-nums" : "tabular-nums"
         }

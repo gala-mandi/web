@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CircleAlert, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -16,7 +17,6 @@ import { toApiError } from "@/lib/api-error";
 import type { ReportSlug } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import type { ReportSheet } from "../sheet";
-import { reportText } from "../text";
 import { ReportActions } from "./report-actions";
 
 /**
@@ -65,17 +65,18 @@ export function ReportCards({ cards }: { cards: ReportCard[] }) {
 /** A figure in a card: left to right, like every amount. */
 export function CardFigure({ children }: { children: ReactNode }) {
   return (
-    <span dir="ltr" className="tabular-nums">
+    <span dir="auto" className="tabular-nums">
       {children}
     </span>
   );
 }
 
 function ReportSkeleton() {
+  const t = useTranslations("reports");
   return (
     <div className="flex flex-col gap-6" aria-busy>
       <span role="status" className="sr-only">
-        {reportText.loading}
+        {t("loading")}
       </span>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
@@ -121,7 +122,7 @@ export function ReportFrame({
   filters,
   children,
 }: ReportFrameProps) {
-  const r = reportText.reports[slug];
+  const t = useTranslations("reports");
   const error = query.isError ? toApiError(query.error) : null;
   if (error?.status === 403) return <ForbiddenState />;
   // A bad range (e.g. over a year) comes back as a 400 with the reason.
@@ -133,8 +134,8 @@ export function ReportFrame({
   return (
     <div className="flex flex-col gap-6" data-report={slug}>
       <PageHeader
-        title={r.title}
-        description={r.description}
+        title={t(`reports.${slug}.title`)}
+        description={t(`reports.${slug}.description`)}
         actions={
           <ReportActions
             sheet={query.isError ? null : sheet}
@@ -150,11 +151,11 @@ export function ReportFrame({
         <EmptyState
           role="alert"
           icon={CircleAlert}
-          title={reportText.error.title}
-          body={reason ?? reportText.error.body}
+          title={t("error.title")}
+          body={reason ?? t("error.body")}
           action={
             <Button variant="outline" onClick={() => void query.refetch()}>
-              {reportText.retry}
+              {t("retry")}
             </Button>
           }
         />

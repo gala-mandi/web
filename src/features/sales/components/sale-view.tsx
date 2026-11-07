@@ -115,7 +115,7 @@ function SaleView({ sale }: { sale: Sale }) {
             {active ? (
               <span data-testid="bill-outstanding">
                 {t("view.outstanding")}:{" "}
-                <span dir="ltr" className="text-foreground font-semibold">
+                <span dir="auto" className="text-foreground font-semibold">
                   {formatRs(sale.outstanding)}
                 </span>
               </span>

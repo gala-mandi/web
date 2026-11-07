@@ -31,7 +31,7 @@ function money(
     cell: ({ getValue }) => {
       const value = getValue();
       return value ? (
-        <span dir="ltr" className="font-semibold tabular-nums">
+        <span dir="auto" className="font-semibold tabular-nums">
           {formatRs(value)}
         </span>
       ) : (

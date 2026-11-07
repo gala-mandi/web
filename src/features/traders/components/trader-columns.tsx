@@ -134,7 +134,7 @@ export function traderColumns(
       meta: { label: t("list.columns.phone") },
       cell: ({ getValue }) =>
         getValue() ? (
-          <span dir="ltr" className="tabular-nums">
+          <span dir="auto" className="tabular-nums">
             {getValue()}
           </span>
         ) : (
@@ -163,7 +163,7 @@ export function traderColumns(
       },
       cell: ({ row }) => (
         <div className="flex flex-col items-end">
-          <span className="tabular-nums" dir="ltr">
+          <span className="tabular-nums" dir="auto">
             {formatRs(row.original.openingBalance)}
           </span>
           <span className="text-muted-foreground text-xs">

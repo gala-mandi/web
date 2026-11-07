@@ -147,14 +147,14 @@ function Profile({ trader }: { trader: TraderDetail }) {
             </Detail>
             <Detail label={t("profile.fields.phone")}>
               {trader.phone ? (
-                <span dir="ltr" className="tabular-nums">
+                <span dir="auto" className="tabular-nums">
                   {trader.phone}
                 </span>
               ) : null}
             </Detail>
             <Detail label={t("profile.fields.cnic")}>
               {trader.cnic ? (
-                <span dir="ltr" className="tabular-nums">
+                <span dir="auto" className="tabular-nums">
                   {trader.cnic}
                 </span>
               ) : null}
@@ -170,7 +170,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
               ) : null}
             </Detail>
             <Detail label={t("profile.fields.openingBalance")}>
-              <span dir="ltr" className="tabular-nums">
+              <span dir="auto" className="tabular-nums">
                 {formatRs(trader.openingBalance)}
               </span>{" "}
               <span className="text-muted-foreground text-sm">
@@ -179,7 +179,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
             </Detail>
             <Detail label={t("profile.fields.creditLimit")}>
               {trader.creditLimit ? (
-                <span dir="ltr" className="tabular-nums">
+                <span dir="auto" className="tabular-nums">
                   {formatRs(trader.creditLimit)}
                 </span>
               ) : (
@@ -287,7 +287,7 @@ function BalanceCard({ trader }: { trader: TraderDetail }) {
       <p
         data-testid="trader-balance"
         className="font-heading text-3xl font-extrabold tabular-nums"
-        dir="ltr"
+        dir="auto"
       >
         {formatRs(amount)}
       </p>

@@ -14,14 +14,14 @@ const num = "text-end tabular-nums whitespace-nowrap";
 
 function Money({ value }: { value: string }) {
   if (!/[1-9]/.test(value)) return null;
-  return <span dir="ltr">{statementBalance(value, "en").amount}</span>;
+  return <span dir="auto">{statementBalance(value, "en").amount}</span>;
 }
 
 function Balance({ value, lang }: { value: string; lang: StatementLanguage }) {
   const { amount, side } = statementBalance(value, lang);
   return (
     <>
-      <span dir="ltr">{amount}</span>
+      <span dir="auto">{amount}</span>
       {side ? ` ${side}` : null}
     </>
   );

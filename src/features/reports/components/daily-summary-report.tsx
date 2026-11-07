@@ -1,15 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useSheetWords } from "../use-sheet-words";
 import { HandCoins, ShoppingBasket, Truck, Wallet } from "lucide-react";
 import { useMemo } from "react";
 import { HintParts } from "@/features/dashboard/components/kpi-tile";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { useEveryCommodity } from "@/features/rates/hooks";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { useDailySummaryReport } from "../hooks";
 import { useReportDay } from "../search-params";
 import { dailySummarySheet } from "../sheet";
-import { reportText } from "../text";
 import { ReportDayFilter } from "./day-filter";
 import {
   CardFigure,
@@ -19,8 +20,6 @@ import {
   useReportShop,
 } from "./report-frame";
 import { ReportTableView } from "./report-table";
-
-const t = reportText;
 
 /** `/reports/daily-summary`, for `report.view`. */
 export function DailySummaryReportPage() {
@@ -33,6 +32,8 @@ export function DailySummaryReportPage() {
 
 /** One day (`?date=`, default today): every figure of the day's work. */
 function DailySummaryReportView() {
+  const { formatRs } = useFormat();
+  const t = useTranslations("reports");
   const day = useReportDay();
   const { shopName, maundKg } = useReportShop();
   const summary = useDailySummaryReport(day.date);
@@ -47,9 +48,10 @@ function DailySummaryReportView() {
       ),
     [commodities.data],
   );
+  const words = useSheetWords();
   const sheet = useMemo(
-    () => (summary.data ? dailySummarySheet(summary.data, names) : null),
-    [summary.data, names],
+    () => (summary.data ? dailySummarySheet(words, summary.data, names) : null),
+    [words, summary.data, names],
   );
 
   const s = summary.data;
@@ -57,41 +59,49 @@ function DailySummaryReportView() {
     ? [
         {
           id: "purchases",
-          label: t.daily.purchases.title,
+          label: t("daily.purchases.title"),
           icon: ShoppingBasket,
           tone: "orange",
           value: <CardFigure>{formatRs(s.purchases.netAmount)}</CardFigure>,
           hint: (
             <HintParts
-              parts={[t.bills(s.purchases.bills), t.bags(s.purchases.bags)]}
+              parts={[
+                t("bills", { n: s.purchases.bills }),
+                t("bags", { n: s.purchases.bags }),
+              ]}
             />
           ),
         },
         {
           id: "sales",
-          label: t.daily.sales.title,
+          label: t("daily.sales.title"),
           icon: Truck,
           tone: "green",
           value: <CardFigure>{formatRs(s.sales.netAmount)}</CardFigure>,
           hint: (
-            <HintParts parts={[t.bills(s.sales.bills), t.bags(s.sales.bags)]} />
+            <HintParts
+              parts={[
+                t("bills", { n: s.sales.bills }),
+                t("bags", { n: s.sales.bags }),
+              ]}
+            />
           ),
         },
         {
           id: "commission",
-          label: t.daily.commission.title,
+          label: t("daily.commission.title"),
           icon: HandCoins,
           tone: "violet",
           value: <CardFigure>{formatRs(s.commission.total)}</CardFigure>,
-          hint: t.daily.commission.hint,
+          hint: t("daily.commission.hint"),
         },
         {
           id: "cash",
-          label: t.cards.cashInHand,
+          label: t("cards.cashInHand"),
           icon: Wallet,
           tone: "primary",
           value: <CardFigure>{formatRs(s.cash.closingCash)}</CardFigure>,
-          hint: t.daily.cash.hint,
+          hint: t("daily.cash.hint"),
         },
       ]
     : [];
@@ -109,7 +119,7 @@ function DailySummaryReportView() {
       maundKg={maundKg}
       filters={
         <ReportDayFilter
-          label={t.day.label}
+          label={t("day.label")}
           value={day.value}
           today={day.today}
           onChange={day.setDate}

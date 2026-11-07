@@ -121,7 +121,7 @@ export function BreakdownLine({
       )}
     >
       <dt>{label}</dt>
-      <dd data-testid={testId} dir="ltr" className="tabular-nums">
+      <dd data-testid={testId} dir="auto" className="tabular-nums">
         {value}
       </dd>
     </div>

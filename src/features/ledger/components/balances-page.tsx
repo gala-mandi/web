@@ -236,7 +236,7 @@ function Total({
         <span className="text-muted-foreground text-xs">{hint}</span>
       </dt>
       <dd
-        dir="ltr"
+        dir="auto"
         className={cn(
           "text-end text-2xl font-bold tabular-nums sm:text-start",
           tone,

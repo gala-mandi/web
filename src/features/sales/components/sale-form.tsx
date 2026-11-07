@@ -478,7 +478,7 @@ function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
       <span>
         {t("buyer.balance")}:{" "}
         <span
-          dir="ltr"
+          dir="auto"
           data-testid="sale-buyer-balance-amount"
           className={cn("font-semibold tabular-nums", balanceTone[kind])}
         >
@@ -489,7 +489,7 @@ function BuyerBalance({ id, buyerId }: { id: string; buyerId: string }) {
       <span>
         {t("buyer.creditLimit")}:{" "}
         <span
-          dir="ltr"
+          dir="auto"
           data-testid="sale-buyer-credit-limit"
           className="text-foreground font-semibold tabular-nums"
         >

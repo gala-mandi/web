@@ -1,7 +1,12 @@
 import type { CellObject, WorkBook } from "xlsx";
 import { formatDate } from "@/lib/format";
-import type { CellKind, ReportCell, ReportSheet, ReportTable } from "./sheet";
-import { reportText } from "./text";
+import type {
+  CellKind,
+  ReportCell,
+  ReportSheet,
+  ReportTable,
+  SheetWords,
+} from "./sheet";
 
 /**
  * A report as an `.xlsx` file (SheetJS): the title, shop, period and filter
@@ -46,17 +51,17 @@ export function excelCell(cell: ReportCell): CellObject {
   }
 }
 
-const unitSuffix = (kind: CellKind) =>
+const unitSuffix = (t: SheetWords["t"], kind: CellKind) =>
   kind === "money"
-    ? ` ${reportText.document.rupees}`
+    ? ` ${t("document.rupees")}`
     : kind === "kg"
-      ? ` ${reportText.document.kg}`
+      ? ` ${t("document.kg")}`
       : "";
 
 const label = (value: string): CellObject => ({ t: "s", v: value });
 
 /** A table's rows of cells: title, headings, rows, totals. */
-function tableRows(table: ReportTable): CellObject[][] {
+function tableRows(t: SheetWords["t"], table: ReportTable): CellObject[][] {
   const out: CellObject[][] = [];
   if (table.title) out.push([label(table.title)]);
   if (table.layout === "pairs") {
@@ -64,13 +69,15 @@ function tableRows(table: ReportTable): CellObject[][] {
     for (const row of table.rows) {
       const [name, value] = row.cells;
       out.push([
-        label(`${(name as { value: string }).value}${unitSuffix(value.kind)}`),
+        label(
+          `${(name as { value: string }).value}${unitSuffix(t, value.kind)}`,
+        ),
         excelCell(value),
       ]);
     }
   } else {
     out.push(
-      table.columns.map((c) => label(`${c.label}${unitSuffix(c.kind)}`)),
+      table.columns.map((c) => label(`${c.label}${unitSuffix(t, c.kind)}`)),
     );
     if (table.rows.length === 0 && table.empty) out.push([label(table.empty)]);
     for (const row of table.rows) out.push(row.cells.map(excelCell));
@@ -82,21 +89,21 @@ function tableRows(table: ReportTable): CellObject[][] {
 
 /** Every row of the sheet, heading lines first. */
 export function reportSheetRows(
+  { t, locale }: SheetWords,
   sheet: ReportSheet,
   shopName: string | null,
   now: Date = new Date(),
 ): CellObject[][] {
-  const w = reportText.document;
   const rows: CellObject[][] = [
     [label(sheet.title)],
-    ...(shopName ? [[label(w.shop), label(shopName)]] : []),
-    [label(w.period), label(sheet.period)],
+    ...(shopName ? [[label(t("document.shop")), label(shopName)]] : []),
+    [label(t("document.period")), label(sheet.period)],
     ...sheet.filters.map(([name, value]) => [label(name), label(value)]),
-    [label(w.printedOn), label(formatDate(now))],
+    [label(t("document.printedOn")), label(formatDate(now, locale))],
   ];
   for (const table of sheet.tables) {
     rows.push([]);
-    rows.push(...tableRows(table));
+    rows.push(...tableRows(t, table));
   }
   return rows;
 }
@@ -104,11 +111,12 @@ export function reportSheetRows(
 /** The workbook of a report: one sheet named after it. */
 export function buildReportWorkbook(
   XLSX: XLSXModule,
+  words: SheetWords,
   sheet: ReportSheet,
   shopName: string | null,
   now: Date = new Date(),
 ): WorkBook {
-  const rows = reportSheetRows(sheet, shopName, now);
+  const rows = reportSheetRows(words, sheet, shopName, now);
   const ws = XLSX.utils.aoa_to_sheet([]);
   rows.forEach((cells, r) =>
     cells.forEach((cell, c) => {
@@ -128,22 +136,33 @@ export function buildReportWorkbook(
   XLSX.utils.book_append_sheet(
     book,
     ws,
-    reportText.reports[sheet.slug].title.slice(0, 31),
+    words.t(`reports.${sheet.slug}.title`).slice(0, 31),
   );
   return book;
 }
 
 /** `purchases-report-2026-11-01_2026-11-06` (no extension). */
 export function reportFileBase(sheet: ReportSheet): string {
-  return `${reportText.reports[sheet.slug].file}-${sheet.periodKey}`;
+  return `${reportFiles[sheet.slug]}-${sheet.periodKey}`;
 }
+
+/** File names stay in plain Latin letters in every language. */
+const reportFiles = {
+  "daily-summary": "daily-summary",
+  purchases: "purchases-report",
+  sales: "sales-report",
+  commission: "commission-report",
+  outstanding: "outstanding-report",
+  "cash-book": "cash-book",
+} as const satisfies Record<ReportSheet["slug"], string>;
 
 /** Writes the report to `<report>-<period>.xlsx`; SheetJS loads on demand. */
 export async function exportReportToExcel(
+  words: SheetWords,
   sheet: ReportSheet,
   shopName: string | null,
 ): Promise<void> {
   const XLSX = await import("xlsx");
-  const book = buildReportWorkbook(XLSX, sheet, shopName);
+  const book = buildReportWorkbook(XLSX, words, sheet, shopName);
   XLSX.writeFile(book, `${reportFileBase(sheet)}.xlsx`, { compression: true });
 }
