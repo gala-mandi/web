@@ -253,6 +253,8 @@ async function overflowingText(page: Page): Promise<string[]> {
       if (box.width === 0 || box.height === 0) continue;
       const style = getComputedStyle(el);
       if (style.visibility === "hidden") continue;
+      // Screen-reader-only text (sr-only) is a 1×1 clipped box on purpose.
+      if (box.width <= 1 && box.height <= 1) continue;
       // Text meant to be cut with "…" is fine.
       if (style.textOverflow === "ellipsis") continue;
       const wide = el.scrollWidth - el.clientWidth > 1;
