@@ -373,7 +373,7 @@ function Section({
 }) {
   return (
     <FieldSet className="gap-4">
-      <FieldLegend className="font-heading text-foreground mb-0 text-[15px] font-bold">
+      <FieldLegend className="font-heading text-foreground mb-3 text-[15px] font-bold">
         {title}
       </FieldLegend>
       {description ? (

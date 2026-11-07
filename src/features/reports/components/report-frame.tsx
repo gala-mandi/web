@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { CircleAlert, type LucideIcon } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
+import { AmountText } from "@/components/amount-text";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,13 @@ export function ReportCards({ cards }: { cards: ReportCard[] }) {
  * · "31.625 کلو"), never inside a number.
  */
 export function CardFigure({ children }: { children: ReactNode }) {
+  if (typeof children === "string" && /^-?Rs |روپے$/.test(children)) {
+    return (
+      <span dir="auto" className="tabular-nums">
+        <AmountText text={children} />
+      </span>
+    );
+  }
   const parts =
     typeof children === "string"
       ? children

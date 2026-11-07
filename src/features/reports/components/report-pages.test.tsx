@@ -370,9 +370,10 @@ describe("report figures", () => {
     expect(row).toHaveTextContent(formatRs(totals.grossAmount));
     expect(row).toHaveTextContent(formatRs(totals.totalDeductions));
     expect(row).toHaveTextContent(formatRs(totals.netAmount));
-    const cards = within(screen.getByTestId("report-cards"));
-    expect(cards.getByText(formatRs(totals.netAmount))).toBeInTheDocument();
-    expect(cards.getByText(formatRs(totals.grossAmount))).toBeInTheDocument();
+    // The figure sets "Rs" smaller in its own span; the text is unchanged.
+    const cards = screen.getByTestId("report-cards");
+    expect(cards).toHaveTextContent(formatRs(totals.netAmount));
+    expect(cards).toHaveTextContent(formatRs(totals.grossAmount));
   });
 
   it("purchases by commodity: Urdu names, no bill-level columns", async () => {
@@ -431,10 +432,8 @@ describe("report figures", () => {
 
   it("daily summary: today's figures, and the day can change", async () => {
     const { onUrlUpdate } = renderPage(<DailySummaryReportPage />);
-    const cards = within(await screen.findByTestId("report-cards"));
-    expect(
-      cards.getByText(formatRs(dailySummary.cash.closingCash)),
-    ).toBeInTheDocument();
+    const cards = await screen.findByTestId("report-cards");
+    expect(cards).toHaveTextContent(formatRs(dailySummary.cash.closingCash));
     expect(getDailySummary).toHaveBeenCalledWith(
       { date: TODAY },
       expect.anything(),

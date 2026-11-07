@@ -49,7 +49,11 @@ import {
 const NOW = new Date("2026-11-06T07:00:00.000Z");
 const SHOTS = process.env.URDU_SHOTS_DIR;
 
-const gandum = commodity({ name: "Gandum", nameUr: "گندم" });
+const gandum = commodity({
+  id: "abababab-abab-4bab-8bab-abababababab",
+  name: "Gandum",
+  nameUr: "گندم",
+});
 const purchase = savedPurchase(ticketInput, {
   trader: { id: KISSAN.id, name: "محمد رفیق" },
 });

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AmountText } from "@/components/amount-text";
 import { useFormat } from "@/lib/use-format";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -132,7 +133,7 @@ function Stat({
             {sign}
           </span>
         ) : null}
-        {formatRs(value)}
+        <AmountText text={formatRs(value)} />
       </dd>
       <dd
         className={cn(
