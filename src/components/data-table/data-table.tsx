@@ -1,5 +1,8 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import type { Translator } from "@/i18n/types";
+import { useTranslations } from "next-intl";
 import {
   type ColumnVisibilityState,
   functionalUpdate,
@@ -41,7 +44,6 @@ import {
   dataTableFeatures,
   getLabelledColumns,
 } from "./columns";
-import { dataTableText as t } from "./text";
 
 export interface DataTableProps<TData extends RowData> {
   /** Stable (module scope or memoised) column definitions. */
@@ -135,6 +137,7 @@ function HeaderCell<TData extends RowData>({
   header: Header<DataTableFeatures, TData, unknown>;
   render: ReactNode;
 }) {
+  const t = useTranslations("dataTable");
   const meta = header.column.columnDef.meta;
   const canSort = header.column.getCanSort();
   const sorted = header.column.getIsSorted();
@@ -164,7 +167,7 @@ function HeaderCell<TData extends RowData>({
           {render}
           <SortIcon sorted={sorted} />
           <span id={hintId} className="sr-only">
-            {t.sortHint[sorted || "none"]}
+            {t(`sortHint.${sorted || "none"}`)}
           </span>
         </button>
       ) : (
@@ -177,6 +180,7 @@ function HeaderCell<TData extends RowData>({
 const SELECT_COLUMN_ID = "select";
 
 function selectColumn<TData extends RowData>(
+  t: Translator<"dataTable">,
   getRowLabel: (row: TData, id: string) => string,
 ): DataTableColumn<TData> {
   const col = dataTableColumnHelper<TData>();
@@ -187,7 +191,7 @@ function selectColumn<TData extends RowData>(
     meta: { className: "w-10" },
     header: ({ table }) => (
       <Checkbox
-        aria-label={t.selection.selectPage}
+        aria-label={t("selection.selectPage")}
         checked={
           table.getIsAllPageRowsSelected()
             ? true
@@ -203,7 +207,9 @@ function selectColumn<TData extends RowData>(
     ),
     cell: ({ row }) => (
       <Checkbox
-        aria-label={t.selection.selectRow(getRowLabel(row.original, row.id))}
+        aria-label={t("selection.selectRow", {
+          name: bidi(getRowLabel(row.original, row.id)),
+        })}
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(value === true)}
       />
@@ -241,19 +247,20 @@ export function DataTable<TData extends RowData>({
   showFooter = false,
   hidePagination = false,
 }: DataTableProps<TData>) {
+  const t = useTranslations("dataTable");
   const selectable = Boolean(onRowSelectionChange);
 
   const allColumns = useMemo(
     () =>
       selectable
         ? [
-            selectColumn<TData>((row, id) =>
+            selectColumn<TData>(t, (row, id) =>
               getRowLabel ? getRowLabel(row) : id,
             ),
             ...columns,
           ]
         : columns,
-    [selectable, columns, getRowLabel],
+    [selectable, columns, getRowLabel, t],
   );
 
   // Only labelled columns can be hidden, whatever was stored.
@@ -318,11 +325,11 @@ export function DataTable<TData extends RowData>({
       {selectable && selectedIds.length > 0 ? (
         <div
           role="region"
-          aria-label={t.selection.bar}
+          aria-label={t("selection.bar")}
           className="bg-secondary/50 flex flex-wrap items-center gap-3 border-b px-4 py-2 text-sm"
         >
           <span className="font-semibold">
-            {t.selection.count(selectedIds.length)}
+            {t("selection.count", { n: selectedIds.length })}
           </span>
           {bulkActions ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -335,13 +342,13 @@ export function DataTable<TData extends RowData>({
             className="ms-auto"
             onClick={() => onRowSelectionChange?.({})}
           >
-            {t.selection.clear}
+            {t("selection.clear")}
           </Button>
         </div>
       ) : null}
 
       <p className="sr-only" aria-live="polite" aria-atomic="true">
-        {isLoading || isError ? "" : t.results(rowCount)}
+        {isLoading || isError ? "" : t("results", { total: rowCount })}
       </p>
 
       <Table
@@ -374,7 +381,7 @@ export function DataTable<TData extends RowData>({
                   <TableCell key={j} className="px-3 py-3.5">
                     {i === 0 && j === 0 ? (
                       <span className="sr-only" role="status">
-                        {t.loading}
+                        {t("loading")}
                       </span>
                     ) : null}
                     <Skeleton className="h-4 w-full max-w-40" />
@@ -396,11 +403,13 @@ export function DataTable<TData extends RowData>({
                     aria-hidden
                     className="text-destructive size-6"
                   />
-                  <p className="font-heading font-bold">{t.errorTitle}</p>
-                  <p className="text-muted-foreground text-sm">{t.errorBody}</p>
+                  <p className="font-heading font-bold">{t("errorTitle")}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {t("errorBody")}
+                  </p>
                   {onRetry ? (
                     <Button variant="outline" onClick={onRetry}>
-                      {t.retry}
+                      {t("retry")}
                     </Button>
                   ) : null}
                 </div>
@@ -414,7 +423,7 @@ export function DataTable<TData extends RowData>({
               >
                 {empty ?? (
                   <p className="text-muted-foreground px-6 py-12 text-center">
-                    {t.emptyTitle}
+                    {t("emptyTitle")}
                   </p>
                 )}
               </TableCell>
@@ -483,20 +492,20 @@ export function DataTable<TData extends RowData>({
 
       {showPager ? (
         <nav
-          aria-label={t.pagination.label}
+          aria-label={t("pagination.label")}
           className="flex flex-col gap-3 border-t px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between"
         >
           <p className="text-muted-foreground">
-            {t.pagination.range(from, to, rowCount)}
+            {t("pagination.range", { from, to, total: rowCount })}
           </p>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground me-1">
-              {t.pagination.page(page, pageCount)}
+              {t("pagination.page", { page, pages: pageCount })}
             </span>
             <Button
               variant="outline"
               size="icon"
-              aria-label={t.pagination.previous}
+              aria-label={t("pagination.previous")}
               disabled={!table.getCanPreviousPage() || busy}
               onClick={() => table.previousPage()}
             >
@@ -505,7 +514,7 @@ export function DataTable<TData extends RowData>({
             <Button
               variant="outline"
               size="icon"
-              aria-label={t.pagination.next}
+              aria-label={t("pagination.next")}
               disabled={!table.getCanNextPage() || busy}
               onClick={() => table.nextPage()}
             >

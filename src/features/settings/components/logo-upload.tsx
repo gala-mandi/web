@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ImageUp, Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { type FileRejection, useDropzone } from "react-dropzone";
@@ -9,16 +10,18 @@ import { ShopLogo } from "@/features/panel/components/shop-logo";
 import { toApiError } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { useUpdateSettings, useUploadLogo } from "../hooks";
-import { settingsText } from "../text";
+import type { SettingsTranslator } from "../schemas";
 
-const t = settingsText.logo;
 const MAX_BYTES = 1024 * 1024;
 
-function rejectionMessage([rejection]: FileRejection[]): string {
+function rejectionMessage(
+  t: SettingsTranslator,
+  [rejection]: FileRejection[],
+): string {
   const code = rejection?.errors[0]?.code;
-  if (code === "file-too-large") return t.tooLarge;
-  if (code === "too-many-files") return t.oneFile;
-  return t.wrongType;
+  if (code === "file-too-large") return t("logo.tooLarge");
+  if (code === "too-many-files") return t("logo.oneFile");
+  return t("logo.wrongType");
 }
 
 /**
@@ -32,6 +35,7 @@ export function LogoUpload({
   name: string;
   logoUrl: string | null;
 }) {
+  const t = useTranslations("settings");
   const [error, setError] = useState<string | null>(null);
   const upload = useUploadLogo();
   const remove = useUpdateSettings();
@@ -41,8 +45,8 @@ export function LogoUpload({
     const apiError = toApiError(e);
     setError(
       apiError.status === 0
-        ? settingsText.errors.network
-        : (apiError.message ?? settingsText.errors.generic),
+        ? t("errors.network")
+        : (apiError.message ?? t("errors.generic")),
     );
   };
 
@@ -55,14 +59,14 @@ export function LogoUpload({
     // rejects the rest, and nothing should be uploaded then.
     onDrop: async ([file], rejections) => {
       if (rejections.length > 0) {
-        setError(rejectionMessage(rejections));
+        setError(rejectionMessage(t, rejections));
         return;
       }
       if (!file) return;
       setError(null);
       try {
         await upload.mutateAsync(file);
-        toast.success(t.uploaded);
+        toast.success(t("logo.uploaded"));
       } catch (e) {
         fail(e);
       }
@@ -73,7 +77,7 @@ export function LogoUpload({
     setError(null);
     try {
       await remove.mutateAsync({ logoUrl: null });
-      toast.success(t.removed);
+      toast.success(t("logo.removed"));
     } catch (e) {
       fail(e);
     }
@@ -82,7 +86,7 @@ export function LogoUpload({
   return (
     <div className="flex flex-col gap-2">
       <span id="logo-label" className="text-sm font-semibold">
-        {t.label}
+        {t("logo.label")}
       </span>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <ShopLogo name={name} logoUrl={logoUrl} className="size-20 text-xl" />
@@ -107,13 +111,13 @@ export function LogoUpload({
           )}
           <span className="text-sm font-semibold">
             {upload.isPending
-              ? t.uploading
+              ? t("logo.uploading")
               : isDragActive
-                ? t.dropActive
-                : t.drop}
+                ? t("logo.dropActive")
+                : t("logo.drop")}
           </span>
           <span id="logo-rules" className="text-muted-foreground text-xs">
-            {t.rules}
+            {t("logo.rules")}
           </span>
         </div>
         {logoUrl ? (
@@ -129,7 +133,7 @@ export function LogoUpload({
             ) : (
               <Trash2 aria-hidden />
             )}
-            {t.remove}
+            {t("logo.remove")}
           </Button>
         ) : null}
       </div>

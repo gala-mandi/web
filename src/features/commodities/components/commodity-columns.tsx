@@ -1,5 +1,8 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
+import { categoryLabel } from "../categories";
 import { CircleCheck, CircleOff, Pencil, Trash2 } from "lucide-react";
 import {
   type DataTableColumn,
@@ -11,15 +14,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { TraderName } from "@/features/traders/components/trader-name";
-import { formatDate, formatKg, formatRs } from "@/lib/format";
-import { categoryLabel, commodityText, unitShortText } from "../text";
+import type { Formatters } from "@/lib/use-format";
+import type { CommoditiesTranslator } from "../schemas";
 import { type ChargeField, chargeFields, type Commodity } from "../types";
 import { CommodityStatusBadge } from "./badges";
 import type { CommodityStatusAction } from "./commodity-dialogs";
 import { UrduName } from "./commodity-name";
 
-const t = commodityText.list.columns;
-const a = commodityText.actions;
 const col = dataTableColumnHelper<Commodity>();
 
 export interface CommodityRowActions {
@@ -33,19 +34,31 @@ export interface CommodityRowActions {
 }
 
 /** "2.50" → "2.50%", "12.00" → "Rs 12.00". */
-function chargeValue(field: ChargeField, value: string): string {
-  return field === "labourPerBag"
-    ? formatRs(value)
-    : commodityText.percent(value);
+function chargeValue(
+  t: CommoditiesTranslator,
+  formatRs: (value: string) => string,
+  field: ChargeField,
+  value: string,
+): string {
+  return field === "labourPerBag" ? formatRs(value) : t("percent", { value });
 }
 
 /** The overrides as text, e.g. ["Commission 2.50%"]; empty = shop default. */
-export function chargeOverrides(commodity: Commodity): string[] {
+export function chargeOverrides(
+  t: CommoditiesTranslator,
+  { formatRs }: Pick<Formatters, "formatRs">,
+  commodity: Commodity,
+): string[] {
   return chargeFields.flatMap((field) => {
     const value = commodity[field];
     return value === null
       ? []
-      : [commodityText.list.charge(field, chargeValue(field, value))];
+      : [
+          t("list.charge", {
+            label: t(`form.charges.${field}`),
+            value: chargeValue(t, formatRs, field, value),
+          }),
+        ];
   });
 }
 
@@ -56,6 +69,7 @@ function RowActions({
   commodity: Commodity;
   actions: CommodityRowActions;
 }) {
+  const t = useTranslations("commodities");
   if (!actions.canManage && !actions.canDelete) return null;
   return (
     <DataTableRowActions rowName={commodity.name}>
@@ -63,21 +77,21 @@ function RowActions({
         <>
           <DropdownMenuItem onSelect={() => actions.onEdit(commodity)}>
             <Pencil aria-hidden />
-            {a.edit}
+            {t("actions.edit")}
           </DropdownMenuItem>
           {commodity.isActive ? (
             <DropdownMenuItem
               onSelect={() => actions.onStatus(commodity, "deactivate")}
             >
               <CircleOff aria-hidden />
-              {a.deactivate}
+              {t("actions.deactivate")}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onSelect={() => actions.onStatus(commodity, "activate")}
             >
               <CircleCheck aria-hidden />
-              {a.activate}
+              {t("actions.activate")}
             </DropdownMenuItem>
           )}
         </>
@@ -90,7 +104,7 @@ function RowActions({
             onSelect={() => actions.onDelete(commodity)}
           >
             <Trash2 aria-hidden />
-            {a.delete}
+            {t("actions.delete")}
           </DropdownMenuItem>
         </>
       ) : null}
@@ -98,24 +112,26 @@ function RowActions({
   );
 }
 
-const none = (
-  <span className="text-muted-foreground">{commodityText.none}</span>
-);
-
 /** Columns of the commodities list; only name and added date sort (server-side). */
 export function commodityColumns(
+  t: CommoditiesTranslator,
+  format: Formatters,
   actions: CommodityRowActions,
 ): DataTableColumn<Commodity>[] {
+  const { formatDate, formatKg } = format;
+  const none = <span className="text-muted-foreground">{t("none")}</span>;
   return col.columns([
     col.accessor("name", {
-      header: t.name,
-      meta: { label: t.name },
+      header: t("list.columns.name"),
+      meta: { label: t("list.columns.name") },
       cell: ({ row }) =>
         actions.canManage ? (
           <button
             type="button"
             onClick={() => actions.onEdit(row.original)}
-            aria-label={a.editName(row.original.name)}
+            aria-label={t("actions.editName", {
+              name: bidi(row.original.name),
+            })}
             className="text-foreground focus-visible:ring-ring/50 w-fit rounded-sm text-start font-semibold outline-none hover:underline focus-visible:ring-3"
           >
             <TraderName name={row.original.name} />
@@ -125,48 +141,48 @@ export function commodityColumns(
         ),
     }),
     col.accessor("nameUr", {
-      header: t.nameUr,
+      header: t("list.columns.nameUr"),
       enableSorting: false,
-      meta: { label: t.nameUr },
+      meta: { label: t("list.columns.nameUr") },
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <UrduName name={value} className="text-base" /> : none;
       },
     }),
     col.accessor("category", {
-      header: t.category,
+      header: t("list.columns.category"),
       enableSorting: false,
       meta: {
-        label: t.category,
+        label: t("list.columns.category"),
         exportValue: (row: Commodity) =>
-          row.category ? categoryLabel(row.category) : "",
+          row.category ? categoryLabel(t, row.category) : "",
       },
       cell: ({ getValue }) => {
         const value = getValue();
-        return value ? <bdi dir="auto">{categoryLabel(value)}</bdi> : none;
+        return value ? <bdi dir="auto">{categoryLabel(t, value)}</bdi> : none;
       },
     }),
     col.accessor("defaultUnit", {
-      header: t.defaultUnit,
+      header: t("list.columns.defaultUnit"),
       enableSorting: false,
       meta: {
-        label: t.defaultUnit,
-        exportValue: (row: Commodity) => unitShortText[row.defaultUnit],
+        label: t("list.columns.defaultUnit"),
+        exportValue: (row: Commodity) => t(`unitsShort.${row.defaultUnit}`),
       },
-      cell: ({ row }) => unitShortText[row.original.defaultUnit],
+      cell: ({ row }) => t(`unitsShort.${row.original.defaultUnit}`),
     }),
     col.accessor("bagWeightKg", {
-      header: t.bagWeight,
+      header: t("list.columns.bagWeight"),
       enableSorting: false,
       meta: {
         align: "end",
-        label: t.bagWeight,
+        label: t("list.columns.bagWeight"),
         exportValue: (row: Commodity) => formatKg(row.bagWeightKg),
       },
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? (
-          <span dir="ltr" className="tabular-nums">
+          <span dir="auto" className="tabular-nums">
             {formatKg(value)}
           </span>
         ) : (
@@ -176,19 +192,19 @@ export function commodityColumns(
     }),
     col.display({
       id: "charges",
-      header: t.charges,
+      header: t("list.columns.charges"),
       enableSorting: false,
       meta: {
-        label: t.charges,
+        label: t("list.columns.charges"),
         exportValue: (row: Commodity) => {
-          const overrides = chargeOverrides(row);
+          const overrides = chargeOverrides(t, format, row);
           return overrides.length > 0
             ? overrides.join(", ")
-            : commodityText.list.shopDefault;
+            : t("list.shopDefault");
         },
       },
       cell: ({ row }) => {
-        const overrides = chargeOverrides(row.original);
+        const overrides = chargeOverrides(t, format, row.original);
         return overrides.length > 0 ? (
           <ul className="flex flex-col text-[13px] tabular-nums">
             {overrides.map((line) => (
@@ -196,28 +212,26 @@ export function commodityColumns(
             ))}
           </ul>
         ) : (
-          <span className="text-muted-foreground">
-            {commodityText.list.shopDefault}
-          </span>
+          <span className="text-muted-foreground">{t("list.shopDefault")}</span>
         );
       },
     }),
     col.accessor("isActive", {
       id: "status",
-      header: t.status,
+      header: t("list.columns.status"),
       enableSorting: false,
       meta: {
-        label: t.status,
+        label: t("list.columns.status"),
         exportValue: (row: Commodity) =>
-          row.isActive ? commodityText.active : commodityText.inactive,
+          row.isActive ? t("active") : t("inactive"),
       },
       cell: ({ getValue }) => <CommodityStatusBadge active={getValue()} />,
     }),
     col.accessor("createdAt", {
-      header: t.added,
+      header: t("list.columns.added"),
       sortDescFirst: true,
       meta: {
-        label: t.added,
+        label: t("list.columns.added"),
         exportValue: (row: Commodity) => formatDate(row.createdAt),
       },
       cell: ({ getValue }) => (

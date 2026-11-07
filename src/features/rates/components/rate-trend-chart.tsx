@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { CommodityName } from "@/features/commodities/components/commodity-name";
 import { useState } from "react";
 import {
   Area,
@@ -22,9 +24,13 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Commodity } from "@/features/commodities/types";
-import { formatDate, formatRs } from "@/lib/format";
+import {
+  useChartDirection,
+  useChartFormat,
+} from "@/features/dashboard/components/chart-parts";
+import { numberFormat } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { useRateHistory } from "../hooks";
-import { rateText } from "../text";
 import {
   type TrendPoint,
   type TrendRange,
@@ -33,20 +39,6 @@ import {
   trendStart,
   trendUnit,
 } from "../trend";
-
-const t = rateText.chart;
-
-/** "6 Nov": a calendar date, so formatted in UTC (no zone shift). */
-const tickDate = new Intl.DateTimeFormat("en-PK", {
-  timeZone: "UTC",
-  day: "numeric",
-  month: "short",
-});
-const tickLabel = (date: string) =>
-  tickDate.format(new Date(`${date}T00:00:00Z`));
-
-/** Axis ticks only: "4,200" from the plot position. */
-const axisNumber = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
 export interface RateTrendChartProps {
   /** Commodities to choose from, in name order. */
@@ -60,6 +52,10 @@ export interface RateTrendChartProps {
  * line over the min–max band. A day without a rate is a gap, never a zero.
  */
 export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
+  const t = useTranslations("rates");
+  const { shortDate } = useChartFormat();
+  const direction = useChartDirection();
+  const { locale } = useFormat();
   const [picked, setPicked] = useState<string | null>(null);
   const [days, setDays] = useState<TrendRange>(30);
   const commodityId = picked ?? commodities[0]?.id ?? null;
@@ -78,14 +74,18 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
     >
       <div className="flex flex-col gap-1">
         <h2 id="rate-trend-title" className="font-heading text-lg font-bold">
-          {t.title}
+          {t("chart.title")}
         </h2>
-        <p className="text-muted-foreground text-sm">{t.description}</p>
+        <p className="text-muted-foreground text-sm">
+          {t("chart.description")}
+        </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="rate-trend-commodity">{t.commodityLabel}</Label>
+          <Label htmlFor="rate-trend-commodity">
+            {t("chart.commodityLabel")}
+          </Label>
           <Select
             value={commodityId ?? ""}
             onValueChange={(value) => setPicked(value)}
@@ -96,7 +96,7 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
             <SelectContent>
               {commodities.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
-                  {c.name}
+                  <CommodityName name={c.name} nameUr={c.nameUr} />
                 </SelectItem>
               ))}
             </SelectContent>
@@ -104,7 +104,7 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
         </div>
         <div
           role="group"
-          aria-label={t.rangeLabel}
+          aria-label={t("chart.rangeLabel")}
           className="flex items-center gap-1"
         >
           {trendRanges.map((range) => (
@@ -116,7 +116,7 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
               aria-pressed={range === days}
               onClick={() => setDays(range)}
             >
-              {t.range(range)}
+              {t("chart.range", { days: range })}
             </Button>
           ))}
         </div>
@@ -126,11 +126,11 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
         <Skeleton className="h-72 w-full" />
       ) : history.isError ? (
         <p role="alert" className="text-destructive py-12 text-center text-sm">
-          {t.loadError}
+          {t("chart.loadError")}
         </p>
       ) : rates.length === 0 ? (
         <p className="text-muted-foreground py-12 text-center text-sm">
-          {t.noData}
+          {t("chart.noData")}
         </p>
       ) : (
         <div className="h-72 w-full" dir="ltr" data-testid="rate-trend-chart">
@@ -142,26 +142,32 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"
-                tickFormatter={tickLabel}
+                tickFormatter={shortDate}
                 tick={{ fontSize: 12 }}
                 minTickGap={16}
+                {...direction.xAxis}
               />
               <YAxis
                 width={72}
                 tick={{ fontSize: 12 }}
-                tickFormatter={(value: number) => axisNumber.format(value)}
+                tickFormatter={(value: number) =>
+                  numberFormat(locale, { maximumFractionDigits: 0 }).format(
+                    value,
+                  )
+                }
                 domain={["auto", "auto"]}
+                {...direction.yAxis}
                 label={{
-                  value: t.axis(trendUnit(rates)),
-                  angle: -90,
-                  position: "insideLeft",
+                  value: t("chart.axis", { unit: trendUnit(rates) }),
+                  angle: direction.rtl ? 90 : -90,
+                  position: direction.rtl ? "insideRight" : "insideLeft",
                   style: { fontSize: 12 },
                 }}
               />
-              <Tooltip content={TrendTooltip} />
+              <Tooltip content={<TrendTooltip />} />
               <Area
                 dataKey="band"
-                name={t.band}
+                name={t("chart.band")}
                 stroke="none"
                 fill="var(--primary)"
                 fillOpacity={0.15}
@@ -170,7 +176,7 @@ export function RateTrendChart({ commodities, today }: RateTrendChartProps) {
               />
               <Line
                 dataKey="avg"
-                name={t.avg}
+                name={t("chart.avg")}
                 stroke="var(--primary)"
                 strokeWidth={2}
                 dot={{ r: 2 }}
@@ -192,22 +198,24 @@ function TrendTooltip({
   active?: boolean;
   payload?: readonly { payload?: unknown }[];
 }) {
+  const { formatDate, formatRs } = useFormat();
+  const t = useTranslations("rates");
   const point = payload?.[0]?.payload as TrendPoint | undefined;
   if (!active || !point) return null;
   return (
     <div className="bg-popover text-popover-foreground rounded-lg border px-3 py-2 text-xs shadow-md">
       <p className="font-semibold">{formatDate(point.date)}</p>
       {point.minRate === null ? (
-        <p className="text-muted-foreground">{t.noRate}</p>
+        <p className="text-muted-foreground">{t("chart.noRate")}</p>
       ) : (
         <dl className="grid grid-cols-[auto_auto] gap-x-3">
-          <dt>{t.min}</dt>
+          <dt>{t("chart.min")}</dt>
           <dd className="text-end tabular-nums">{formatRs(point.minRate)}</dd>
-          <dt>{t.max}</dt>
+          <dt>{t("chart.max")}</dt>
           <dd className="text-end tabular-nums">{formatRs(point.maxRate)}</dd>
-          <dt>{t.avg}</dt>
+          <dt>{t("chart.avg")}</dt>
           <dd className="text-end tabular-nums">
-            {formatRs(point.avgRate) || rateText.none}
+            {formatRs(point.avgRate) || t("none")}
           </dd>
         </dl>
       )}

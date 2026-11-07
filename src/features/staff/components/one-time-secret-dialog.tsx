@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import {
   Copy,
   KeyRound,
@@ -20,12 +22,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { oneTimeText as t } from "../text";
+import type { StaffTranslator } from "../schemas";
 import type { InviteResult } from "../types";
 
 /** `https://wa.me/?text=…`: opens WhatsApp with the message, no number. */
-export function whatsappShareUrl(inviteUrl: string): string {
-  return `https://wa.me/?text=${encodeURIComponent(t.whatsappMessage(inviteUrl))}`;
+export function whatsappShareUrl(
+  t: StaffTranslator,
+  inviteUrl: string,
+): string {
+  return `https://wa.me/?text=${encodeURIComponent(t("oneTime.whatsappMessage", { url: inviteUrl }))}`;
 }
 
 /**
@@ -41,6 +46,7 @@ export function OneTimeSecretDialog({
   result: InviteResult;
   onDone: () => void;
 }) {
+  const t = useTranslations("staff");
   const copyRef = useRef<HTMLButtonElement>(null);
   const inputId = useId();
   const isLink = result.method === "link";
@@ -49,9 +55,9 @@ export function OneTimeSecretDialog({
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(secret);
-      toast.success(t.copied);
+      toast.success(t("oneTime.copied"));
     } catch {
-      toast.error(t.copyFailed);
+      toast.error(t("oneTime.copyFailed"));
     }
   };
 
@@ -74,18 +80,21 @@ export function OneTimeSecretDialog({
             {isLink ? <Link2 aria-hidden /> : <KeyRound aria-hidden />}
           </AlertDialogMedia>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            {isLink ? t.linkTitle : t.passwordTitle}
+            {isLink ? t("oneTime.linkTitle") : t("oneTime.passwordTitle")}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {isLink
-              ? t.linkBody(result.invitation.phone)
-              : t.passwordBody(result.user.name, result.user.phone)}
+              ? t("oneTime.linkBody", { phone: result.invitation.phone })
+              : t("oneTime.passwordBody", {
+                  name: bidi(result.user.name),
+                  phone: result.user.phone,
+                })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="flex flex-col gap-2">
           <label htmlFor={inputId} className="text-[13px] font-semibold">
-            {isLink ? t.linkLabel : t.passwordLabel}
+            {isLink ? t("oneTime.linkLabel") : t("oneTime.passwordLabel")}
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -110,18 +119,18 @@ export function OneTimeSecretDialog({
               onClick={copy}
             >
               <Copy aria-hidden />
-              {t.copy}
+              {t("oneTime.copy")}
             </Button>
           </div>
           {isLink ? (
             <Button asChild variant="outline" className="h-10 gap-2 self-start">
               <a
-                href={whatsappShareUrl(result.inviteUrl)}
+                href={whatsappShareUrl(t, result.inviteUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <MessageCircle aria-hidden />
-                {t.whatsapp}
+                {t("oneTime.whatsapp")}
               </a>
             </Button>
           ) : null}
@@ -132,11 +141,11 @@ export function OneTimeSecretDialog({
           className="bg-warning-soft text-warning flex gap-2.5 rounded-xl px-3.5 py-3 text-[13px]/relaxed font-medium"
         >
           <TriangleAlert aria-hidden className="mt-0.5 size-4 flex-none" />
-          {t.warning}
+          {t("oneTime.warning")}
         </p>
 
         <AlertDialogFooter>
-          <AlertDialogAction>{t.done}</AlertDialogAction>
+          <AlertDialogAction>{t("oneTime.done")}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

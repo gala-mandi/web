@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CircleAlert, Ban } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,20 +16,21 @@ import { toApiError } from "@/lib/api-error";
 import { karachiToday } from "@/lib/format";
 import { purchaseRoutes } from "@/lib/routes";
 import { usePurchase } from "../hooks";
-import { purchaseText } from "../text";
 import { PurchaseForm } from "./purchase-form";
 import { PurchaseSkeleton } from "./purchase-view";
 
-const t = purchaseText.form;
-
 /** `/purchases/new`: `purchase.create` (owner, manager, operator). */
 export function NewPurchasePage() {
+  const t = useTranslations("purchases");
   // Read once: a form left open past midnight keeps its own day.
   const [today] = useState(() => karachiToday());
   return (
     <RequirePermission permission="purchase.create" write>
       <div className="flex flex-col gap-6">
-        <PageHeader title={t.newTitle} description={t.newDescription} />
+        <PageHeader
+          title={t("form.newTitle")}
+          description={t("form.newDescription")}
+        />
         <PurchaseForm today={today} />
       </div>
     </RequirePermission>
@@ -45,6 +47,7 @@ export function EditPurchasePage({ id }: { id: string }) {
 }
 
 function EditPurchase({ id }: { id: string }) {
+  const t = useTranslations("purchases");
   const [today] = useState(() => karachiToday());
   const query = usePurchase(id);
 
@@ -57,12 +60,12 @@ function EditPurchase({ id }: { id: string }) {
       <EmptyState
         role="alert"
         icon={CircleAlert}
-        title={purchaseText.view.error.title}
-        body={purchaseText.view.error.body}
+        title={t("view.error.title")}
+        body={t("view.error.body")}
         headingLevel="h1"
         action={
           <Button variant="outline" onClick={() => void query.refetch()}>
-            {purchaseText.view.error.retry}
+            {t("view.error.retry")}
           </Button>
         }
       />
@@ -75,13 +78,13 @@ function EditPurchase({ id }: { id: string }) {
       <EmptyState
         role="alert"
         icon={Ban}
-        title={purchaseText.billOf(purchase.billNo)}
-        body={purchaseText.errors.cancelled}
+        title={t("billOf", { billNo: purchase.billNo })}
+        body={t("errors.cancelled")}
         headingLevel="h1"
         action={
           <Button asChild variant="outline">
             <Link href={purchaseRoutes.detail(purchase.id)}>
-              {purchaseText.actions.view}
+              {t("actions.view")}
             </Link>
           </Button>
         }
@@ -92,8 +95,8 @@ function EditPurchase({ id }: { id: string }) {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={t.editTitle(purchase.billNo)}
-        description={t.editDescription}
+        title={t("form.editTitle", { billNo: purchase.billNo })}
+        description={t("form.editDescription")}
       />
       <PurchaseForm key={purchase.id} today={today} purchase={purchase} />
     </div>

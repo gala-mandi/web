@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { forgotText, loginText, passwordText } from "./text";
+import type { Translator } from "@/i18n/types";
+
+/** Error messages come from the `auth` messages of the interface language. */
+export type AuthTranslator = Translator<"auth">;
 
 /**
  * Phone numbers are sent in the local 11-digit form the accounts use
@@ -32,60 +35,71 @@ export function maskIdentifier(identifier: string): string {
   return value;
 }
 
-export const loginSchema = z.object({
-  identifier: z
-    .string()
-    .trim()
-    .min(1, loginText.errors.identifierRequired)
-    .max(160, loginText.errors.identifierTooLong),
-  password: z
-    .string()
-    .min(1, loginText.errors.passwordRequired)
-    .max(128, loginText.errors.passwordTooLong),
-  rememberMe: z.boolean(),
-});
-export type LoginValues = z.infer<typeof loginSchema>;
-
-export const newPasswordSchema = z
-  .string()
-  .min(8, passwordText.errors.tooShort)
-  .max(128, passwordText.errors.tooLong);
-
-export const forgotRequestSchema = z.object({
-  phone: z
-    .string()
-    .trim()
-    .min(1, forgotText.errors.phoneRequired)
-    .refine((v) => normalizePhone(v) !== null, forgotText.errors.phoneInvalid),
-  channel: z.enum(["whatsapp", "sms"]),
-});
-export type ForgotRequestValues = z.infer<typeof forgotRequestSchema>;
-
-export const otpCodeSchema = z
-  .string()
-  .regex(/^\d{6}$/, forgotText.errors.codeInvalid);
-
-const passwordsMatch = {
-  path: ["confirmPassword"],
-  message: passwordText.errors.mismatch,
-};
-
-export const setPasswordSchema = z
-  .object({ newPassword: newPasswordSchema, confirmPassword: z.string() })
-  .refine((v) => v.newPassword === v.confirmPassword, passwordsMatch);
-export type SetPasswordValues = z.infer<typeof setPasswordSchema>;
-
-export const changePasswordSchema = z
-  .object({
-    currentPassword: z
+export const loginSchema = (t: AuthTranslator) =>
+  z.object({
+    identifier: z
       .string()
-      .min(1, passwordText.errors.currentRequired)
-      .max(128, passwordText.errors.tooLong),
-    newPassword: newPasswordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((v) => v.newPassword === v.confirmPassword, passwordsMatch);
-export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+      .trim()
+      .min(1, t("login.errors.identifierRequired"))
+      .max(160, t("login.errors.identifierTooLong")),
+    password: z
+      .string()
+      .min(1, t("login.errors.passwordRequired"))
+      .max(128, t("login.errors.passwordTooLong")),
+    rememberMe: z.boolean(),
+  });
+export type LoginValues = z.infer<ReturnType<typeof loginSchema>>;
+
+export const newPasswordSchema = (t: AuthTranslator) =>
+  z
+    .string()
+    .min(8, t("password.errors.tooShort"))
+    .max(128, t("password.errors.tooLong"));
+
+export const forgotRequestSchema = (t: AuthTranslator) =>
+  z.object({
+    phone: z
+      .string()
+      .trim()
+      .min(1, t("forgot.errors.phoneRequired"))
+      .refine(
+        (v) => normalizePhone(v) !== null,
+        t("forgot.errors.phoneInvalid"),
+      ),
+    channel: z.enum(["whatsapp", "sms"]),
+  });
+export type ForgotRequestValues = z.infer<
+  ReturnType<typeof forgotRequestSchema>
+>;
+
+export const otpCodeSchema = (t: AuthTranslator) =>
+  z.string().regex(/^\d{6}$/, t("forgot.errors.codeInvalid"));
+
+const passwordsMatch = (t: AuthTranslator) => ({
+  path: ["confirmPassword"],
+  message: t("password.errors.mismatch"),
+});
+
+export const setPasswordSchema = (t: AuthTranslator) =>
+  z
+    .object({ newPassword: newPasswordSchema(t), confirmPassword: z.string() })
+    .refine((v) => v.newPassword === v.confirmPassword, passwordsMatch(t));
+export type SetPasswordValues = z.infer<ReturnType<typeof setPasswordSchema>>;
+
+export const changePasswordSchema = (t: AuthTranslator) =>
+  z
+    .object({
+      currentPassword: z
+        .string()
+        .min(1, t("password.errors.currentRequired"))
+        .max(128, t("password.errors.tooLong")),
+      newPassword: newPasswordSchema(t),
+      confirmPassword: z.string(),
+    })
+    .refine((v) => v.newPassword === v.confirmPassword, passwordsMatch(t));
+export type ChangePasswordValues = z.infer<
+  ReturnType<typeof changePasswordSchema>
+>;
 
 export interface PasswordRules {
   length: boolean;

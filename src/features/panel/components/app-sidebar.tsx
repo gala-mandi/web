@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { Wheat } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,11 +15,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { brandText } from "@/features/auth/text";
 import type { User } from "@/features/auth/types";
 import { isActivePath } from "@/lib/routes";
 import { landingItemFor, menuFor } from "../menu";
-import { panelText } from "../text";
 
 /**
  * Permission-based main menu. Collapses to icons on desktop and opens as a
@@ -30,28 +29,31 @@ export function AppSidebar({
 }: {
   user: Pick<User, "permissions"> | null;
 }) {
+  const t = useTranslations("panel");
   const pathname = usePathname();
+  const rtl = useLocale() === "ur";
   const { isMobile, setOpenMobile } = useSidebar();
-  const items = menuFor(user);
-  const home = landingItemFor(user);
+  const items = menuFor(user, t);
+  const home = landingItemFor(user, t);
   const closeDrawer = () => {
     if (isMobile) setOpenMobile(false);
   };
 
   return (
-    <Sidebar collapsible="icon">
+    // The menu sits on the start side: the right in Urdu.
+    <Sidebar collapsible="icon" side={rtl ? "right" : "left"}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               size="lg"
-              tooltip={brandText.name}
+              tooltip={t("appName")}
               className="focus-visible:ring-sidebar-ring"
             >
               <Link
                 href={home.href}
-                aria-label={panelText.homeLabel(home.label)}
+                aria-label={t("homeLabel", { page: home.label })}
                 onClick={closeDrawer}
               >
                 <span className="bg-primary text-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-lg">
@@ -59,10 +61,10 @@ export function AppSidebar({
                 </span>
                 <span className="flex min-w-0 flex-col leading-tight">
                   <span className="font-heading truncate text-[15px] font-extrabold">
-                    {brandText.name}
+                    {t("appName")}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {panelText.appSubtitle}
+                    {t("appSubtitle")}
                   </span>
                 </span>
               </Link>
@@ -73,7 +75,7 @@ export function AppSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <nav aria-label={panelText.menuLabel}>
+            <nav aria-label={t("menuLabel")}>
               <SidebarMenu className="gap-1">
                 {items.map((item) => {
                   const active = isActivePath(pathname, item.href);

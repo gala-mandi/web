@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -17,25 +18,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import { type DayPoint, dailySeries } from "../series";
-import { dashboardText } from "../text";
 import type { BookReport } from "../types";
 import {
-  axisAmount,
   axisProps,
   ChartTooltipCard,
   MoneyFigure,
   panelClass,
   SectionEmpty,
   SectionError,
-  shortDate,
-  tooltipDate,
+  useChartDirection,
+  useChartFormat,
   useChartAnimation,
 } from "./chart-parts";
-
-const t = dashboardText.trend;
 
 /** Series colours: categorical slots 1 and 2, in fixed order. */
 const series = {
@@ -69,6 +66,10 @@ export function SalesTrendChart({
   onRetry,
   className,
 }: SalesTrendChartProps) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
+  const { shortDate, axisAmount } = useChartFormat();
+  const direction = useChartDirection();
   const animation = useChartAnimation();
   const ready = purchases && sales;
   const points = ready ? dailySeries(purchases, sales, from, to) : [];
@@ -89,50 +90,51 @@ export function SalesTrendChart({
     >
       <CardHeader className="px-5">
         <CardTitle id="dash-trend-title" className="font-heading text-lg">
-          {t.title}
+          {t("trend.title")}
         </CardTitle>
-        <CardDescription>{t.description}</CardDescription>
+        <CardDescription>{t("trend.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4 px-5">
         {totals ? (
-          <ul className="flex flex-wrap gap-2" aria-label={t.total}>
+          <ul className="flex flex-wrap gap-2" aria-label={t("trend.total")}>
             <LegendChip
               id="purchases"
               color={series.purchases.color}
-              label={t.purchases}
+              label={t("trend.purchases")}
               total={totals.purchases}
             />
             <LegendChip
               id="sales"
               color={series.sales.color}
-              label={t.sales}
+              label={t("trend.sales")}
               total={totals.sales}
             />
           </ul>
         ) : null}
 
         {isError && !ready ? (
-          <SectionError message={t.error} onRetry={onRetry} className="h-72" />
+          <SectionError
+            message={t("trend.error")}
+            onRetry={onRetry}
+            className="h-72"
+          />
         ) : isPending || !ready ? (
           <Skeleton className="h-72 w-full rounded-xl" />
         ) : empty ? (
-          <SectionEmpty className="h-72">{t.empty}</SectionEmpty>
+          <SectionEmpty className="h-72">{t("trend.empty")}</SectionEmpty>
         ) : (
           <div
             className="min-h-72 w-full flex-1"
             dir="ltr"
             role="img"
-            aria-label={t.chartLabel(
-              formatRs(totals?.purchases),
-              formatRs(totals?.sales),
-            )}
+            aria-label={t("trend.chartLabel", {
+              purchases: formatRs(totals?.purchases),
+              sales: formatRs(totals?.sales),
+            })}
             data-testid="sales-trend-chart"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={points}
-                margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-              >
+              <AreaChart data={points} margin={direction.margin}>
                 <defs>
                   {Object.values(series).map((s) => (
                     <linearGradient
@@ -167,15 +169,17 @@ export function SalesTrendChart({
                   minTickGap={24}
                   tickMargin={8}
                   {...axisProps}
+                  {...direction.xAxis}
                 />
                 <YAxis
                   width={52}
                   tickFormatter={axisAmount}
                   tickMargin={4}
                   {...axisProps}
+                  {...direction.yAxis}
                 />
                 <Tooltip
-                  content={TrendTooltip}
+                  content={<TrendTooltip />}
                   cursor={{
                     stroke: "var(--muted-foreground)",
                     strokeOpacity: 0.4,
@@ -185,7 +189,7 @@ export function SalesTrendChart({
                 <Area
                   type="monotone"
                   dataKey="purchasesY"
-                  name={t.purchases}
+                  name={t("trend.purchases")}
                   stroke={series.purchases.color}
                   strokeWidth={2}
                   fill={`url(#${series.purchases.gradient})`}
@@ -201,7 +205,7 @@ export function SalesTrendChart({
                 <Area
                   type="monotone"
                   dataKey="salesY"
-                  name={t.sales}
+                  name={t("trend.sales")}
                   stroke={series.sales.color}
                   strokeWidth={2}
                   fill={`url(#${series.sales.gradient})`}
@@ -258,23 +262,27 @@ function TrendTooltip({
   active?: boolean;
   payload?: readonly { payload?: unknown }[];
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
+  const { tooltipDate } = useChartFormat();
   const point = payload?.[0]?.payload as DayPoint | undefined;
   if (!active || !point) return null;
-  const bills = (n: number) => (n === 0 ? t.noBills : dashboardText.bills(n));
+  const bills = (n: number) =>
+    n === 0 ? t("trend.noBills") : t("bills", { n });
   return (
     <ChartTooltipCard
       title={tooltipDate(point.date)}
       rows={[
         {
           key: "purchases",
-          label: t.purchases,
+          label: t("trend.purchases"),
           value: formatRs(point.purchases),
           hint: bills(point.purchaseBills),
           color: series.purchases.color,
         },
         {
           key: "sales",
-          label: t.sales,
+          label: t("trend.sales"),
           value: formatRs(point.sales),
           hint: bills(point.saleBills),
           color: series.sales.color,

@@ -7,10 +7,13 @@ export const PARCHI_STORAGE_KEY = "gm-web-parchi";
 interface ParchiPrefsState {
   /** The shop's printer paper; this browser remembers it. */
   paper: PaperSize;
-  /** null: the shop's language from Settings (English when unknown). */
+  /**
+   * The language picked on a parchi screen; null: the interface language.
+   * Switching the interface language clears it, so prints follow the user.
+   */
   lang: ParchiLanguage | null;
   setPaper: (paper: PaperSize) => void;
-  setLang: (lang: ParchiLanguage) => void;
+  setLang: (lang: ParchiLanguage | null) => void;
 }
 
 /**

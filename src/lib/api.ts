@@ -1,4 +1,5 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { createElement } from "react";
 import { toast } from "sonner";
 import type { Session } from "@/features/auth/types";
 import { toApiError } from "@/lib/api-error";
@@ -10,7 +11,7 @@ import {
 import { env } from "@/lib/env";
 import { getQueryClient } from "@/lib/query-client";
 import { READ_ONLY_CODE, subscriptionKeys } from "@/features/subscription/keys";
-import { subscriptionText } from "@/features/subscription/text";
+import { Message } from "@/i18n/message";
 import { useSessionStore } from "@/stores/session";
 
 /** The only HTTP client for the server API. */
@@ -71,7 +72,9 @@ function bearerOf(config: InternalAxiosRequestConfig): string | null {
 
 /** Shows the read-only toast once (same id) and refreshes the plan state. */
 export function notifyReadOnly(): void {
-  toast.error(subscriptionText.toast.readOnly, { id: READ_ONLY_CODE });
+  toast.error(createElement(Message, { id: "subscription.toast.readOnly" }), {
+    id: READ_ONLY_CODE,
+  });
   void getQueryClient().invalidateQueries({ queryKey: subscriptionKeys.all });
 }
 

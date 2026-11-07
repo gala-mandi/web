@@ -1,5 +1,7 @@
 import { z } from "zod";
 import type { TraderLookupItem } from "@/features/traders/types";
+import type { Locale } from "@/i18n/config";
+import type { Translator } from "@/i18n/types";
 import { formatRs } from "@/lib/format";
 import {
   allocationTotals,
@@ -10,7 +12,6 @@ import {
   isOverBill,
   type OutstandingBill,
 } from "./allocation";
-import { paymentText } from "./text";
 import type {
   AllocationInput,
   CreatePaymentInput,
@@ -19,7 +20,8 @@ import type {
 } from "./types";
 import { paymentMethods } from "./types";
 
-const e = paymentText.errors;
+/** Messages come from the `payments` messages of the interface language. */
+export type PaymentsTranslator = Translator<"payments">;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_REFERENCE = 80;
 const MAX_NOTES = 1000;
@@ -28,7 +30,7 @@ export interface PaymentFormValues {
   /** YYYY-MM-DD, Asia/Karachi. */
   paymentDate: string;
   trader: TraderLookupItem | null;
-  /** Rupees as typed, e.g. "40000". */
+  /** Rupees as typed, t("errors.g"). "40000". */
   amount: string;
   method: PaymentMethod;
   reference: string;
@@ -71,26 +73,31 @@ export function paymentFormSchema(
   today: string,
   direction: PaymentDirection,
   bills: readonly OutstandingBill[],
+  t: PaymentsTranslator,
+  locale: Locale,
 ) {
   return z
     .object({
       paymentDate: z
         .string()
         .trim()
-        .regex(DATE, e.dateRequired)
-        .refine((v) => v <= today, e.dateInFuture),
+        .regex(DATE, t("errors.dateRequired"))
+        .refine((v) => v <= today, t("errors.dateInFuture")),
       trader: z
         .custom<TraderLookupItem | null>()
-        .refine(Boolean, e.traderRequired[direction]),
+        .refine(Boolean, t(`errors.traderRequired.${direction}`)),
       amount: z
         .string()
         .trim()
-        .min(1, e.amountRequired)
-        .refine(isMoney, e.amount)
-        .refine((v) => !isMoney(v) || isAboveZero(v), e.amountZero),
+        .min(1, t("errors.amountRequired"))
+        .refine(isMoney, t("errors.amount"))
+        .refine((v) => !isMoney(v) || isAboveZero(v), t("errors.amountZero")),
       method: z.enum(paymentMethods),
-      reference: z.string().trim().max(MAX_REFERENCE, e.referenceTooLong),
-      notes: z.string().max(MAX_NOTES, e.notesTooLong),
+      reference: z
+        .string()
+        .trim()
+        .max(MAX_REFERENCE, t("errors.referenceTooLong")),
+      notes: z.string().max(MAX_NOTES, t("errors.notesTooLong")),
       manual: z.record(z.string(), z.string()).nullable(),
     })
     .superRefine((values, ctx) => {
@@ -100,9 +107,11 @@ export function paymentFormSchema(
         const share = cleanAmount(values.manual[bill.id]);
         if (!share) continue;
         const message = !isMoney(share)
-          ? e.share
+          ? t("errors.share")
           : isOverBill(bill, share)
-            ? e.shareOverBill(formatRs(bill.outstanding))
+            ? t("errors.shareOverBill", {
+                left: formatRs(bill.outstanding, locale),
+              })
             : null;
         if (message) {
           sharesOk = false;
@@ -115,7 +124,9 @@ export function paymentFormSchema(
         ctx.addIssue({
           code: "custom",
           path: ["amount"],
-          message: e.amountBelowBills(formatRs(totals.allocated)),
+          message: t("errors.amountBelowBills", {
+            allocated: formatRs(totals.allocated, locale),
+          }),
         });
       }
     });

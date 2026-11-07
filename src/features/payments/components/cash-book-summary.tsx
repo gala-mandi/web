@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -6,10 +7,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDate, formatRs } from "@/lib/format";
+import { AmountText } from "@/components/amount-text";
+import { useFormat } from "@/lib/use-format";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { paymentText } from "../text";
 import type { CashBook } from "../types";
 
 /**
@@ -18,14 +19,13 @@ import type { CashBook } from "../types";
  * The server's numbers, only formatted.
  */
 
-const t = paymentText.cashBook;
-
 /** Loading state of the cash book totals and days. */
 export function CashBookSkeleton() {
+  const t = useTranslations("payments");
   return (
     <div className="flex flex-col gap-6" aria-busy>
       <span role="status" className="sr-only">
-        {t.loading}
+        {t("cashBook.loading")}
       </span>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[0, 1, 2, 3].map((i) => (
@@ -39,6 +39,8 @@ export function CashBookSkeleton() {
 
 /** Opening, in, out and the cash that should be in hand. */
 export function CashBookTotals({ book }: { book: CashBook }) {
+  const { formatDate } = useFormat();
+  const t = useTranslations("payments");
   const closingDay = formatDate(book.to);
   return (
     <dl
@@ -46,14 +48,14 @@ export function CashBookTotals({ book }: { book: CashBook }) {
       className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
     >
       <Stat
-        label={t.opening}
-        hint={t.openingHint}
+        label={t("cashBook.opening")}
+        hint={t("cashBook.openingHint")}
         value={book.openingCash}
         testId="cash-opening"
       />
       <Stat
-        label={t.cashIn}
-        hint={t.cashInHint}
+        label={t("cashBook.cashIn")}
+        hint={t("cashBook.cashInHint")}
         value={book.totals.cashIn}
         icon={ArrowDownLeft}
         tone="text-success"
@@ -61,8 +63,8 @@ export function CashBookTotals({ book }: { book: CashBook }) {
         testId="cash-in"
       />
       <Stat
-        label={t.cashOut}
-        hint={t.cashOutHint}
+        label={t("cashBook.cashOut")}
+        hint={t("cashBook.cashOutHint")}
         value={book.totals.cashOut}
         icon={ArrowUpRight}
         tone="text-warning"
@@ -70,8 +72,8 @@ export function CashBookTotals({ book }: { book: CashBook }) {
         testId="cash-out"
       />
       <Stat
-        label={t.closing}
-        hint={t.closingHint(closingDay)}
+        label={t("cashBook.closing")}
+        hint={t("cashBook.closingHint", { day: closingDay })}
         value={book.closingCash}
         icon={Wallet}
         highlight
@@ -100,6 +102,7 @@ function Stat({
   highlight?: boolean;
   testId: string;
 }) {
+  const { formatRs } = useFormat();
   return (
     <div
       className={cn(
@@ -121,7 +124,7 @@ function Stat({
         {label}
       </dt>
       <dd
-        dir="ltr"
+        dir="auto"
         data-testid={testId}
         className="font-heading text-2xl font-extrabold tabular-nums sm:text-[1.65rem]"
       >
@@ -130,7 +133,7 @@ function Stat({
             {sign}
           </span>
         ) : null}
-        {formatRs(value)}
+        <AmountText text={formatRs(value)} />
       </dd>
       <dd
         className={cn(
@@ -146,30 +149,31 @@ function Stat({
 
 /** One row per day with cash: opening (the day before's closing), in, out, closing. */
 export function CashBookDaysTable({ book }: { book: CashBook }) {
-  const c = t.days;
+  const { formatDate } = useFormat();
+  const t = useTranslations("payments");
   return (
     <div className="rounded-card bg-card overflow-x-auto border">
       <table
         data-testid="cash-book-days"
         className="w-full min-w-[36rem] border-collapse text-sm"
       >
-        <caption className="sr-only">{c.caption}</caption>
+        <caption className="sr-only">{t("cashBook.days.caption")}</caption>
         <thead className="bg-surface-muted text-muted-foreground text-xs tracking-wide uppercase">
           <tr>
             <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-              {c.date}
+              {t("cashBook.days.date")}
             </th>
             <th scope="col" className="px-3 py-2.5 text-end font-semibold">
-              {c.opening}
+              {t("cashBook.days.opening")}
             </th>
             <th scope="col" className="px-3 py-2.5 text-end font-semibold">
-              {c.cashIn}
+              {t("cashBook.days.cashIn")}
             </th>
             <th scope="col" className="px-3 py-2.5 text-end font-semibold">
-              {c.cashOut}
+              {t("cashBook.days.cashOut")}
             </th>
             <th scope="col" className="px-4 py-2.5 text-end font-semibold">
-              {c.closing}
+              {t("cashBook.days.closing")}
             </th>
           </tr>
         </thead>
@@ -180,7 +184,7 @@ export function CashBookDaysTable({ book }: { book: CashBook }) {
                 colSpan={5}
                 className="text-muted-foreground px-4 py-6 text-center"
               >
-                {c.empty}
+                {t("cashBook.days.empty")}
               </td>
             </tr>
           ) : (
@@ -210,7 +214,7 @@ export function CashBookDaysTable({ book }: { book: CashBook }) {
         <tfoot>
           <tr className="border-t-2">
             <th scope="row" className="px-4 py-3 text-start font-bold">
-              {c.total}
+              {t("cashBook.days.total")}
             </th>
             <Money value={book.openingCash} muted />
             <Money value={book.totals.cashIn} strong className="text-success" />
@@ -238,6 +242,7 @@ function Money({
   muted?: boolean;
   className?: string;
 }) {
+  const { formatRs } = useFormat();
   return (
     <td
       className={cn(
@@ -247,7 +252,7 @@ function Money({
         className,
       )}
     >
-      <span dir="ltr">{formatRs(value)}</span>
+      <span dir="auto">{formatRs(value)}</span>
     </td>
   );
 }

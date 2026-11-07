@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { BookOpenText, CircleAlert, Scale, UserX } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,25 +17,21 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { TraderTypeBadge } from "@/features/traders/components/badges";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import { TraderName } from "@/features/traders/components/trader-name";
 import type { TraderLookupItem } from "@/features/traders/types";
 import { toApiError } from "@/lib/api-error";
 import { useCan } from "@/lib/can";
-import { formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { ledgerRoutes } from "@/lib/routes";
 import { useStatement } from "../hooks";
 import { KHATA_PAGE_SIZE, khataFilters } from "../search-params";
 import { sourceHref } from "../sources";
-import { ledgerText } from "../text";
 import { STATEMENT_MAX_LIMIT, type StatementEntry } from "../types";
 import { BalanceAmount } from "./balance-amount";
 import { entryColumns } from "./entry-columns";
 import { StatementActions } from "./statement-actions";
-
-const t = ledgerText.khata;
 
 const getRowId = (row: StatementEntry) => String(row.id);
 
@@ -52,8 +50,11 @@ export function KhataPage() {
  * server), closing balance, and the statement to print or export.
  */
 function Khata() {
+  const { formatDate } = useFormat();
+  const t = useTranslations("ledger");
   const router = useRouter();
-  const section = panelText.sections.ledger;
+  const section = useTranslations("panel.sections.ledger");
+  const format = useFormat();
   const access = {
     purchases: useCan("purchase.view"),
     sales: useCan("sale.view"),
@@ -78,8 +79,8 @@ function Khata() {
 
   const { purchases, sales, payments } = access;
   const columns = useMemo(
-    () => entryColumns({ purchases, sales, payments }),
-    [purchases, sales, payments],
+    () => entryColumns(t, format, { purchases, sales, payments }),
+    [t, format, purchases, sales, payments],
   );
 
   const error = query.isError ? toApiError(query.error).status : null;
@@ -106,13 +107,13 @@ function Khata() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={
           <Button asChild variant="outline" className="h-10 gap-2">
             <Link href={ledgerRoutes.balances}>
               <Scale aria-hidden />
-              {t.balancesLink}
+              {t("khata.balancesLink")}
             </Link>
           </Button>
         }
@@ -126,13 +127,13 @@ function Khata() {
                 htmlFor="khata-trader"
                 className="text-[13px] font-semibold"
               >
-                {t.traderLabel}
+                {t("khata.traderLabel")}
               </label>
               <TraderCombobox
                 id="khata-trader"
                 allowQuickAdd={false}
                 value={pickerValue}
-                placeholder={t.traderPlaceholder}
+                placeholder={t("khata.traderPlaceholder")}
                 onChange={(trader) => {
                   setPicked(trader);
                   list.setFilter("trader", trader?.id ?? null);
@@ -141,7 +142,7 @@ function Khata() {
               />
             </div>
             <DataTableDateRangeFilter
-              label={t.dateLabel}
+              label={t("khata.dateLabel")}
               value={{ from, to }}
               onChange={(range) => list.setFilters(range)}
             />
@@ -157,25 +158,25 @@ function Khata() {
       {!traderId ? (
         <EmptyState
           icon={BookOpenText}
-          title={t.pick.title}
-          body={t.pick.body}
+          title={t("khata.pick.title")}
+          body={t("khata.pick.body")}
         />
       ) : error === 404 || error === 400 ? (
         <EmptyState
           role="alert"
           icon={UserX}
-          title={t.notFound.title}
-          body={t.notFound.body}
+          title={t("khata.notFound.title")}
+          body={t("khata.notFound.body")}
         />
       ) : query.isError ? (
         <EmptyState
           role="alert"
           icon={CircleAlert}
-          title={t.error.title}
-          body={t.error.body}
+          title={t("khata.error.title")}
+          body={t("khata.error.body")}
           action={
             <Button variant="outline" onClick={() => void query.refetch()}>
-              {t.error.retry}
+              {t("khata.error.retry")}
             </Button>
           }
         />
@@ -183,7 +184,9 @@ function Khata() {
         <>
           {statement ? (
             <section
-              aria-label={t.caption(statement.trader.name)}
+              aria-label={t("khata.caption", {
+                name: bidi(statement.trader.name),
+              })}
               className="flex flex-col gap-4"
             >
               <div className="flex flex-wrap items-center gap-2">
@@ -194,21 +197,23 @@ function Khata() {
               </div>
               <dl className="grid gap-3 sm:grid-cols-2">
                 <BalanceCard
-                  label={t.openingBalance}
+                  label={t("khata.openingBalance")}
                   note={
                     statement.from
-                      ? t.openingOn(formatDate(statement.from))
-                      : t.openingAll
+                      ? t("khata.openingOn", {
+                          day: formatDate(statement.from),
+                        })
+                      : t("khata.openingAll")
                   }
                   balance={statement.openingBalance}
                   testId="khata-opening"
                 />
                 <BalanceCard
-                  label={t.closingBalance}
+                  label={t("khata.closingBalance")}
                   note={
                     statement.to
-                      ? t.closingOn(formatDate(statement.to))
-                      : t.closingNow
+                      ? t("khata.closingOn", { day: formatDate(statement.to) })
+                      : t("khata.closingNow")
                   }
                   balance={statement.closingBalance}
                   testId="khata-closing"
@@ -221,7 +226,9 @@ function Khata() {
 
           <DataTable
             caption={
-              statement ? t.caption(statement.trader.name) : t.entriesTitle
+              statement
+                ? t("khata.caption", { name: bidi(statement.trader.name) })
+                : t("khata.entriesTitle")
             }
             columns={columns}
             data={statement?.data}
@@ -239,8 +246,12 @@ function Khata() {
             empty={
               <EmptyState
                 icon={BookOpenText}
-                title={t.empty.title}
-                body={dateFiltered ? t.empty.body : t.empty.bodyAll}
+                title={t("khata.empty.title")}
+                body={
+                  dateFiltered
+                    ? t("khata.empty.body")
+                    : t("khata.empty.bodyAll")
+                }
                 className="rounded-none border-0"
                 action={
                   dateFiltered ? (
@@ -248,7 +259,7 @@ function Khata() {
                       variant="outline"
                       onClick={() => list.setFilters({ from: null, to: null })}
                     >
-                      {t.empty.clear}
+                      {t("khata.empty.clear")}
                     </Button>
                   ) : null
                 }
@@ -296,18 +307,19 @@ function BalanceCard({
 
 /** Dr / Cr in plain words, in their colours. */
 function Legend() {
-  const l = ledgerText.legend;
+  const t = useTranslations("ledger");
   return (
     <section
-      aria-label={l.label}
+      aria-label={t("legend.label")}
       className="text-muted-foreground flex flex-col gap-1 text-sm sm:flex-row sm:gap-6"
     >
       <p>
-        <span className="text-success font-bold">{ledgerText.dr}</span> {l.dr}
+        <span className="text-success font-bold">{t("dr")}</span>{" "}
+        {t("legend.dr")}
       </p>
       <p>
-        <span className="text-destructive font-bold">{ledgerText.cr}</span>{" "}
-        {l.cr}
+        <span className="text-destructive font-bold">{t("cr")}</span>{" "}
+        {t("legend.cr")}
       </p>
     </section>
   );

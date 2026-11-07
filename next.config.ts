@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 /**
  * Security headers for every page. The API origin is the only other place the
@@ -61,4 +62,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Messages per language from `src/i18n/request.ts` (no locale in the URL).
+const withNextIntl = createNextIntlPlugin({
+  experimental: { createMessagesDeclaration: "./messages/en.json" },
+});
+
+export default withNextIntl(nextConfig);

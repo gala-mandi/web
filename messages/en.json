@@ -1,0 +1,2173 @@
+{
+  "subscription": {
+    "banner": {
+      "label": "Your plan",
+      "trial": "{left, plural, =0 {Your free trial ends today ({endsOn}).} one {Free trial: # day left, until {endsOn}.} other {Free trial: # days left, until {endsOn}.}}",
+      "expiring": "{left, plural, =0 {Your {plan} plan ends today ({endsOn}).} one {Your {plan} plan ends in # day, on {endsOn}.} other {Your {plan} plan ends in # days, on {endsOn}.}}",
+      "grace": "{left, plural, =0 {Your plan ended on {endsOn}. Today is the last day of full access; from tomorrow the shop is read-only.} one {Your plan ended on {endsOn}. Full access for # more day, then read-only after {graceEndsOn}.} other {Your plan ended on {endsOn}. Full access for # more days, then read-only after {graceEndsOn}.}}",
+      "readOnly": "Your plan ended on {endsOn}. The shop is read-only: you can view and print, but not add or change anything.",
+      "renewOwner": "Contact Galla Mandi support to renew.",
+      "renewStaff": "Ask your shop owner to renew.",
+      "dismiss": "Hide for today"
+    },
+    "notice": {
+      "badge": "Read-only",
+      "title": "{shop} is read-only",
+      "titleNoShop": "Your shop is read-only",
+      "body": "This shop’s plan ended on {endsOn}. Your khata, traders and reports are safe — nothing has been deleted.",
+      "subline": "پلان ختم ہو گیا ہے، آپ کا تمام ڈیٹا محفوظ ہے",
+      "points": {
+        "view": "You can still view and print every record",
+        "paused": "Adding and changing entries is paused",
+        "unlock": "Everything unlocks the moment you renew"
+      },
+      "contact": "Contact Galla Mandi support to renew.",
+      "staff": "Staff? Ask your shop owner.",
+      "back": "Back"
+    },
+    "toast": {
+      "readOnly": "Your plan has ended, so the shop is read-only. You can view and print; renew to add or change entries."
+    },
+    "limit": {
+      "title": "Your plan is full",
+      "body": "Your {plan} plan allows {max, number} users, counting the owner, staff and invites not yet accepted. Ask Galla Mandi support to upgrade your plan, or free a place by cancelling an invite or turning off a staff member.",
+      "bodyUnknown": "Your plan has no room for more users. Ask Galla Mandi support to upgrade your plan, or free a place by cancelling an invite or turning off a staff member.",
+      "usage": "{used, number} of {max, number} users on your {plan} plan"
+    }
+  },
+  "dataTable": {
+    "loading": "Loading…",
+    "errorTitle": "Couldn’t load this list",
+    "errorBody": "Check your internet and try again.",
+    "retry": "Try again",
+    "emptyTitle": "Nothing here yet",
+    "results": "{total, plural, =0 {No results} one {# result} other {# results}}",
+    "sortHint": {
+      "none": "Not sorted. Select to sort.",
+      "asc": "Sorted A to Z / oldest first. Select to reverse.",
+      "desc": "Sorted Z to A / newest first. Select to reverse."
+    },
+    "pagination": {
+      "label": "Pages",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page, number} of {pages, number}",
+      "range": "{total, plural, =0 {No results} other {Showing {from, number}–{to, number} of {total, number}}}"
+    },
+    "selection": {
+      "selectPage": "Select all rows on this page",
+      "selectRow": "Select {name}",
+      "bar": "Selected rows",
+      "count": "{n, number} selected",
+      "clear": "Clear selection"
+    },
+    "rowActions": "Actions for {name}",
+    "toolbar": {
+      "search": "Search",
+      "clearFilters": "Clear filters",
+      "all": "All"
+    },
+    "dateRange": {
+      "any": "Any date",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "clear": "Clear",
+      "invalid": "The start date must be on or before the end date.",
+      "summary": "{from} – {to}",
+      "summaryFrom": "From {from}",
+      "summaryTo": "Until {to}"
+    },
+    "view": {
+      "button": "Columns",
+      "title": "Show columns"
+    },
+    "export": {
+      "button": "Export to Excel",
+      "busy": "Exporting…",
+      "failed": "Couldn’t export this list. Please try again."
+    }
+  },
+  "panel": {
+    "pageTitle": "{title} — Galla Mandi",
+    "appName": "Galla Mandi",
+    "appSubtitle": "Shop panel",
+    "menuLabel": "Main menu",
+    "homeLabel": "Galla Mandi — go to {page}",
+    "breadcrumbLabel": "Breadcrumb",
+    "toggleSidebar": "Toggle menu",
+    "skipToContent": "Skip to main content",
+    "shopFallback": "Your shop",
+    "userMenu": {
+      "label": "Account menu",
+      "logout": "Log out",
+      "logoutAll": "Log out of all devices",
+      "logoutAllFailed": "Couldn’t log out of all devices. Try again.",
+      "language": "Language"
+    },
+    "roles": {
+      "super_admin": "Super admin",
+      "owner": "Owner",
+      "manager": "Manager",
+      "operator": "Operator"
+    },
+    "sections": {
+      "dashboard": {
+        "label": "Dashboard",
+        "description": "Today’s rates, purchases and sales at a glance."
+      },
+      "rates": {
+        "label": "Daily rates",
+        "description": "Today’s mandi rate for each commodity, per maund."
+      },
+      "purchases": {
+        "label": "Purchases",
+        "description": "Grain bought from kissans, with their parchi."
+      },
+      "sales": {
+        "label": "Sales",
+        "description": "Grain sold to beoparis, with their parchi."
+      },
+      "traders": {
+        "label": "Traders",
+        "description": "Kissans and beoparis your shop deals with."
+      },
+      "commodities": {
+        "label": "Commodities",
+        "description": "Grains and crops your shop trades, and their deductions."
+      },
+      "ledger": {
+        "label": "Ledger",
+        "description": "Each trader’s khata: what they owe and what you owe."
+      },
+      "payments": {
+        "label": "Payments",
+        "description": "Money paid to kissans and received from beoparis, and the daily cash book."
+      },
+      "reports": {
+        "label": "Reports",
+        "description": "Daily summary, purchases, sales, commission, outstanding and cash book."
+      },
+      "staff": {
+        "label": "Staff",
+        "description": "People who use this shop’s account, and their roles."
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "Shop name, logo, bill (parchi) and deduction settings."
+      }
+    },
+    "crumbs": {
+      "traderProfile": "Trader profile",
+      "newPurchase": "New purchase",
+      "purchase": "Purchase",
+      "editPurchase": "Edit purchase",
+      "newSale": "New sale",
+      "sale": "Sale",
+      "editSale": "Edit sale",
+      "balances": "Balances",
+      "newVoucher": "New voucher",
+      "voucher": "Voucher",
+      "reports": {
+        "daily-summary": "Daily summary",
+        "purchases": "Purchases",
+        "sales": "Sales",
+        "commission": "Commission",
+        "outstanding": "Outstanding",
+        "cash-book": "Cash book"
+      }
+    },
+    "comingSoon": {
+      "title": "Nothing here yet",
+      "body": "This page is coming in a later ticket."
+    },
+    "palette": {
+      "open": "Search pages",
+      "shortcut": "Ctrl K",
+      "title": "Go to a page",
+      "description": "Type a page name, then press Enter to open it.",
+      "placeholder": "Type a page name…",
+      "empty": "No page matches.",
+      "pages": "Pages",
+      "traders": "Traders",
+      "tradersSoon": "Traders search comes with the Traders module"
+    },
+    "loading": "Loading page…",
+    "notFound": {
+      "metaTitle": "Page not found",
+      "code": "404",
+      "title": "Page not found",
+      "body": "The page you opened doesn’t exist or has moved. Check the address or use the menu."
+    },
+    "forbidden": {
+      "code": "403",
+      "title": "You don’t have access",
+      "body": "Your role can’t open this page. Ask your shop owner if you need it."
+    },
+    "backTo": "Back to {page}",
+    "error": {
+      "title": "Something went wrong",
+      "body": "This page couldn’t load. Check your internet and try again.",
+      "retry": "Try again",
+      "reference": "Reference: {digest}"
+    }
+  },
+  "common": {
+    "language": "Language",
+    "languageHint": "Shown on this browser for you. The shop’s default is in Settings.",
+    "close": "Close",
+    "more": "More",
+    "sidebar": "Menu",
+    "sidebarDescription": "The main menu of the shop panel.",
+    "toggleSidebar": "Toggle menu"
+  },
+  "auth": {
+    "meta": {
+      "signIn": "Sign in",
+      "forgotPassword": "Forgot password",
+      "changePassword": "Change password",
+      "acceptInvite": "Accept invite",
+      "shopSuspended": "Shop suspended",
+      "accountDisabled": "Account disabled"
+    },
+    "brand": {
+      "name": "Galla Mandi",
+      "nameSubline": "غلہ منڈی",
+      "headline": "Run your mandi like a modern business.",
+      "headlineSubline": "اپنی منڈی کا پورا حساب ایک جگہ",
+      "intro": "Farmer khata, grain trading, pesticide sales and double-entry books in one calm workspace.",
+      "chips": [
+        "Udhar + grain khata",
+        "Automatic deductions",
+        "Double-entry reports"
+      ],
+      "ratesTitle": "Today’s mandi rates",
+      "ratesTitleSubline": "آج کے ریٹ · فی من",
+      "ratesBadge": "Sample",
+      "rates": [
+        {
+          "name": "Gandum",
+          "en": "Wheat",
+          "price": "Rs 4,150",
+          "change": "▲ 50",
+          "tone": "up"
+        },
+        {
+          "name": "Kapas",
+          "en": "Cotton",
+          "price": "Rs 8,900",
+          "change": "▼ 120",
+          "tone": "down"
+        },
+        {
+          "name": "Chawal",
+          "en": "Basmati",
+          "price": "Rs 9,600",
+          "change": "▲ 200",
+          "tone": "up"
+        },
+        {
+          "name": "Makai",
+          "en": "Maize",
+          "price": "Rs 2,950",
+          "change": "— 0",
+          "tone": "flat"
+        }
+      ],
+      "illustrationLabel": "Grain sacks next to a mandi weighing scale",
+      "features": [
+        "Private to your shop",
+        "Staff roles",
+        "Every change recorded",
+        "Works on slow internet"
+      ]
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your mandi account",
+      "identifierLabel": "Phone number or email",
+      "identifierPlaceholder": "0300 1234567",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Your password",
+      "forgotPassword": "Forgot password?",
+      "rememberMe": "Keep me signed in on this device",
+      "submit": "Sign in",
+      "submitSubline": "داخل ہوں",
+      "submitting": "Signing in…",
+      "retry": "Try again",
+      "retrySubline": "دوبارہ کوشش کریں",
+      "staffHint": "Staff member? Your shop owner can also reset your password.",
+      "staffHintSubline": "اسٹاف؟ آپ کا دکان مالک بھی پاس ورڈ ری سیٹ کر سکتا ہے",
+      "copyright": "© Galla Mandi",
+      "errors": {
+        "identifierRequired": "Enter your phone number or email",
+        "identifierTooLong": "Use 160 characters or fewer",
+        "passwordRequired": "Enter your password",
+        "passwordTooLong": "Use 128 characters or fewer",
+        "invalidCredentials": "Phone number or password is incorrect",
+        "invalidCredentialsSubline": "فون نمبر یا پاس ورڈ غلط ہے",
+        "attemptsLeft": "{n, plural, one {# attempt} other {# attempts}} left before sign-in is paused for 1 minute.",
+        "capsLock": "Check Caps Lock and try again.",
+        "network": "Can’t reach the server. Check your internet and try again.",
+        "unknown": "Something went wrong. Please try again."
+      },
+      "sessionExpired": {
+        "title": "Your session has ended",
+        "body": "For your safety you were signed out. Sign in again to continue.",
+        "subline": "سیشن ختم ہو گیا، دوبارہ سائن ان کریں"
+      }
+    },
+    "locked": {
+      "title": "Sign-in paused",
+      "body": "Too many wrong passwords for {who}. You can try again in 1 minute.",
+      "bodyGeneric": "Too many wrong passwords. You can try again in 1 minute.",
+      "subline": "بہت زیادہ غلط کوششیں۔ ایک منٹ بعد دوبارہ کوشش کریں",
+      "note": "We pause sign-in to protect your shop’s khata. If this wasn’t you, reset your password after the timer ends.",
+      "button": "Try again in {time}",
+      "timerLabel": "Time left before you can sign in again",
+      "resetPassword": "Reset password",
+      "backToSignIn": "Back to sign in"
+    },
+    "forgot": {
+      "backToSignIn": "Back to sign in",
+      "back": "Back",
+      "step": "Step {n, number} of 3",
+      "request": {
+        "title": "Forgot your password?",
+        "body": "Enter the phone number on your account. We’ll send a 6-digit code to reset it.",
+        "subline": "اپنا فون نمبر درج کریں، ہم آپ کو کوڈ بھیجیں گے",
+        "phoneLabel": "Phone number",
+        "countryCode": "+92",
+        "country": "PK",
+        "phonePlaceholder": "300 1234567",
+        "channelLegend": "Send the code by",
+        "whatsapp": "WhatsApp",
+        "sms": "SMS",
+        "submit": "Send code",
+        "submitSubline": "کوڈ بھیجیں",
+        "submitting": "Sending…",
+        "noPhone": "No phone on your account? Ask your shop owner to reset it from",
+        "noPhonePath": "Staff › Reset password"
+      },
+      "code": {
+        "title": "Enter the 6-digit code",
+        "sentTo": "We sent it on {channel} to",
+        "change": "Change",
+        "subline": "واٹس ایپ پر بھیجا گیا 6 ہندسوں کا کوڈ درج کریں",
+        "legend": "One-time code",
+        "digitLabel": "Digit {i, number} of 6",
+        "expiresIn": "Code expires in {time}",
+        "expired": "Code expired. Send a new one.",
+        "resendIn": "Resend in",
+        "resend": "Resend code",
+        "resent": "We sent a new code.",
+        "submit": "Verify code",
+        "submitSubline": "تصدیق کریں",
+        "didntGet": "Didn’t get it? Check the number, or",
+        "sendBySms": "send by SMS instead",
+        "sendByWhatsapp": "send on WhatsApp instead"
+      },
+      "newPassword": {
+        "title": "Set a new password",
+        "subline": "نیا پاس ورڈ بنائیں",
+        "submit": "Save new password",
+        "submitSubline": "محفوظ کریں",
+        "submitting": "Saving…"
+      },
+      "errors": {
+        "phoneRequired": "Enter your phone number",
+        "phoneInvalid": "Enter a mobile number like 300 1234567",
+        "codeInvalid": "Enter all 6 digits",
+        "invalidOtp": "Invalid or expired code",
+        "tooMany": "Too many tries. Wait a minute and try again."
+      }
+    },
+    "password": {
+      "newLabel": "New password",
+      "newPlaceholder": "At least 8 characters",
+      "confirmLabel": "Confirm new password",
+      "confirmPlaceholder": "Type it again",
+      "show": "Show password",
+      "hide": "Hide password",
+      "strengthLabel": "Password strength",
+      "strength": ["Too short", "Weak", "Fair", "Good", "Strong"],
+      "rules": {
+        "length": "At least 8 characters",
+        "number": "One number",
+        "case": "Upper and lower case",
+        "symbol": "One symbol (! @ #)"
+      },
+      "matches": "Passwords match",
+      "errors": {
+        "tooShort": "Use at least 8 characters",
+        "tooLong": "Use 128 characters or fewer",
+        "mismatch": "Passwords don’t match",
+        "currentRequired": "Enter your current password"
+      }
+    },
+    "changePassword": {
+      "greeting": "Assalam o Alaikum,",
+      "mustChange": {
+        "title": "Choose your own password",
+        "body": "Your shop owner gave you a temporary password. Replace it now — only you should know your password.",
+        "subline": "عارضی پاس ورڈ تبدیل کر کے اپنا پاس ورڈ بنائیں",
+        "currentLabel": "Temporary password"
+      },
+      "voluntary": {
+        "title": "Change your password",
+        "body": "Enter your current password, then choose a new one.",
+        "subline": "اپنا پاس ورڈ تبدیل کریں",
+        "currentLabel": "Current password"
+      },
+      "submit": "Save and continue",
+      "submitSubline": "جاری رکھیں",
+      "submitting": "Saving…",
+      "signOut": "Sign out"
+    },
+    "passwordChanged": {
+      "imageAlt": "Wheat field at sunrise",
+      "title": "Password changed",
+      "ready": "Your new password is ready.",
+      "signedOut": "{other, select, yes {We signed you out of {n, plural, one {# other device} other {# other devices}} to keep your khata safe.} other {We signed you out of {n, plural, one {# device} other {# devices}} to keep your khata safe.}}",
+      "subline": "پاس ورڈ کامیابی سے تبدیل ہو گیا",
+      "toSignIn": "Continue to sign in",
+      "toSignInSubline": "سائن ان کریں",
+      "toDashboard": "Continue",
+      "toDashboardSubline": "جاری رکھیں"
+    },
+    "blocked": {
+      "shopSuspended": {
+        "badge": "Shop suspended",
+        "title": "{shop} is paused",
+        "titleNoShop": "Your shop is paused",
+        "body": "This shop’s subscription has ended. Your khata, traders and reports are safe — nothing has been deleted.",
+        "subline": "دکان عارضی طور پر بند ہے، آپ کا تمام ڈیٹا محفوظ ہے",
+        "points": [
+          "All data is kept for 90 days",
+          "The owner can still download reports",
+          "Everything unlocks the moment you renew"
+        ],
+        "contact": "Shop suspended, contact support to renew.",
+        "anotherAccount": "Use another account",
+        "staff": "Staff? Ask your shop owner."
+      },
+      "accountDisabled": {
+        "title": "Your account is turned off",
+        "body": "The owner of your shop has turned off sign-in for your account. Entries you made before are still in the shop’s records.",
+        "subline": "آپ کا اکاؤنٹ دکان مالک نے بند کر دیا ہے",
+        "hint": "Think this is a mistake? Ask your shop owner to turn your account back on from",
+        "hintPath": "Staff › your name › Activate",
+        "back": "Back to sign in"
+      }
+    },
+    "guard": {
+      "loading": "Loading your shop…"
+    }
+  },
+  "staff": {
+    "roles": {
+      "owner": "Owner",
+      "manager": "Manager",
+      "operator": "Operator"
+    },
+    "roleHints": {
+      "owner": "Everything, including staff and shop settings",
+      "manager": "Daily work and reports; no staff or settings",
+      "operator": "Rates, purchases, sales and payments only"
+    },
+    "invitationStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "tabs": {
+      "label": "Staff sections",
+      "staff": "Staff",
+      "invitations": "Pending invitations"
+    },
+    "inviteButton": "Invite staff",
+    "table": {
+      "caption": "Staff of this shop",
+      "name": "Name",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "lastLogin": "Last login",
+      "actions": "Actions",
+      "you": "You",
+      "active": "Active",
+      "disabled": "Disabled",
+      "mustChangePassword": "Must change password",
+      "never": "Never",
+      "emptyTitle": "No staff yet",
+      "emptyBody": "Invite your managers and operators so they can sign in."
+    },
+    "actions": {
+      "menu": "Actions for {name}",
+      "changeRole": "Change role",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "cantDeactivateSelf": "You can’t deactivate yourself"
+    },
+    "changeRole": {
+      "title": "Change role of {name}",
+      "description": "Pick what this person may do in your shop.",
+      "appliesSoon": "New permissions apply within 15 minutes, the next time their sign-in refreshes.",
+      "label": "Role",
+      "save": "Save role",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "done": "{name} is now {role}."
+    },
+    "status": {
+      "deactivate": {
+        "title": "Deactivate {name}?",
+        "body": "They are signed out at once and can’t sign in until you activate them again. Entries they made stay in your records.",
+        "confirm": "Deactivate",
+        "pending": "Deactivating…",
+        "done": "{name} is deactivated."
+      },
+      "activate": {
+        "title": "Activate {name}?",
+        "body": "They can sign in again with their phone and password.",
+        "confirm": "Activate",
+        "pending": "Activating…",
+        "done": "{name} can sign in again."
+      },
+      "cancel": "Cancel"
+    },
+    "invitations": {
+      "caption": "Invitations sent from this shop",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "expires": "Expires",
+      "sent": "Sent",
+      "actions": "Actions",
+      "cancel": "Cancel",
+      "resend": "Resend",
+      "resending": "Sending…",
+      "emptyTitle": "No invitations",
+      "emptyBody": "Invite staff by link or with a temporary password.",
+      "cancelDialog": {
+        "title": "Cancel the invite to {phone}?",
+        "body": "The link stops working at once. You can send a new invite later.",
+        "confirm": "Cancel invite",
+        "pending": "Cancelling…",
+        "keep": "Keep invite",
+        "done": "Invite cancelled."
+      },
+      "resent": "New invite link created."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server. Check your internet and try again."
+    },
+    "invite": {
+      "title": "Invite staff",
+      "description": "Add a manager or operator. Send them a link to set their own password, or give them a temporary one.",
+      "phone": "Phone number",
+      "phonePlaceholder": "0300 1234567",
+      "role": "Role",
+      "method": "How will they sign in?",
+      "methods": {
+        "link": {
+          "label": "Send invite link",
+          "hint": "They open the link, add their name and choose a password."
+        },
+        "password": {
+          "label": "Set a temporary password",
+          "hint": "You give them a password; they change it at first sign-in."
+        }
+      },
+      "name": "Full name",
+      "namePlaceholder": "e.g. Muhammad Bilal",
+      "submit": "Send invite",
+      "submitPassword": "Create account",
+      "submitting": "Sending…",
+      "cancel": "Cancel",
+      "errors": {
+        "phoneRequired": "Enter a phone number",
+        "phoneInvalid": "Enter a mobile number like 0300 1234567",
+        "roleRequired": "Pick a role",
+        "nameRequired": "Enter their name",
+        "nameTooLong": "Use 120 characters or fewer",
+        "phoneTaken": "This phone already has an account"
+      }
+    },
+    "oneTime": {
+      "linkTitle": "Invite link ready",
+      "linkBody": "Send this link to {phone}. It works once and expires in 48 hours.",
+      "linkLabel": "Invite link",
+      "passwordTitle": "Account created",
+      "passwordBody": "{name} can sign in with {phone} and this temporary password, then choose their own.",
+      "passwordLabel": "Temporary password",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyFailed": "Couldn’t copy. Select the text and copy it yourself.",
+      "whatsapp": "Share on WhatsApp",
+      "whatsappMessage": "You’re invited to join our shop on Galla Mandi. Open this link to set your password: {url}",
+      "warning": "This is shown only once. Copy it now: you can’t see it again after closing.",
+      "done": "Done"
+    },
+    "accept": {
+      "title": "You’re invited to join",
+      "subline": "آپ کو منڈی ٹیم میں شامل ہونے کی دعوت دی گئی ہے",
+      "body": "Your shop owner invited you to Galla Mandi. Add your name and choose a password to join.",
+      "name": "Your full name",
+      "namePlaceholder": "e.g. Muhammad Bilal",
+      "passwordLabel": "Create a password",
+      "submit": "Join shop",
+      "submitSubline": "شامل ہوں",
+      "submitting": "Joining…",
+      "footer": "This invite works once. Not you?",
+      "ignore": "Ignore it",
+      "success": {
+        "title": "You’re in, {shop}",
+        "body": "Your account is ready. Sign in with your phone number and the password you just chose.",
+        "subline": "آپ کا اکاؤنٹ تیار ہے",
+        "signIn": "Continue to sign in",
+        "signInSubline": "سائن اِن کریں"
+      },
+      "failed": {
+        "title": "This invite can’t be used",
+        "phoneTakenTitle": "You already have an account",
+        "askOwner": "Ask your shop owner to send you a new invite from Staff › Invite staff.",
+        "toSignIn": "Go to sign in"
+      },
+      "errors": {
+        "nameRequired": "Enter your name",
+        "nameTooLong": "Use 120 characters or fewer",
+        "missingToken": "This invite link is incomplete. Open the link from your message again.",
+        "INVITE_INVALID": "This invite link isn’t valid.",
+        "INVITE_USED": "This invite has already been used.",
+        "INVITE_CANCELLED": "This invite was cancelled by the shop owner.",
+        "INVITE_EXPIRED": "This invite has expired.",
+        "phoneTaken": "This phone already has an account — sign in instead.",
+        "tooMany": "Too many tries. Wait a minute and try again."
+      }
+    }
+  },
+  "settings": {
+    "units": {
+      "kg": "Kilogram (kg)",
+      "maund": "Maund (mn)",
+      "bag": "Bag (bori)"
+    },
+    "languages": {
+      "en": "English",
+      "ur": "اردو (Urdu)"
+    },
+    "loadError": "Could not load the shop settings.",
+    "retry": "Try again",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "discard": "Discard changes",
+    "saved": "Settings saved",
+    "nothingChanged": "No changes to save",
+    "unsaved": "You have unsaved changes",
+    "sections": {
+      "profile": {
+        "title": "Shop profile",
+        "description": "Your shop's name, logo and contact details."
+      },
+      "parchi": {
+        "title": "Parchi",
+        "description": "What is printed at the top and bottom of every bill."
+      },
+      "charges": {
+        "title": "Charges & commission",
+        "description": "Used for new purchases. Purchases already saved keep their own values."
+      },
+      "units": {
+        "title": "Units & language",
+        "description": "How weights are entered and shown, and the shop’s default language."
+      },
+      "numbering": {
+        "title": "Numbering",
+        "description": "How bill numbers look and when the year starts."
+      }
+    },
+    "fields": {
+      "name": "Shop name",
+      "phone": "Phone",
+      "phonePlaceholder": "03XX XXXXXXX",
+      "email": "Email",
+      "emailPlaceholder": "Optional",
+      "city": "City",
+      "address": "Address",
+      "displayName": "Name on parchi",
+      "displayNameHint": "Leave empty to print the shop name.",
+      "parchiFooter": "Footer text",
+      "parchiFooterHint": "e.g. thanks, terms or bank details. Up to 500 characters.",
+      "defaultCommissionPct": "Commission",
+      "defaultCommissionPctHint": "Percent of the sale amount.",
+      "marketFeePct": "Market fee",
+      "marketFeePctHint": "Percent of the sale amount.",
+      "labourPerBag": "Labour per bag",
+      "labourPerBagHint": "Rupees for each bag (bori).",
+      "defaultUnit": "Default unit",
+      "maundKg": "Kg in one maund",
+      "maundKgHint": "Example: 1,000 kg = {example}",
+      "language": "Shop default language",
+      "languageHint": "What everyone in the shop sees until they pick their own language in the account menu.",
+      "billPrefix": "Bill number prefix",
+      "billPrefixHint": "Next bill looks like {example}.",
+      "financialYearStart": "Financial year starts on"
+    },
+    "logo": {
+      "label": "Logo",
+      "drop": "Drop a logo here or click to choose",
+      "dropActive": "Drop the image here",
+      "rules": "PNG or JPG, up to 1 MB",
+      "uploading": "Uploading…",
+      "uploaded": "Logo updated",
+      "remove": "Remove logo",
+      "removed": "Logo removed",
+      "tooLarge": "The logo must be 1 MB or smaller",
+      "wrongType": "The logo must be a PNG or JPG image",
+      "oneFile": "Choose one image"
+    },
+    "preview": {
+      "title": "Parchi preview",
+      "description": "Updates as you type.",
+      "bill": "Bill no.",
+      "date": "Date",
+      "phone": "Ph",
+      "sampleDate": "29 Oct 2026"
+    },
+    "errors": {
+      "nameRequired": "Enter the shop name",
+      "tooLong": "Use at most {max, number} characters",
+      "phoneRequired": "Enter the phone number",
+      "phoneInvalid": "Enter a valid mobile number, e.g. 0300 1234567",
+      "emailInvalid": "Enter a valid email",
+      "percent": "Enter a percentage from 0 to 100 (up to 2 decimals)",
+      "money": "Enter an amount in rupees (up to 2 decimals)",
+      "maundKg": "Enter kg per maund, more than 0 (up to 3 decimals)",
+      "billPrefix": "Use letters, digits, - or / only",
+      "date": "Enter a valid date",
+      "generic": "Something went wrong. Please try again.",
+      "network": "No connection to the server. Check your internet and try again."
+    }
+  },
+  "traders": {
+    "types": {
+      "kissan": "Kissan",
+      "beopari": "Beopari",
+      "arhti": "Arhti"
+    },
+    "typeHints": {
+      "kissan": "Farmer who sells grain",
+      "beopari": "Buyer of grain",
+      "arhti": "Commission agent"
+    },
+    "balanceTypes": {
+      "debit": "Debit",
+      "credit": "Credit"
+    },
+    "fatherOf": "s/o {name}",
+    "fatherPrefix": "s/o",
+    "none": "—",
+    "active": "Active",
+    "inactive": "Inactive",
+    "list": {
+      "addButton": "Add trader",
+      "tabsLabel": "Trader types",
+      "allTypes": "All",
+      "searchLabel": "Search traders",
+      "searchPlaceholder": "Name or phone",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "caption": "Traders of this shop",
+      "exportFileName": "traders",
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "phone": "Phone",
+        "village": "Village",
+        "openingBalance": "Opening balance",
+        "status": "Status",
+        "added": "Added"
+      },
+      "empty": {
+        "title": "No traders yet",
+        "body": "Add the kissans, beoparis and arhtis your shop deals with."
+      },
+      "noMatches": {
+        "title": "No traders match",
+        "body": "Try another name or phone number, or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "view": "View profile",
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete"
+    },
+    "status": {
+      "deactivate": {
+        "title": "Deactivate {name}?",
+        "body": "They won’t show up when picking a trader for a new purchase, sale or payment. Their khata and past entries stay, and reports still show them.",
+        "confirm": "Deactivate",
+        "pending": "Deactivating…",
+        "done": "{name} is deactivated."
+      },
+      "activate": {
+        "title": "Activate {name}?",
+        "body": "They can be picked for purchases, sales and payments again.",
+        "confirm": "Activate",
+        "pending": "Activating…",
+        "done": "{name} is active again."
+      },
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "title": "Delete {name}?",
+      "body": "The trader is removed from your lists. A trader with purchases, sales or payments can’t be deleted: deactivate them instead.",
+      "confirm": "Delete",
+      "pending": "Deleting…",
+      "done": "{name} is deleted.",
+      "hasTransactions": "This trader has transactions and cannot be deleted. Deactivate the trader instead.",
+      "deactivateInstead": "Deactivate instead",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "form": {
+      "addTitle": "Add trader",
+      "addDescription": "Only the type and name are needed; add the rest now or later.",
+      "editTitle": "Edit {name}",
+      "editDescription": "Change the details and save.",
+      "sections": {
+        "basic": "Basic details",
+        "address": "Address",
+        "opening": "Opening balance and limit",
+        "notes": "Notes"
+      },
+      "optional": "optional",
+      "type": "Type",
+      "name": "Name",
+      "namePlaceholder": "e.g. Muhammad Aslam",
+      "fatherName": "Father’s name",
+      "phone": "Phone",
+      "phonePlaceholder": "0300 1234567",
+      "cnic": "CNIC",
+      "cnicPlaceholder": "12345-1234567-1",
+      "village": "Village",
+      "address": "Address",
+      "openingBalance": "Opening balance",
+      "openingBalanceHint": "What was owed before this shop started using Galla Mandi. Leave empty for none.",
+      "openingBalanceType": "Who owes it?",
+      "balanceTypes": {
+        "debit": {
+          "label": "Debit (receivable)",
+          "hint": "The trader owes the shop"
+        },
+        "credit": {
+          "label": "Credit (payable)",
+          "hint": "The shop owes the trader"
+        }
+      },
+      "creditLimit": "Credit limit",
+      "creditLimitHint": "Leave empty for no limit.",
+      "notes": "Notes",
+      "isActive": "Active",
+      "isActiveHint": "Inactive traders can’t be picked for new entries but stay in reports.",
+      "currency": "Rs",
+      "submitAdd": "Add trader",
+      "submitEdit": "Save changes",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "added": "{name} added.",
+      "saved": "{name} saved.",
+      "nothingChanged": "Nothing changed."
+    },
+    "profile": {
+      "back": "Back to traders",
+      "edit": "Edit",
+      "loading": "Loading trader…",
+      "details": "Details",
+      "fields": {
+        "type": "Type",
+        "status": "Status",
+        "fatherName": "Father’s name",
+        "phone": "Phone",
+        "cnic": "CNIC",
+        "village": "Village",
+        "address": "Address",
+        "openingBalance": "Opening balance",
+        "creditLimit": "Credit limit",
+        "notes": "Notes",
+        "added": "Added on"
+      },
+      "noLimit": "No limit",
+      "balance": {
+        "title": "Current balance",
+        "receivable": "Receivable",
+        "payable": "Payable",
+        "settled": "Settled",
+        "receivableHint": "{name} owes the shop this amount.",
+        "payableHint": "The shop owes {name} this amount.",
+        "settledHint": "Nothing is owed either way."
+      },
+      "transactions": {
+        "title": "Recent transactions",
+        "emptyTitle": "No transactions yet",
+        "emptyBody": "Purchases, sales and payments with this trader will appear here once those modules are ready."
+      },
+      "error": {
+        "title": "Couldn’t load this trader",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      }
+    },
+    "combobox": {
+      "placeholder": "Pick a trader",
+      "searchLabel": "Search traders",
+      "searchPlaceholder": "Search name or phone…",
+      "results": "Traders",
+      "loading": "Searching…",
+      "error": "Couldn’t load traders.",
+      "retry": "Try again",
+      "empty": "No active trader matches “{query}”.",
+      "emptyAll": "No active traders yet.",
+      "quickAdd": "Add “{query}” as new trader"
+    },
+    "errors": {
+      "typeRequired": "Choose kissan, beopari or arhti",
+      "nameRequired": "Enter the name (at least 2 characters)",
+      "tooLong": "Use at most {max, number} characters",
+      "phoneInvalid": "Enter a valid phone number",
+      "cnicInvalid": "Enter the CNIC as 12345-1234567-1",
+      "money": "Enter an amount in rupees (up to 2 decimals)",
+      "phoneTaken": "Another trader in this shop has this phone number",
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server. Check your internet and try again."
+    }
+  },
+  "commodities": {
+    "units": {
+      "kg": "Kilogram (kg)",
+      "maund": "Maund (mn)",
+      "bag": "Bag (bori)"
+    },
+    "unitsShort": {
+      "kg": "Kg",
+      "maund": "Maund",
+      "bag": "Bag"
+    },
+    "categories": {
+      "grain": "Grain",
+      "pulse": "Pulse",
+      "oilseed": "Oilseed",
+      "fibre": "Fibre",
+      "vegetable": "Vegetable"
+    },
+    "none": "—",
+    "active": "Active",
+    "inactive": "Inactive",
+    "bagOf": "{weight} bag",
+    "percent": "{value}%",
+    "list": {
+      "addButton": "Add commodity",
+      "searchLabel": "Search commodities",
+      "searchPlaceholder": "Name or Urdu name",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "categoryLabel": "Category",
+      "categoryAll": "All",
+      "caption": "Commodities of this shop",
+      "exportFileName": "commodities",
+      "shopDefault": "Shop default",
+      "charge": "{label} {value}",
+      "columns": {
+        "name": "Name",
+        "nameUr": "Urdu name",
+        "category": "Category",
+        "defaultUnit": "Default unit",
+        "bagWeight": "Bag weight",
+        "charges": "Charges",
+        "status": "Status",
+        "added": "Added"
+      },
+      "empty": {
+        "title": "No commodities yet",
+        "body": "Add the grains and crops your shop buys and sells."
+      },
+      "noMatches": {
+        "title": "No commodities match",
+        "body": "Try another name, or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "edit": "Edit",
+      "editName": "Edit {name}",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "delete": "Delete"
+    },
+    "status": {
+      "deactivate": {
+        "title": "Deactivate {name}?",
+        "body": "It won’t show up when picking a commodity for new rates, purchases or sales. Past entries keep it, and reports still show it.",
+        "confirm": "Deactivate",
+        "pending": "Deactivating…",
+        "done": "{name} is deactivated."
+      },
+      "activate": {
+        "title": "Activate {name}?",
+        "body": "It can be picked for rates, purchases and sales again.",
+        "confirm": "Activate",
+        "pending": "Activating…",
+        "done": "{name} is active again."
+      },
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "title": "Delete {name}?",
+      "body": "The commodity is removed from your list. A commodity used in rates, purchases or sales can’t be deleted: deactivate it instead.",
+      "confirm": "Delete",
+      "pending": "Deleting…",
+      "done": "{name} is deleted.",
+      "inUse": "This commodity is used in rates, purchases or sales and cannot be deleted. Deactivate it instead.",
+      "deactivateInstead": "Deactivate instead",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "form": {
+      "addTitle": "Add commodity",
+      "addDescription": "Only the name is needed; charges left empty use the shop’s defaults.",
+      "editTitle": "Edit {name}",
+      "editDescription": "Change the details and save.",
+      "sections": {
+        "basic": "Basic details",
+        "units": "Unit and bag",
+        "charges": "Charges"
+      },
+      "chargesHint": "Set these only when this commodity is charged differently from the rest of the shop.",
+      "optional": "optional",
+      "name": "Name",
+      "namePlaceholder": "e.g. Gandum",
+      "nameUr": "Urdu name",
+      "nameUrPlaceholder": "مثلاً گندم",
+      "category": "Category",
+      "categoryPlaceholder": "e.g. grain",
+      "categoryHint": "Used to group and filter the list.",
+      "defaultUnit": "Default unit",
+      "defaultUnitHint": "What new rates and purchases start with.",
+      "bagWeightKg": "Bag weight",
+      "bagWeightHint": "Kg in one bag (bori). Leave empty to enter it each time.",
+      "bagWeightPlaceholder": "e.g. 100",
+      "charges": {
+        "commissionPct": "Commission",
+        "marketFeePct": "Market fee",
+        "labourPerBag": "Labour per bag"
+      },
+      "shopDefault": "Shop default: {value}. Leave empty to use it.",
+      "shopDefaultUnknown": "Leave empty to use the shop default.",
+      "useDefault": "Use shop default",
+      "useDefaultFor": "{label}: use shop default",
+      "isActive": "Active",
+      "isActiveHint": "Inactive commodities can’t be picked for new entries but stay in past entries and reports.",
+      "currency": "Rs",
+      "kg": "kg",
+      "submitAdd": "Add commodity",
+      "submitEdit": "Save changes",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "added": "{name} added.",
+      "saved": "{name} saved.",
+      "nothingChanged": "Nothing changed."
+    },
+    "combobox": {
+      "placeholder": "Pick a commodity",
+      "searchLabel": "Search commodities",
+      "searchPlaceholder": "Search name or Urdu name…",
+      "results": "Commodities",
+      "loading": "Searching…",
+      "error": "Couldn’t load commodities.",
+      "retry": "Try again",
+      "empty": "No active commodity matches “{query}”.",
+      "emptyAll": "No active commodities yet."
+    },
+    "errors": {
+      "nameRequired": "Enter the name (at least 2 characters)",
+      "tooLong": "Use at most {max, number} characters",
+      "unitRequired": "Choose kg, maund or bag",
+      "bagWeight": "Enter the bag weight in kg (up to 3 decimals)",
+      "bagWeightZero": "Bag weight must be more than 0",
+      "percent": "Enter a percentage from 0 to 100 (up to 2 decimals)",
+      "money": "Enter an amount in rupees (up to 2 decimals)",
+      "nameTaken": "Another commodity in this shop has this name",
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server. Check your internet and try again."
+    }
+  },
+  "rates": {
+    "perUnit": {
+      "maund": "per maund",
+      "kg": "per kg"
+    },
+    "none": "—",
+    "errors": {
+      "money": "Enter a rate in rupees (up to 2 decimals)",
+      "minRequired": "Enter the min rate",
+      "maxRequired": "Enter the max rate",
+      "maxBelowMin": "Max rate must be at least the min rate",
+      "cannotClear": "A saved rate can’t be cleared; enter min and max",
+      "pastDay": "Only the owner or a manager can change the rates of a past day",
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server. Check your internet and try again."
+    },
+    "date": {
+      "label": "Date",
+      "today": "Today, {date}",
+      "showing": "Rates of {date}",
+      "backToToday": "Back to today",
+      "pastHint": "You’re changing the rates of a past day."
+    },
+    "grid": {
+      "caption": "Rates per commodity",
+      "columns": {
+        "commodity": "Commodity",
+        "minRate": "Min",
+        "maxRate": "Max",
+        "avgRate": "Avg"
+      },
+      "inputLabel": "{column, select, minRate {Min} maxRate {Max} other {Avg}} rate for {name}",
+      "optional": "optional",
+      "keyboardHint": "Tab or Enter moves to the next cell, Shift+Enter goes back. Leave a commodity empty to skip it.",
+      "readOnly": "You can view the rates; only the owner or a manager can change them.",
+      "copyYesterday": "Copy yesterday",
+      "copyYesterdayHint": "Fill the empty rows with the rates of {date}",
+      "noYesterday": "No rates were saved the day before.",
+      "copied": "{count, plural, one {Copied # rate from the day before. Check it and save.} other {Copied # rates from the day before. Check them and save.}}",
+      "nothingToCopy": "Every row with a rate the day before is already filled.",
+      "save": "Save rates",
+      "saving": "Saving…",
+      "discard": "Discard changes",
+      "unsaved": "You have unsaved changes",
+      "saved": "Rates saved.",
+      "nothingChanged": "Nothing to save: enter at least one rate.",
+      "leaveWarning": "You have unsaved rates. Leave this page and lose them?",
+      "loadError": "Couldn’t load the rates.",
+      "retry": "Try again",
+      "empty": {
+        "title": "No commodities yet",
+        "body": "Add the commodities your shop trades, then enter their rates here.",
+        "action": "Add commodities"
+      }
+    },
+    "chart": {
+      "title": "Rate trend",
+      "description": "Average rate with the min–max band. Days without a rate are left empty.",
+      "commodityLabel": "Commodity",
+      "rangeLabel": "Period",
+      "range": "{days, number} days",
+      "band": "Min–max",
+      "avg": "Avg",
+      "min": "Min",
+      "max": "Max",
+      "noRate": "No rate",
+      "noData": "No rates in this period.",
+      "loadError": "Couldn’t load the trend.",
+      "axis": "{unit, select, kg {Rs per kg} other {Rs per maund}}"
+    }
+  },
+  "dashboard": {
+    "bills": "{n, plural, one {# bill} other {# bills}}",
+    "bags": "{n, plural, one {# bag} other {# bags}}",
+    "traders": "{n, plural, one {# trader} other {# traders}}",
+    "today": "Today, {date}",
+    "updated": "Updated {time}",
+    "refreshing": "Refreshing…",
+    "autoRefresh": "Refreshes every 3 minutes",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "tiles": {
+      "label": "Today’s position",
+      "error": "Couldn’t load today’s figures. Check your internet and try again.",
+      "purchases": {
+        "title": "Purchases"
+      },
+      "sales": {
+        "title": "Sales"
+      },
+      "commission": {
+        "title": "Commission",
+        "purchases": "Purchases {amount}",
+        "sales": "Sales {amount}"
+      },
+      "cash": {
+        "title": "Cash in hand",
+        "cashIn": "In {amount}",
+        "cashOut": "Out {amount}"
+      }
+    },
+    "trend": {
+      "title": "Purchases vs sales",
+      "description": "Net amount of posted bills per day, last 30 days.",
+      "purchases": "Purchases",
+      "sales": "Sales",
+      "total": "30-day total",
+      "chartLabel": "Purchases vs sales, last 30 days. Purchases {purchases}, sales {sales}.",
+      "noBills": "No bills",
+      "empty": "No purchases or sales in the last 30 days.",
+      "error": "Couldn’t load the last 30 days. Check your internet and try again."
+    },
+    "rates": {
+      "title": "Rates of top commodities",
+      "description": "Most traded in the last 30 days: min–max band and average.",
+      "unit": {
+        "maund": "/ maund",
+        "kg": "/ kg"
+      },
+      "latest": "Latest {date}",
+      "range": "{min} – {max}",
+      "chartLabel": "{name} rate, last 30 days",
+      "min": "Min",
+      "max": "Max",
+      "avg": "Avg",
+      "none": "—",
+      "noRate": "No rate saved",
+      "noRates": "No rates saved in the last 30 days.",
+      "empty": "Rates show here once your shop has bills in the last 30 days.",
+      "error": "Couldn’t load the rates. Check your internet and try again."
+    },
+    "outstanding": {
+      "shown": "Top {shown, number} of {count}",
+      "openKhata": "Open {name}’s khata",
+      "error": "Couldn’t load the balances. Check your internet and try again.",
+      "receivable": {
+        "title": "Top receivables",
+        "description": "Traders who owe you, largest first.",
+        "total": "Total receivable",
+        "empty": "No one owes you money."
+      },
+      "payable": {
+        "title": "Top payables",
+        "description": "Traders you owe, largest first.",
+        "total": "Total payable",
+        "empty": "You owe no one."
+      }
+    },
+    "empty": {
+      "title": "Your dashboard is ready",
+      "body": "It fills in as you work. Start with today’s rates and your first bill; the figures update by themselves every few minutes.",
+      "steps": "Get started",
+      "setRates": "Set today’s rates",
+      "seeRates": "See today’s rates",
+      "purchase": "Add your first purchase",
+      "sale": "Add your first sale"
+    },
+    "operator": {
+      "tilesLabel": "Today’s work",
+      "purchases": "Purchases today",
+      "sales": "Sales today",
+      "postedHint": "Posted bills",
+      "error": "Couldn’t load today’s bills. Check your internet and try again.",
+      "rates": {
+        "title": "Today’s rates",
+        "description": "Per commodity, as saved on the Daily rates page.",
+        "empty": "No rates saved for today yet."
+      },
+      "empty": {
+        "title": "Nothing entered today yet",
+        "body": "Today’s bills and rates show here as soon as they are saved.",
+        "purchase": "New purchase",
+        "sale": "New sale"
+      }
+    }
+  },
+  "purchases": {
+    "statuses": {
+      "draft": "Draft",
+      "posted": "Saved",
+      "cancelled": "Cancelled"
+    },
+    "perUnit": {
+      "maund": "per maund",
+      "kg": "per kg",
+      "bag": "per bag"
+    },
+    "units": {
+      "maund": "Maund",
+      "kg": "Kg",
+      "bag": "Bag"
+    },
+    "chargeTypes": {
+      "commission": "Commission",
+      "market_fee": "Market fee",
+      "labour": "Labour",
+      "other": "Other"
+    },
+    "none": "—",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server, so the purchase may not be saved. Check your internet and press Save again: it won’t be saved twice.",
+      "dayClosed": "This day is closed. Only the owner can change a purchase of a past day.",
+      "cancelled": "This purchase is cancelled and can’t be changed.",
+      "alreadyCancelled": "This purchase was already cancelled.",
+      "forbidden": "You don’t have permission to do this.",
+      "traderRequired": "Choose a kissan",
+      "dateRequired": "Enter the date",
+      "dateInFuture": "A purchase can’t be dated in the future",
+      "notesTooLong": "Use at most 1,000 characters",
+      "itemsRequired": "Add at least one item",
+      "tooManyItems": "Use at most 100 items",
+      "commodityRequired": "Choose a commodity",
+      "bags": "Enter a whole number of bags",
+      "bagsTooMany": "Enter at most 1,000,000 bags",
+      "bagsForBagRate": "Enter the bags for a per-bag rate",
+      "weightRequired": "Enter the weight",
+      "weightKg": "Enter the weight in kg (up to 3 decimals)",
+      "weightMaund": "Enter the weight in maund (up to 6 decimals)",
+      "weightZero": "Enter a weight above 0",
+      "weightTooLarge": "The weight is too large",
+      "rateRequired": "Enter the rate",
+      "rate": "Enter the rate in rupees (up to 2 decimals)",
+      "rateZero": "Enter a rate above 0"
+    },
+    "billOf": "Bill {billNo}",
+    "list": {
+      "newButton": "New purchase",
+      "caption": "Purchases",
+      "searchLabel": "Search purchases",
+      "searchPlaceholder": "Bill number, kissan name or phone…",
+      "dateLabel": "Date",
+      "traderLabel": "Kissan",
+      "traderAll": "All kissans",
+      "commodityLabel": "Commodity",
+      "commodityAll": "All commodities",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "exportFileName": "purchases",
+      "columns": {
+        "billNo": "Bill no",
+        "purchaseDate": "Date",
+        "trader": "Kissan",
+        "grossAmount": "Gross",
+        "totalDeductions": "Deductions",
+        "netAmount": "Net",
+        "outstanding": "Outstanding",
+        "status": "Status"
+      },
+      "empty": {
+        "title": "No purchases yet",
+        "body": "Purchases from kissans show here once they’re saved."
+      },
+      "noMatches": {
+        "title": "No purchases match",
+        "body": "Try another search or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "cancel": "Cancel purchase",
+      "reprint": "Reprint"
+    },
+    "form": {
+      "newTitle": "New purchase",
+      "newDescription": "Grain bought from a kissan. The total updates as you type.",
+      "editTitle": "Edit {billNo}",
+      "editDescription": "Changing the items recalculates the bill and corrects the kissan’s khata.",
+      "header": "Bill",
+      "date": "Date",
+      "trader": "Kissan",
+      "traderPlaceholder": "Choose a kissan…",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional, e.g. truck number",
+      "items": "Items",
+      "itemLabel": "Item {n, number}",
+      "fieldOfItem": "{field}, {item}",
+      "commodity": "Commodity",
+      "commodityPlaceholder": "Choose…",
+      "bags": "Bags",
+      "weight": "Weight",
+      "weightUnit": "Weight unit",
+      "rate": "Rate",
+      "rateUnit": "Rate per",
+      "amount": "Amount",
+      "weightIs": "= {kg} ({maund})",
+      "todaysRate": "Today’s rate",
+      "rateChanged": "Today’s rate is {rate}",
+      "noRateToday": "No rate entered today",
+      "addItem": "Add item",
+      "removeItem": "Remove item {n, number}",
+      "keyboardHint": "Enter moves to the next box; Enter on the last rate adds an item. Ctrl+S saves, Ctrl+P saves and prints.",
+      "save": "Save",
+      "saveAndPrint": "Save & Print",
+      "saveAndNew": "Save & New",
+      "saving": "Saving…",
+      "cancelEdit": "Discard changes",
+      "saved": "Purchase saved: {billNo}",
+      "updated": "Purchase updated: {billNo}",
+      "leaveWarning": "This purchase isn’t saved. Leave and lose it?"
+    },
+    "breakdown": {
+      "title": "Total",
+      "gross": "Gross amount",
+      "charge": "{basis, select, percent {{label} {value}%} per_bag {{label} {value} per bag} other {{label} {value}}}",
+      "totalDeductions": "Total deductions",
+      "rounding": "Rounding",
+      "net": "Net payable to kissan",
+      "paid": "Paid now",
+      "empty": "Add an item with weight and rate to see the total.",
+      "reasons": {
+        "itemChargesOverGross": "Can’t total this bill: the charges of item {n, number} are more than its amount.",
+        "deductionsOverGross": "Can’t total this bill: the deductions are more than the gross amount.",
+        "netZero": "Can’t total this bill: the net amount comes to Rs 0.",
+        "tooLarge": "Can’t total this bill: an amount is too large.",
+        "other": "Can’t total this bill. Check the weights and rates."
+      },
+      "preview": "Live preview; the saved bill is calculated by the server."
+    },
+    "view": {
+      "back": "All purchases",
+      "outstanding": "Outstanding",
+      "loading": "Loading purchase…",
+      "error": {
+        "title": "Couldn’t load this purchase",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "billNo": "Bill no",
+      "date": "Date",
+      "trader": "Kissan",
+      "status": "Status",
+      "notes": "Notes",
+      "items": "Items",
+      "cancelledNote": "This purchase is cancelled. Its khata entries were reversed.",
+      "khataLink": "Open kissan’s khata"
+    },
+    "cancel": {
+      "title": "Cancel {billNo}?",
+      "body": "The kissan’s khata entries are reversed. The bill number is kept and never used again. This can’t be undone.",
+      "keep": "Keep purchase",
+      "confirm": "Cancel purchase",
+      "pending": "Cancelling…",
+      "done": "{billNo} cancelled"
+    }
+  },
+  "sales": {
+    "none": "—",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server, so the sale may not be saved. Check your internet and press Save again: it won’t be saved twice.",
+      "dayClosed": "This day is closed. Only the owner can change a sale of a past day.",
+      "cancelled": "This sale is cancelled and can’t be changed.",
+      "alreadyCancelled": "This sale was already cancelled.",
+      "forbidden": "You don’t have permission to do this.",
+      "buyerRequired": "Choose a beopari",
+      "dateRequired": "Enter the date",
+      "dateInFuture": "A sale can’t be dated in the future",
+      "notesTooLong": "Use at most 1,000 characters",
+      "itemsRequired": "Add at least one item",
+      "tooManyItems": "Use at most 100 items"
+    },
+    "billOf": "Bill {billNo}",
+    "list": {
+      "newButton": "New sale",
+      "caption": "Sales",
+      "searchLabel": "Search sales",
+      "searchPlaceholder": "Bill number, beopari name or phone…",
+      "dateLabel": "Date",
+      "buyerLabel": "Beopari",
+      "buyerAll": "All beoparis",
+      "commodityLabel": "Commodity",
+      "commodityAll": "All commodities",
+      "statusLabel": "Status",
+      "statusAll": "All",
+      "exportFileName": "sales",
+      "columns": {
+        "billNo": "Bill no",
+        "saleDate": "Date",
+        "buyer": "Beopari",
+        "grossAmount": "Gross",
+        "totalCharges": "Charges",
+        "netAmount": "Net",
+        "outstanding": "Outstanding",
+        "status": "Status"
+      },
+      "empty": {
+        "title": "No sales yet",
+        "body": "Sales to beoparis show here once they’re saved."
+      },
+      "noMatches": {
+        "title": "No sales match",
+        "body": "Try another search or clear the filters.",
+        "clear": "Clear filters"
+      }
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "cancel": "Cancel sale",
+      "reprint": "Reprint"
+    },
+    "form": {
+      "newTitle": "New sale",
+      "newDescription": "Grain sold to a beopari. The total updates as you type.",
+      "editTitle": "Edit {billNo}",
+      "editDescription": "Changing the items recalculates the bill and corrects the beopari’s khata.",
+      "buyer": "Beopari",
+      "buyerPlaceholder": "Choose a beopari…",
+      "saved": "Sale saved: {billNo}",
+      "updated": "Sale updated: {billNo}",
+      "leaveWarning": "This sale isn’t saved. Leave and lose it?"
+    },
+    "buyer": {
+      "loading": "Loading balance…",
+      "error": "Couldn’t load the balance.",
+      "balance": "Balance",
+      "creditLimit": "Credit limit",
+      "noLimit": "No limit",
+      "receivable": "receivable",
+      "payable": "payable",
+      "settled": "settled"
+    },
+    "credit": {
+      "title": "Over the credit limit",
+      "body": "After this sale {name} would owe {owed}, above the credit limit of {limit}. You can still save if the shop allows it.",
+      "savedOver": "Saved over the credit limit"
+    },
+    "breakdown": {
+      "title": "Total",
+      "gross": "Gross amount",
+      "charge": "{basis, select, percent {{label} {value}%} per_bag {{label} {value} per bag} other {{label} {value}}}",
+      "totalCharges": "Total charges",
+      "rounding": "Rounding",
+      "net": "Net receivable from beopari",
+      "received": "Received now",
+      "empty": "Add an item with weight and rate to see the total.",
+      "reasons": {
+        "netZero": "Can’t total this bill: the net amount comes to Rs 0.",
+        "tooLarge": "Can’t total this bill: an amount is too large.",
+        "other": "Can’t total this bill. Check the weights and rates."
+      },
+      "preview": "Live preview; the saved bill is calculated by the server."
+    },
+    "view": {
+      "back": "All sales",
+      "outstanding": "Outstanding",
+      "loading": "Loading sale…",
+      "error": {
+        "title": "Couldn’t load this sale",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "buyer": "Beopari",
+      "cancelledNote": "This sale is cancelled. Its khata entries were reversed.",
+      "khataLink": "Open beopari’s khata"
+    },
+    "cancel": {
+      "title": "Cancel {billNo}?",
+      "body": "The beopari’s khata entries are reversed. The bill number is kept and never used again. This can’t be undone.",
+      "keep": "Keep sale",
+      "confirm": "Cancel sale",
+      "pending": "Cancelling…",
+      "done": "{billNo} cancelled"
+    }
+  },
+  "payments": {
+    "directions": {
+      "paid": "Payment",
+      "received": "Receipt"
+    },
+    "methods": {
+      "cash": "Cash",
+      "bank": "Bank",
+      "cheque": "Cheque",
+      "online": "Online"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Can’t reach the server, so the voucher may not be saved. Check your internet and press Save again: it won’t be saved twice.",
+      "forbidden": "You don’t have permission to do this.",
+      "alreadyCancelled": "This voucher was already cancelled.",
+      "dateRequired": "Enter the date",
+      "dateInFuture": "A voucher can’t be dated in the future",
+      "traderRequired": {
+        "paid": "Choose a kissan",
+        "received": "Choose a beopari"
+      },
+      "amountRequired": "Enter the amount",
+      "amount": "Enter an amount in rupees (up to 2 decimals)",
+      "amountZero": "Enter an amount above 0",
+      "amountBelowBills": "The bills take {allocated}; enter at least that, or lower a bill",
+      "share": "Enter rupees (up to 2 decimals)",
+      "shareOverBill": "Only {left} is left on this bill",
+      "referenceTooLong": "Use at most 80 characters",
+      "notesTooLong": "Use at most 1,000 characters"
+    },
+    "voucherOf": "{direction, select, paid {Payment} other {Receipt}} {voucherNo}",
+    "form": {
+      "newTitle": {
+        "paid": "Pay a kissan",
+        "received": "Receive from a beopari"
+      },
+      "newDescription": {
+        "paid": "Money paid to a kissan. It settles his oldest purchase bills first; the rest stays as peshgi.",
+        "received": "Money received from a beopari. It settles his oldest sale bills first; the rest stays as an advance."
+      },
+      "directionLabel": "Voucher type",
+      "direction": {
+        "paid": "Pay kissan",
+        "received": "Receive from beopari"
+      },
+      "header": "Voucher",
+      "date": "Date",
+      "trader": {
+        "paid": "Kissan",
+        "received": "Beopari"
+      },
+      "traderPlaceholder": {
+        "paid": "Choose a kissan…",
+        "received": "Choose a beopari…"
+      },
+      "amount": "Amount (Rs)",
+      "amountPlaceholder": "0",
+      "method": "Paid by",
+      "methodReceived": "Received by",
+      "reference": "Reference",
+      "referenceHint": "Cheque no. or bank ref (optional)",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional, e.g. truck number",
+      "saved": "{direction, select, paid {Payment} other {Receipt}} saved: {voucherNo}",
+      "leaveWarning": "This voucher isn’t saved. Leave and lose it?"
+    },
+    "balance": {
+      "loading": "Loading balance…",
+      "error": "Couldn’t load the balance.",
+      "label": "Khata balance",
+      "receivable": "receivable",
+      "payable": "payable",
+      "settled": "settled"
+    },
+    "bills": {
+      "title": "Outstanding bills",
+      "description": {
+        "paid": "Purchases from this kissan that aren’t fully paid, oldest first.",
+        "received": "Sales to this beopari that aren’t fully received, oldest first."
+      },
+      "pickTrader": {
+        "paid": "Choose a kissan to see his outstanding bills.",
+        "received": "Choose a beopari to see his outstanding bills."
+      },
+      "loading": "Loading bills…",
+      "error": "Couldn’t load the bills.",
+      "retry": "Try again",
+      "none": {
+        "title": "No outstanding bills",
+        "body": "Every bill is settled. The whole amount is kept as an advance (peshgi)."
+      },
+      "more": "Showing the open bills among this trader’s latest 100.",
+      "caption": "Outstanding bills and the amount each one takes",
+      "columns": {
+        "bill": "Bill",
+        "net": "Net",
+        "outstanding": "Outstanding",
+        "allocate": "Allocate",
+        "left": "Left after"
+      },
+      "allocateLabel": "Allocate to {billNo}",
+      "total": "Total",
+      "settled": "Settled",
+      "part": "Part",
+      "auto": "Auto-allocated, oldest first",
+      "autoHint": "Type in a row to change the split by hand.",
+      "manual": "Split by hand",
+      "manualHint": "The amount no bill takes stays as an advance.",
+      "autoButton": "Auto-allocate oldest first",
+      "clearButton": "Clear all"
+    },
+    "summary": {
+      "title": "Summary",
+      "amount": "Amount",
+      "allocated": "To bills",
+      "advance": "Advance (peshgi)",
+      "over": "More than the amount",
+      "preview": "A preview: the server settles the bills when you save and prints the voucher with its numbers."
+    },
+    "overpayment": {
+      "saved": "Saved with an advance"
+    },
+    "actions": {
+      "cancel": "Cancel voucher",
+      "print": "Print voucher"
+    },
+    "view": {
+      "back": "Cash book",
+      "loading": "Loading voucher…",
+      "error": {
+        "title": "Couldn’t load this voucher",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "cancelledNote": "This voucher is cancelled. Its khata entry was reversed and the bills it settled are open again.",
+      "khataLink": "Open khata",
+      "preview": "Voucher {voucherNo}"
+    },
+    "cancel": {
+      "title": "Cancel {voucherNo}?",
+      "body": "The trader’s khata entry is reversed and the bills it settled are open again. The voucher number is kept and never used again. This can’t be undone.",
+      "keep": "Keep voucher",
+      "confirm": "Cancel voucher",
+      "pending": "Cancelling…",
+      "done": "{voucherNo} cancelled"
+    },
+    "cashBook": {
+      "title": "Cash book",
+      "description": "Cash received and paid each day, and the cash that should be in hand. Count the drawer against “Cash in hand”.",
+      "payButton": "Pay kissan",
+      "receiveButton": "Receive from beopari",
+      "datesLabel": "Dates",
+      "previousDay": "Previous day",
+      "nextDay": "Next day",
+      "today": "Today",
+      "loading": "Loading the cash book…",
+      "error": {
+        "title": "Couldn’t load the cash book",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      },
+      "opening": "Opening cash",
+      "openingHint": "In hand before the first day",
+      "cashIn": "Cash in",
+      "cashInHint": "Received from beoparis",
+      "cashOut": "Cash out",
+      "cashOutHint": "Paid to kissans",
+      "closing": "Cash in hand",
+      "closingHint": "At the close of {day}",
+      "days": {
+        "caption": "Cash in and out each day",
+        "date": "Date",
+        "opening": "Opening",
+        "cashIn": "Cash in",
+        "cashOut": "Cash out",
+        "closing": "Closing",
+        "total": "Total",
+        "empty": "No cash vouchers on these days."
+      },
+      "vouchers": {
+        "title": "Cash vouchers",
+        "description": "The vouchers behind the totals. Bank, cheque and online vouchers and cancelled ones are not cash.",
+        "caption": "Cash vouchers",
+        "voucherNo": "Voucher no",
+        "date": "Date",
+        "type": "Type",
+        "trader": "Trader",
+        "cashIn": "In",
+        "cashOut": "Out",
+        "empty": {
+          "title": "No cash vouchers",
+          "body": "Cash paid to kissans and received from beoparis shows here."
+        }
+      },
+      "note": "Only cash vouchers count. Amounts paid or received on a purchase or sale itself are not in the cash book."
+    }
+  },
+  "ledger": {
+    "sources": {
+      "opening": "Opening balance",
+      "purchase": "Purchase",
+      "sale": "Sale",
+      "payment": "Payment",
+      "receipt": "Receipt",
+      "adjustment": "Adjustment",
+      "reversal": "Reversal"
+    },
+    "dr": "Dr",
+    "cr": "Cr",
+    "balance": {
+      "receivable": "Receivable",
+      "payable": "Payable",
+      "settled": "Settled",
+      "receivableHint": "They owe you",
+      "payableHint": "You owe them",
+      "settledHint": "Nothing owed"
+    },
+    "legend": {
+      "label": "How to read the khata",
+      "dr": "(debit): the trader owes you more — a sale to them, or money you paid them.",
+      "cr": "(credit): you owe the trader more — a purchase from them, or money they paid you."
+    },
+    "khata": {
+      "traderLabel": "Trader",
+      "traderPlaceholder": "Pick a trader…",
+      "dateLabel": "Dates",
+      "balancesLink": "All balances",
+      "pick": {
+        "title": "Pick a trader",
+        "body": "Choose a kissan or beopari to see their khata: every purchase, sale, payment and adjustment with the running balance."
+      },
+      "openingBalance": "Opening balance",
+      "openingOn": "Before {day}",
+      "openingAll": "Before the first entry",
+      "closingBalance": "Closing balance",
+      "closingOn": "At the end of {day}",
+      "closingNow": "Up to today",
+      "entriesTitle": "Entries",
+      "caption": "Khata of {name}",
+      "columns": {
+        "date": "Date",
+        "details": "Details",
+        "debit": "Dr (debit)",
+        "credit": "Cr (credit)",
+        "balance": "Balance"
+      },
+      "openSource": "Open {label}",
+      "adjustmentNote": "Adjustment by the owner",
+      "empty": {
+        "title": "No entries in these dates",
+        "body": "Nothing was written to this khata in the chosen dates. The opening and closing balance are shown above.",
+        "bodyAll": "Nothing has been written to this khata yet.",
+        "clear": "Show all dates"
+      },
+      "notFound": {
+        "title": "Trader not found",
+        "body": "This trader isn’t in your shop. Pick another trader."
+      },
+      "error": {
+        "title": "Couldn’t load the khata",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      }
+    },
+    "statement": {
+      "languageLabel": "Statement language",
+      "print": "Print",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "preparing": "Preparing…",
+      "pdfHint": "In the print window, choose “Save as PDF”.",
+      "failed": "Couldn’t prepare the statement. Please try again."
+    },
+    "balances": {
+      "title": "Balances",
+      "description": "Every trader with what they owe you (receivable) and what you owe them (payable).",
+      "khataLink": "Open a khata",
+      "searchLabel": "Search traders",
+      "searchPlaceholder": "Name or phone",
+      "typeLabel": "Type",
+      "typeAll": "All traders",
+      "sortLabel": "Sort by",
+      "sorts": {
+        "-balance": "Largest receivable first",
+        "balance": "Largest payable first",
+        "name": "Name (A–Z)",
+        "-name": "Name (Z–A)"
+      },
+      "totalReceivable": "Total receivable",
+      "totalReceivableHint": "Traders owe you",
+      "totalPayable": "Total payable",
+      "totalPayableHint": "You owe traders",
+      "caption": "Trader balances",
+      "columns": {
+        "name": "Trader",
+        "type": "Type",
+        "phone": "Phone",
+        "receivable": "Receivable (Dr)",
+        "payable": "Payable (Cr)"
+      },
+      "empty": {
+        "title": "No traders yet",
+        "body": "Add traders, then their purchases and sales show up here."
+      },
+      "noMatches": {
+        "title": "No traders match",
+        "body": "Try another name or phone number, or clear the filters.",
+        "clear": "Clear filters"
+      }
+    }
+  },
+  "reports": {
+    "none": "—",
+    "total": "Total",
+    "retry": "Try again",
+    "loading": "Loading the report…",
+    "bills": "{n, plural, one {# bill} other {# bills}}",
+    "bags": "{n, plural, one {# bag} other {# bags}}",
+    "traders": "{n, plural, one {# trader} other {# traders}}",
+    "vouchers": "{n, plural, one {# voucher} other {# vouchers}}",
+    "totalOf": "Total · {what}",
+    "hub": {
+      "title": "Reports",
+      "description": "Daily, purchase, sale, commission, outstanding and cash reports. Each one prints and exports to Excel or PDF.",
+      "open": "Open the {title} report"
+    },
+    "reports": {
+      "daily-summary": {
+        "title": "Daily summary",
+        "description": "One day at a glance: bills, commission, vouchers, the cash book and rates.",
+        "file": "daily-summary"
+      },
+      "purchases": {
+        "title": "Purchases",
+        "description": "Grain bought from kissans, by day, commodity or kissan, with deductions and net.",
+        "file": "purchases-report"
+      },
+      "sales": {
+        "title": "Sales",
+        "description": "Grain sold to beoparis, by day, commodity or beopari, with charges and net.",
+        "file": "sales-report"
+      },
+      "commission": {
+        "title": "Commission",
+        "description": "The shop’s commission income per day, with market fee and labour shown apart.",
+        "file": "commission-report"
+      },
+      "outstanding": {
+        "title": "Outstanding",
+        "description": "Who owes the shop and whom the shop owes, from the khata, largest first.",
+        "file": "outstanding-report"
+      },
+      "cash-book": {
+        "title": "Cash book",
+        "description": "Opening cash, cash received and paid each day, and the cash in hand.",
+        "file": "cash-book"
+      }
+    },
+    "documentTitle": "{title} report",
+    "range": {
+      "label": "Dates",
+      "presetsLabel": "Date range",
+      "presets": {
+        "today": "Today",
+        "week": "This week",
+        "month": "This month",
+        "custom": "Custom"
+      },
+      "period": "{from} – {to}",
+      "tooLong": "Choose at most {days, number} days."
+    },
+    "day": {
+      "label": "Date",
+      "previous": "Previous day",
+      "next": "Next day",
+      "today": "Today"
+    },
+    "asOf": {
+      "label": "Balances at the end of",
+      "now": "Now",
+      "period": "At the end of {day}",
+      "periodNow": "Up to now"
+    },
+    "filters": {
+      "groupBy": "Group by",
+      "groups": {
+        "day": "Day",
+        "commodity": "Commodity",
+        "trader": "Trader"
+      },
+      "commodity": "Commodity",
+      "allCommodities": "All commodities",
+      "kissan": "Kissan",
+      "beopari": "Beopari",
+      "allKissans": "All kissans",
+      "allBeoparis": "All beoparis",
+      "traderType": "Trader type",
+      "allTypes": "All types",
+      "clear": "Clear filters"
+    },
+    "traderTypes": {
+      "kissan": "Kissan",
+      "beopari": "Beopari",
+      "arhti": "Arhti"
+    },
+    "actions": {
+      "label": "Report actions",
+      "print": "Print",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "preparing": "Preparing…",
+      "pdfHint": "Choose “Save as PDF” as the printer to save the report.",
+      "failed": "Couldn’t prepare the report. Try again."
+    },
+    "document": {
+      "shop": "Shop",
+      "period": "Period",
+      "printedOn": "Printed on",
+      "page": "Page",
+      "of": "of",
+      "rupees": "(Rs)",
+      "kg": "(kg)",
+      "item": "Item",
+      "value": "Value"
+    },
+    "error": {
+      "title": "Couldn’t load the report",
+      "body": "Check your internet and try again."
+    },
+    "cards": {
+      "bills": "Bills",
+      "weight": "Weight",
+      "gross": "Gross amount",
+      "net": "Net amount",
+      "deductions": "Deductions",
+      "charges": "Charges",
+      "commission": "Commission",
+      "commissionHint": "The shop’s income for these dates",
+      "onPurchases": "On purchases",
+      "onSales": "On sales",
+      "receivable": "Receivable",
+      "payable": "Payable",
+      "cashInHand": "Cash in hand",
+      "netHint": {
+        "purchases": "Owed to kissans",
+        "sales": "Owed by beoparis"
+      },
+      "bagsHint": "{bags, plural, one {# bag} other {# bags}}",
+      "perBill": "Not split by commodity",
+      "receivableHint": "Traders who owe the shop",
+      "payableHint": "Traders the shop owes"
+    },
+    "book": {
+      "caption": "{title} by group",
+      "group": {
+        "day": "Date",
+        "commodity": "Commodity",
+        "trader": {
+          "purchases": "Kissan",
+          "sales": "Beopari"
+        }
+      },
+      "bills": "Bills",
+      "bags": "Bags",
+      "weight": "Weight",
+      "gross": "Gross",
+      "deductions": "Deductions",
+      "charges": "Charges",
+      "net": "Net",
+      "empty": {
+        "purchases": "No posted purchases on these dates.",
+        "sales": "No posted sales on these dates."
+      },
+      "perBillNote": "Deductions, charges and net are worked out per bill, so they are left out when bills are split by commodity."
+    },
+    "commission": {
+      "title": "Commission per day",
+      "caption": "Commission per day",
+      "date": "Date",
+      "onPurchases": "On purchases",
+      "onSales": "On sales",
+      "total": "Total",
+      "empty": "No commission on these dates.",
+      "other": {
+        "title": "Other charges (not shop income)",
+        "caption": "Other charges of the same bills",
+        "charge": "Charge",
+        "marketFee": "Market fee",
+        "labour": "Labour",
+        "other": "Other"
+      },
+      "otherNote": "Market fee goes to the market committee and labour to the labourers; they are not the shop’s income."
+    },
+    "outstanding": {
+      "receivable": {
+        "title": "Receivable",
+        "caption": "Traders who owe the shop",
+        "empty": "No one owes the shop money."
+      },
+      "payable": {
+        "title": "Payable",
+        "caption": "Traders the shop owes",
+        "empty": "The shop owes no one."
+      },
+      "trader": "Trader",
+      "type": "Type",
+      "phone": "Phone",
+      "amount": "Amount",
+      "openKhata": "Open {name}’s khata"
+    },
+    "cashBook": {
+      "title": "Cash in and out each day",
+      "vouchers": "See the cash vouchers"
+    },
+    "daily": {
+      "purchases": {
+        "title": "Purchases",
+        "bills": "Bills",
+        "bags": "Bags",
+        "weight": "Weight",
+        "gross": "Gross amount",
+        "deductions": "Deductions",
+        "net": "Net (owed to kissans)",
+        "paidOnBills": "Paid on the bills"
+      },
+      "sales": {
+        "title": "Sales",
+        "bills": "Bills",
+        "bags": "Bags",
+        "weight": "Weight",
+        "gross": "Gross amount",
+        "charges": "Charges",
+        "net": "Net (owed by beoparis)",
+        "receivedOnBills": "Received on the bills"
+      },
+      "commission": {
+        "title": "Commission",
+        "hint": "The shop’s income for the day",
+        "onPurchases": "On purchases",
+        "onSales": "On sales",
+        "total": "Total"
+      },
+      "payments": {
+        "title": "Vouchers",
+        "paidCount": "Payments to kissans",
+        "paidAmount": "Paid",
+        "receivedCount": "Receipts from beoparis",
+        "receivedAmount": "Received"
+      },
+      "cash": {
+        "title": "Cash book",
+        "opening": "Opening cash",
+        "cashIn": "Cash in",
+        "cashOut": "Cash out",
+        "closing": "Cash in hand",
+        "hint": "At the close of the day"
+      },
+      "cancelled": {
+        "title": "Cancelled (left out of every total)",
+        "purchases": "Purchases",
+        "sales": "Sales",
+        "payments": "Vouchers"
+      },
+      "rates": {
+        "title": "Rates of the day",
+        "caption": "Rates of the day",
+        "commodity": "Commodity",
+        "unit": "Per",
+        "min": "Min",
+        "max": "Max",
+        "avg": "Avg",
+        "units": {
+          "maund": "Maund",
+          "kg": "kg"
+        },
+        "empty": "No rates saved for this day."
+      }
+    }
+  },
+  "parchi": {
+    "paperLabel": "Paper",
+    "languageLabel": "Parchi language",
+    "print": "Print parchi",
+    "preparing": "Preparing…",
+    "reprint": "Reprint",
+    "failed": "Couldn’t print the parchi. Please try again.",
+    "preview": "Parchi {billNo}",
+    "previewHint": "This is how the parchi prints.",
+    "papers": {
+      "a4": "A4",
+      "a5": "A5",
+      "thermal80": "80 mm thermal"
+    }
+  }
+}

@@ -1,9 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { BookOpenText, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 import {
   DataTable,
   DataTableSelectFilter,
@@ -22,16 +24,14 @@ import {
 } from "@/components/ui/select";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { traderTypeText } from "@/features/traders/text";
 import { traderTypes } from "@/features/traders/types";
 import { toApiError } from "@/lib/api-error";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { toListSearchParams } from "@/lib/list-query";
 import { ledgerRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { useBalances } from "../hooks";
 import { balanceFilters } from "../search-params";
-import { ledgerText } from "../text";
 import {
   type BalanceSort,
   balanceSortFields,
@@ -41,16 +41,17 @@ import {
 import { balanceTone } from "./balance-amount";
 import { balanceColumns } from "./balance-columns";
 
-const t = ledgerText.balances;
-
 /** Biggest amounts first: what traders owe you, down to what you owe them. */
 const DEFAULT_SORT: BalanceSort = "-balance";
-const sortOptions = Object.keys(t.sorts) as BalanceSort[];
+const sortOptions = [
+  "-balance",
+  "balance",
+  "name",
+  "-name",
+] as const satisfies readonly BalanceSort[];
 
-const typeOptions = traderTypes.map((type) => ({
-  value: type,
-  label: traderTypeText[type],
-}));
+const typeOptions = (t: Translator<"traders">) =>
+  traderTypes.map((type) => ({ value: type, label: t(`types.${type}`) }));
 
 const getRowId = (row: TraderBalance) => row.traderId;
 
@@ -65,6 +66,9 @@ export function BalancesPage() {
 
 /** Every trader's receivable / payable with the shop's totals; URL state. */
 function BalancesList() {
+  const t = useTranslations("ledger");
+  const tTraders = useTranslations("traders");
+  const columns = useMemo(() => balanceColumns(t), [t]);
   const router = useRouter();
   const sortId = useId();
   const list = useDataTableState({
@@ -85,13 +89,13 @@ function BalancesList() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={t.title}
-        description={t.description}
+        title={t("balances.title")}
+        description={t("balances.description")}
         actions={
           <Button asChild variant="outline" className="h-10 gap-2">
             <Link href={ledgerRoutes.khata()}>
               <BookOpenText aria-hidden />
-              {t.khataLink}
+              {t("balances.khataLink")}
             </Link>
           </Button>
         }
@@ -99,15 +103,15 @@ function BalancesList() {
 
       <dl className="grid gap-3 sm:grid-cols-2">
         <Total
-          label={t.totalReceivable}
-          hint={t.totalReceivableHint}
+          label={t("balances.totalReceivable")}
+          hint={t("balances.totalReceivableHint")}
           amount={totals?.receivable}
           tone={balanceTone.receivable}
           testId="balances-total-receivable"
         />
         <Total
-          label={t.totalPayable}
-          hint={t.totalPayableHint}
+          label={t("balances.totalPayable")}
+          hint={t("balances.totalPayableHint")}
           amount={totals?.payable}
           tone={balanceTone.payable}
           testId="balances-total-payable"
@@ -118,21 +122,21 @@ function BalancesList() {
         search={{
           value: list.search,
           onChange: list.setSearch,
-          label: t.searchLabel,
-          placeholder: t.searchPlaceholder,
+          label: t("balances.searchLabel"),
+          placeholder: t("balances.searchPlaceholder"),
         }}
         filters={
           <>
             <DataTableSelectFilter
-              label={t.typeLabel}
-              allLabel={t.typeAll}
+              label={t("balances.typeLabel")}
+              allLabel={t("balances.typeAll")}
               value={list.filters.type}
-              options={typeOptions}
+              options={typeOptions(tTraders)}
               onChange={(value) => list.setFilter("type", value)}
             />
             <div className="flex flex-col gap-1.5 sm:w-56">
               <label htmlFor={sortId} className="text-[13px] font-semibold">
-                {t.sortLabel}
+                {t("balances.sortLabel")}
               </label>
               <Select
                 value={sort}
@@ -154,7 +158,7 @@ function BalancesList() {
                 <SelectContent position="popper">
                   {sortOptions.map((value) => (
                     <SelectItem key={value} value={value}>
-                      {t.sorts[value]}
+                      {t(`balances.sorts.${value}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -167,8 +171,8 @@ function BalancesList() {
       />
 
       <DataTable
-        caption={t.caption}
-        columns={balanceColumns}
+        caption={t("balances.caption")}
+        columns={columns}
         data={balances.data?.data}
         getRowId={getRowId}
         rowCount={balances.data?.meta.total ?? 0}
@@ -185,20 +189,20 @@ function BalancesList() {
           list.isFiltered ? (
             <EmptyState
               icon={Search}
-              title={t.noMatches.title}
-              body={t.noMatches.body}
+              title={t("balances.noMatches.title")}
+              body={t("balances.noMatches.body")}
               className="rounded-none border-0"
               action={
                 <Button variant="outline" onClick={list.clearAll}>
-                  {t.noMatches.clear}
+                  {t("balances.noMatches.clear")}
                 </Button>
               }
             />
           ) : (
             <EmptyState
               icon={Users}
-              title={t.empty.title}
-              body={t.empty.body}
+              title={t("balances.empty.title")}
+              body={t("balances.empty.body")}
               className="rounded-none border-0"
             />
           )
@@ -221,6 +225,7 @@ function Total({
   tone: string;
   testId: string;
 }) {
+  const { formatRs } = useFormat();
   return (
     <div
       data-testid={testId}
@@ -231,7 +236,7 @@ function Total({
         <span className="text-muted-foreground text-xs">{hint}</span>
       </dt>
       <dd
-        dir="ltr"
+        dir="auto"
         className={cn(
           "text-end text-2xl font-bold tabular-nums sm:text-start",
           tone,

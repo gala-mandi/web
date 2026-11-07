@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { traderText } from "./text";
+import type { Translator } from "@/i18n/types";
 import {
   balanceTypes,
   type CreateTraderInput,
@@ -9,14 +9,19 @@ import {
   type UpdateTraderInput,
 } from "./types";
 
-const e = traderText.errors;
+/** Messages come from the `traders` messages of the interface language. */
+export type TradersTranslator = Translator<"traders">;
 
 // Same rules as the server's DTO; money stays a string.
 const MONEY = /^\d{1,12}(\.\d{1,2})?$/;
 const PHONE = /^[+\d][\d\s-]{6,19}$/;
 const CNIC = /^\d{5}-?\d{7}-?\d$/;
 
-const text = (max: number) => z.string().trim().max(max, e.tooLong(max));
+const text = (t: TradersTranslator, max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, t("errors.tooLong", { max: max }));
 /** "" = not set. */
 const optional = (regex: RegExp, message: string) =>
   z
@@ -24,36 +29,52 @@ const optional = (regex: RegExp, message: string) =>
     .trim()
     .refine((v) => v === "" || regex.test(v), message);
 
-export const traderFormSchema = z.object({
-  type: z.enum(traderTypes, { error: e.typeRequired }),
-  name: z.string().trim().min(2, e.nameRequired).max(120, e.tooLong(120)),
-  fatherName: text(120),
-  phone: z
-    .string()
-    .trim()
-    .refine(
-      // At least 7 digits: "+------" would otherwise pass.
-      (v) => v === "" || (PHONE.test(v) && v.replace(/\D/g, "").length >= 7),
-      e.phoneInvalid,
-    ),
-  cnic: optional(CNIC, e.cnicInvalid),
-  village: text(80),
-  address: text(500),
-  openingBalance: optional(MONEY, e.money),
-  openingBalanceType: z.enum(balanceTypes),
-  creditLimit: optional(MONEY, e.money),
-  notes: text(1000),
-  isActive: z.boolean(),
-});
+export const traderFormSchema = (t: TradersTranslator) =>
+  z.object({
+    type: z.enum(traderTypes, { error: t("errors.typeRequired") }),
+    name: z
+      .string()
+      .trim()
+      .min(2, t("errors.nameRequired"))
+      .max(120, t("errors.tooLong", { max: 120 })),
+    fatherName: text(t, 120),
+    phone: z
+      .string()
+      .trim()
+      .refine(
+        // At least 7 digits: "+------" would otherwise pass.
+        (v) => v === "" || (PHONE.test(v) && v.replace(/\D/g, "").length >= 7),
+        t("errors.phoneInvalid"),
+      ),
+    cnic: optional(CNIC, t("errors.cnicInvalid")),
+    village: text(t, 80),
+    address: text(t, 500),
+    openingBalance: optional(MONEY, t("errors.money")),
+    openingBalanceType: z.enum(balanceTypes),
+    creditLimit: optional(MONEY, t("errors.money")),
+    notes: text(t, 1000),
+    isActive: z.boolean(),
+  });
 
 /** Form values: strings ("" = not set) plus the active flag. */
-export type TraderFormValues = z.infer<typeof traderFormSchema>;
+export type TraderFormValues = z.infer<ReturnType<typeof traderFormSchema>>;
 export type TraderField = keyof TraderFormValues;
 
 /** Form fields the server may report errors on. */
-export const traderFields = Object.keys(
-  traderFormSchema.shape,
-) as TraderField[];
+export const traderFields = [
+  "type",
+  "name",
+  "fatherName",
+  "phone",
+  "cnic",
+  "village",
+  "address",
+  "openingBalance",
+  "openingBalanceType",
+  "creditLimit",
+  "notes",
+  "isActive",
+] as const satisfies readonly TraderField[];
 
 /** Optional text fields the server stores as null when empty. */
 const nullableFields = [

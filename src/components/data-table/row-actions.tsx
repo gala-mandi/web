@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { MoreHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { dataTableText as t } from "./text";
 
 export interface DataTableRowActionsProps {
   /** Name of the row, for the button label "Actions for <name>". */
@@ -22,13 +23,14 @@ export function DataTableRowActions({
   rowName,
   children,
 }: DataTableRowActionsProps) {
+  const t = useTranslations("dataTable");
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label={t.rowActions(rowName)}
+          aria-label={t("rowActions", { name: bidi(rowName) })}
         >
           <MoreHorizontal aria-hidden />
         </Button>

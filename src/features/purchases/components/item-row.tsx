@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Trash2 } from "lucide-react";
 import {
   type Control,
@@ -13,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { CommodityCombobox } from "@/features/commodities/components/commodity-combobox";
 import type { CommodityLookupItem } from "@/features/commodities/types";
 import type { Rate } from "@/features/rates/types";
-import { formatKg, formatMaund, formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { kgToMaund } from "@/lib/units";
 import { cn } from "@/lib/utils";
 import {
@@ -22,7 +23,6 @@ import {
   type WeightUnit,
   weightUnits,
 } from "../schemas";
-import { perUnitText, purchaseText, unitText } from "../text";
 import type { RateUnit } from "../types";
 import { ENTER_CELL } from "./keyboard";
 
@@ -32,7 +32,6 @@ import { ENTER_CELL } from "./keyboard";
  * form. Ids and test ids start with `idPrefix` ("purchase", "sale").
  */
 
-const t = purchaseText.form;
 export const inputClass = "rounded-field bg-card h-11";
 const selectClass =
   "rounded-field bg-card border-input focus-visible:border-ring focus-visible:ring-ring/50 h-11 w-full border px-2 text-sm outline-none focus-visible:ring-3 aria-invalid:border-destructive";
@@ -89,6 +88,8 @@ export function ItemRow<T extends ItemsFormValues>({
   canRemove,
   onRemove,
 }: ItemRowProps<T>) {
+  const { formatKg, formatMaund, formatRs } = useFormat();
+  const t = useTranslations("purchases");
   // The row only touches `items.<index>`, which every parchi form has.
   const form = anyForm as unknown as UseFormReturn<ItemsFormValues>;
   const n = index + 1;
@@ -142,22 +143,23 @@ export function ItemRow<T extends ItemsFormValues>({
     ? today
       ? today.rate === trimMoney(item.rate.trim() || "x") &&
         today.rateUnit === item.rateUnit
-        ? t.todaysRate
-        : t.rateChanged(
-            `${formatRs(today.rate)} ${perUnitText[today.rateUnit]}`,
-          )
-      : t.noRateToday
+        ? t("form.todaysRate")
+        : t("form.rateChanged", {
+            rate: `${formatRs(today.rate)} ${t(`perUnit.${today.rateUnit}`)}`,
+          })
+      : t("form.noRateToday")
     : null;
 
   // Visible labels say "Bags"; screen readers hear "Bags, Item 2".
-  const name = (text: string) => `${text}, ${t.itemLabel(n)}`;
+  const name = (text: string) =>
+    t("form.fieldOfItem", { field: text, item: t("form.itemLabel", { n }) });
 
   return (
     <fieldset
       data-testid={`${idPrefix}-item-${index}`}
-      className="rounded-card bg-card grid gap-3 border p-3 sm:grid-cols-2 sm:p-4 xl:grid-cols-[minmax(10rem,1.4fr)_5.5rem_minmax(9rem,1fr)_minmax(9rem,1fr)_auto]"
+      className="rounded-card bg-card grid gap-3 border p-3 sm:grid-cols-2 sm:p-4 min-[1360px]:grid-cols-[minmax(10rem,1.4fr)_5.5rem_minmax(9rem,1fr)_minmax(9rem,1fr)_auto]"
     >
-      <legend className="sr-only">{t.itemLabel(n)}</legend>
+      <legend className="sr-only">{t("form.itemLabel", { n })}</legend>
 
       <Controller
         control={control}
@@ -167,9 +169,11 @@ export function ItemRow<T extends ItemsFormValues>({
             data-invalid={fieldState.invalid || undefined}
             className="gap-1.5"
           >
-            <FieldLabel htmlFor={id("commodity")}>{t.commodity}</FieldLabel>
+            <FieldLabel htmlFor={id("commodity")}>
+              {t("form.commodity")}
+            </FieldLabel>
             <span id={id("commodity-name")} className="sr-only">
-              {name(t.commodity)}
+              {name(t("form.commodity"))}
             </span>
             <CommodityCombobox
               id={id("commodity")}
@@ -180,7 +184,7 @@ export function ItemRow<T extends ItemsFormValues>({
                 field.onBlur();
                 onCommodity(commodity);
               }}
-              placeholder={t.commodityPlaceholder}
+              placeholder={t("form.commodityPlaceholder")}
               aria-invalid={fieldState.invalid}
             />
             <FieldError errors={[fieldState.error]} className="text-xs" />
@@ -192,10 +196,10 @@ export function ItemRow<T extends ItemsFormValues>({
         data-invalid={Boolean(errors?.bags) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={id("bags")}>{t.bags}</FieldLabel>
+        <FieldLabel htmlFor={id("bags")}>{t("form.bags")}</FieldLabel>
         <Input
           id={id("bags")}
-          aria-label={name(t.bags)}
+          aria-label={name(t("form.bags"))}
           inputMode="numeric"
           autoComplete="off"
           dir="ltr"
@@ -212,11 +216,11 @@ export function ItemRow<T extends ItemsFormValues>({
         data-invalid={Boolean(errors?.weight) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={id("weight")}>{t.weight}</FieldLabel>
+        <FieldLabel htmlFor={id("weight")}>{t("form.weight")}</FieldLabel>
         <div className="flex gap-1.5">
           <Input
             id={id("weight")}
-            aria-label={name(t.weight)}
+            aria-label={name(t("form.weight"))}
             inputMode="decimal"
             autoComplete="off"
             dir="ltr"
@@ -229,7 +233,7 @@ export function ItemRow<T extends ItemsFormValues>({
           <UnitSelect
             control={control}
             name={`items.${index}.weightUnit`}
-            label={`${t.weightUnit}, ${t.itemLabel(n)}`}
+            label={name(t("form.weightUnit"))}
             units={weightUnits}
             onPick={(unit) => onWeightUnit(unit as WeightUnit)}
           />
@@ -239,7 +243,10 @@ export function ItemRow<T extends ItemsFormValues>({
             className="text-muted-foreground text-xs"
             data-testid={`${idPrefix}-item-${index}-kg`}
           >
-            {t.weightIs(formatKg(weightKg), formatMaund(weightKg))}
+            {t("form.weightIs", {
+              kg: formatKg(weightKg),
+              maund: formatMaund(weightKg),
+            })}
           </p>
         ) : null}
         <FieldError errors={[errors?.weight]} className="text-xs" />
@@ -249,11 +256,11 @@ export function ItemRow<T extends ItemsFormValues>({
         data-invalid={Boolean(errors?.rate) || undefined}
         className="gap-1.5"
       >
-        <FieldLabel htmlFor={id("rate")}>{t.rate}</FieldLabel>
+        <FieldLabel htmlFor={id("rate")}>{t("form.rate")}</FieldLabel>
         <div className="flex gap-1.5">
           <Input
             id={id("rate")}
-            aria-label={name(t.rate)}
+            aria-label={name(t("form.rate"))}
             inputMode="decimal"
             autoComplete="off"
             dir="ltr"
@@ -266,7 +273,7 @@ export function ItemRow<T extends ItemsFormValues>({
           <UnitSelect
             control={control}
             name={`items.${index}.rateUnit`}
-            label={`${t.rateUnit}, ${t.itemLabel(n)}`}
+            label={name(t("form.rateUnit"))}
             units={["maund", "kg", "bag"]}
             onPick={(unit) => setRow("rateUnit", unit as RateUnit)}
           />
@@ -284,13 +291,15 @@ export function ItemRow<T extends ItemsFormValues>({
 
       <div className="flex items-end justify-between gap-2 sm:col-span-2 xl:col-span-1 xl:flex-col xl:items-end">
         <p className="flex flex-col text-end text-sm">
-          <span className="text-muted-foreground text-xs">{t.amount}</span>
+          <span className="text-muted-foreground text-xs">
+            {t("form.amount")}
+          </span>
           <span
-            dir="ltr"
+            dir="auto"
             className="font-semibold tabular-nums"
             data-testid={`${idPrefix}-item-${index}-amount`}
           >
-            {amount ? formatRs(amount) : purchaseText.none}
+            {amount ? formatRs(amount) : t("none")}
           </span>
         </p>
         <Button
@@ -298,7 +307,7 @@ export function ItemRow<T extends ItemsFormValues>({
           variant="ghost"
           size="icon-sm"
           disabled={!canRemove}
-          aria-label={t.removeItem(n)}
+          aria-label={t("form.removeItem", { n })}
           onClick={onRemove}
         >
           <Trash2 aria-hidden />
@@ -322,6 +331,7 @@ function UnitSelect({
   units: readonly RateUnit[];
   onPick: (unit: RateUnit) => void;
 }) {
+  const t = useTranslations("purchases");
   const value = useWatch({ control, name });
   return (
     <select
@@ -332,7 +342,7 @@ function UnitSelect({
     >
       {units.map((unit) => (
         <option key={unit} value={unit}>
-          {unitText[unit]}
+          {t(`units.${unit}`)}
         </option>
       ))}
     </select>

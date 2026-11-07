@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { Eye, Pencil, Trash2, UserCheck, UserX } from "lucide-react";
 import Link from "next/link";
 import {
@@ -11,16 +13,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { formatDate, formatRs } from "@/lib/format";
+import type { Formatters } from "@/lib/use-format";
 import { traderRoutes } from "@/lib/routes";
-import { balanceTypeText, traderText, traderTypeText } from "../text";
+import type { TradersTranslator } from "../schemas";
 import type { Trader } from "../types";
 import { TraderStatusBadge, TraderTypeBadge } from "./badges";
 import type { TraderStatusAction } from "./trader-dialogs";
 import { TraderName } from "./trader-name";
 
-const t = traderText.list.columns;
-const a = traderText.actions;
 const col = dataTableColumnHelper<Trader>();
 
 export interface TraderRowActions {
@@ -40,33 +40,34 @@ function RowActions({
   trader: Trader;
   actions: TraderRowActions;
 }) {
+  const t = useTranslations("traders");
   return (
     <DataTableRowActions rowName={trader.name}>
       <DropdownMenuItem asChild>
         <Link href={traderRoutes.detail(trader.id)}>
           <Eye aria-hidden />
-          {a.view}
+          {t("actions.view")}
         </Link>
       </DropdownMenuItem>
       {actions.canManage ? (
         <>
           <DropdownMenuItem onSelect={() => actions.onEdit(trader)}>
             <Pencil aria-hidden />
-            {a.edit}
+            {t("actions.edit")}
           </DropdownMenuItem>
           {trader.isActive ? (
             <DropdownMenuItem
               onSelect={() => actions.onStatus(trader, "deactivate")}
             >
               <UserX aria-hidden />
-              {a.deactivate}
+              {t("actions.deactivate")}
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               onSelect={() => actions.onStatus(trader, "activate")}
             >
               <UserCheck aria-hidden />
-              {a.activate}
+              {t("actions.activate")}
             </DropdownMenuItem>
           )}
         </>
@@ -79,7 +80,7 @@ function RowActions({
             onSelect={() => actions.onDelete(trader)}
           >
             <Trash2 aria-hidden />
-            {a.delete}
+            {t("actions.delete")}
           </DropdownMenuItem>
         </>
       ) : null}
@@ -89,16 +90,18 @@ function RowActions({
 
 /** Columns of the traders list; only name and added date sort (server-side). */
 export function traderColumns(
+  t: TradersTranslator,
+  { formatDate, formatRs }: Formatters,
   actions: TraderRowActions,
 ): DataTableColumn<Trader>[] {
   return col.columns([
     col.accessor("name", {
-      header: t.name,
+      header: t("list.columns.name"),
       meta: {
-        label: t.name,
+        label: t("list.columns.name"),
         exportValue: (row: Trader) =>
           row.fatherName
-            ? `${row.name} (${traderText.fatherOf(row.fatherName)})`
+            ? `${row.name} (${t("fatherOf", { name: bidi(row.fatherName) })})`
             : row.name,
       },
       cell: ({ row }) => (
@@ -111,82 +114,81 @@ export function traderColumns(
           </Link>
           {row.original.fatherName ? (
             <span className="text-muted-foreground text-xs">
-              {traderText.fatherPrefix}{" "}
-              <TraderName name={row.original.fatherName} />
+              {t("fatherPrefix")} <TraderName name={row.original.fatherName} />
             </span>
           ) : null}
         </div>
       ),
     }),
     col.accessor("type", {
-      header: t.type,
+      header: t("list.columns.type"),
       enableSorting: false,
       meta: {
-        label: t.type,
-        exportValue: (row: Trader) => traderTypeText[row.type],
+        label: t("list.columns.type"),
+        exportValue: (row: Trader) => t(`types.${row.type}`),
       },
       cell: ({ getValue }) => <TraderTypeBadge type={getValue()} />,
     }),
     col.accessor("phone", {
-      header: t.phone,
+      header: t("list.columns.phone"),
       enableSorting: false,
-      meta: { label: t.phone },
+      meta: { label: t("list.columns.phone") },
       cell: ({ getValue }) =>
         getValue() ? (
-          <span dir="ltr" className="tabular-nums">
+          <span dir="auto" className="tabular-nums">
             {getValue()}
           </span>
         ) : (
-          <span className="text-muted-foreground">{traderText.none}</span>
+          <span className="text-muted-foreground">{t("none")}</span>
         ),
     }),
     col.accessor("village", {
-      header: t.village,
+      header: t("list.columns.village"),
       enableSorting: false,
-      meta: { label: t.village },
+      meta: { label: t("list.columns.village") },
       cell: ({ getValue }) =>
         getValue() ? (
           <TraderName name={getValue() ?? ""} />
         ) : (
-          <span className="text-muted-foreground">{traderText.none}</span>
+          <span className="text-muted-foreground">{t("none")}</span>
         ),
     }),
     col.accessor("openingBalance", {
-      header: t.openingBalance,
+      header: t("list.columns.openingBalance"),
       enableSorting: false,
       meta: {
         align: "end",
-        label: t.openingBalance,
+        label: t("list.columns.openingBalance"),
         exportValue: (row: Trader) =>
-          `${formatRs(row.openingBalance)} ${balanceTypeText[row.openingBalanceType]}`,
+          `${formatRs(row.openingBalance)} ${t(`balanceTypes.${row.openingBalanceType}`)}`,
       },
       cell: ({ row }) => (
         <div className="flex flex-col items-end">
-          <span className="tabular-nums" dir="ltr">
+          <span className="tabular-nums" dir="auto">
             {formatRs(row.original.openingBalance)}
           </span>
           <span className="text-muted-foreground text-xs">
-            {balanceTypeText[row.original.openingBalanceType]}
+            {t(`balanceTypes.${row.original.openingBalanceType}`)}
           </span>
         </div>
       ),
     }),
     col.accessor("isActive", {
       id: "status",
-      header: t.status,
+      header: t("list.columns.status"),
       enableSorting: false,
       meta: {
-        label: t.status,
+        label: t("list.columns.status"),
         exportValue: (row: Trader) =>
-          row.isActive ? traderText.active : traderText.inactive,
+          row.isActive ? t("active") : t("inactive"),
       },
       cell: ({ getValue }) => <TraderStatusBadge active={getValue()} />,
     }),
     col.accessor("createdAt", {
-      header: t.added,
+      header: t("list.columns.added"),
       sortDescFirst: true,
       meta: {
-        label: t.added,
+        label: t("list.columns.added"),
         exportValue: (row: Trader) => formatDate(row.createdAt),
       },
       cell: ({ getValue }) => (

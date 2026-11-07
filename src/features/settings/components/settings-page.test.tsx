@@ -44,7 +44,7 @@ describe("SettingsPage", () => {
       "Shop profile",
       "Parchi",
       "Charges & commission",
-      "Units",
+      "Units & language",
       "Numbering",
       "Parchi preview",
     ]) {
@@ -62,7 +62,7 @@ describe("SettingsPage", () => {
       screen.getByRole("combobox", { name: "Default unit" }),
     ).toHaveTextContent("Maund (mn)");
     expect(
-      screen.getByRole("combobox", { name: "Language" }),
+      screen.getByRole("combobox", { name: "Shop default language" }),
     ).toHaveTextContent("English");
   });
 

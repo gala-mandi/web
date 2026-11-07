@@ -429,7 +429,8 @@ test.describe("Purchases", () => {
     const [again] = await printed();
     expect(again).toMatchObject({ paper: "thermal80", lang: "ur" });
     expect(again.text).toContain("PUR-2026-27-000001");
-    expect(again.text).toContain("Rs 98,275.00");
+    // The Urdu parchi writes the rupee word after the amount.
+    expect(again.text).toContain("98,275.00 روپے");
     await expect(page).toHaveURL(/\/purchases$/);
   });
 

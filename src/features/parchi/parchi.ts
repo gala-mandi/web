@@ -3,14 +3,8 @@ import type { Purchase } from "@/features/purchases/types";
 import { statementDay } from "@/features/ledger/statement";
 import type { Sale } from "@/features/sales/types";
 import type { ChargeLine } from "@/lib/charges/calculate-transaction";
-import {
-  formatDateTime,
-  formatKg,
-  formatMaund,
-  formatRs,
-  SHOP_TIME_ZONE,
-} from "@/lib/format";
-import { parchiWords } from "./text";
+import { formatDateTime, formatKg, formatMaund, formatRs } from "@/lib/format";
+import { parchiWords } from "./parchi-words";
 import type {
   PaperSize,
   ParchiBill,
@@ -67,26 +61,22 @@ export function parchiDay(value: string | Date, lang: ParchiLanguage): string {
   return statementDay(value, lang);
 }
 
-const urduDateTime = new Intl.DateTimeFormat("ur-PK", {
-  timeZone: SHOP_TIME_ZONE,
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-});
-
 /** When the parchi was printed, in Asia/Karachi time. */
 export function parchiDateTime(value: Date, lang: ParchiLanguage): string {
-  return lang === "en" ? formatDateTime(value) : urduDateTime.format(value);
+  return formatDateTime(value, lang);
 }
 
-/** A rupee amount; Urdu keeps the same `Rs 1,234.00`, read left to right. */
-export const parchiRs = formatRs;
+/** A rupee amount in the parchi's language: `Rs 1,234.00` / `1,234.00 روپے`. */
+export function parchiRs(
+  value: string | null | undefined,
+  lang: ParchiLanguage,
+): string {
+  return formatRs(value, lang);
+}
 
 /** "-0.46" → "-Rs 0.46", "0.50" → "+Rs 0.50", "0.00" → "Rs 0.00". */
-export function parchiSignedRs(value: string): string {
-  const shown = formatRs(value);
+export function parchiSignedRs(value: string, lang: ParchiLanguage): string {
+  const shown = formatRs(value, lang);
   return value.startsWith("-") || !/[1-9]/.test(value) ? shown : `+${shown}`;
 }
 
@@ -116,15 +106,11 @@ export function parchiWeight(
   maundKg: string,
   lang: ParchiLanguage,
 ): { maund: string; kg: string } {
-  const w = parchiWords[lang];
   // A number keeps its unit (no-break space); "25 mn" and "10 kg" may wrap.
-  const local = (text: string) =>
-    text
-      .replace(/ mn\b/g, `\u00a0${w.maund}`)
-      .replace(/ kg\b/g, `\u00a0${w.kg}`);
+  const keep = (text: string) => text.replace(/(\d) (?=\D)/g, "$1\u00a0");
   return {
-    maund: local(formatMaund(weightKg, maundKg)),
-    kg: local(formatKg(weightKg)),
+    maund: keep(formatMaund(weightKg, maundKg, lang)),
+    kg: keep(formatKg(weightKg, lang)),
   };
 }
 
@@ -136,7 +122,7 @@ export function parchiChargeLabel(
   const value =
     charge.basis === "percent"
       ? rateText(charge.value)
-      : formatRs(charge.value);
+      : formatRs(charge.value, lang);
   return parchiWords[lang].charge(charge.type, charge.basis, value);
 }
 

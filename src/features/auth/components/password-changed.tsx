@@ -1,9 +1,9 @@
+import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { passwordChangedText as t } from "../text";
-import { UrduLine } from "./auth-ui";
+import { OtherLanguage, SubLine } from "./auth-ui";
 
 interface PasswordChangedProps {
   revokedSessions: number;
@@ -11,7 +11,8 @@ interface PasswordChangedProps {
   otherDevices: boolean;
   href: string;
   label: string;
-  labelUr: string;
+  /** The same label in the other language, after a dot (as in the designs). */
+  labelSubline: string;
 }
 
 /** 2.4 Password changed. */
@@ -20,14 +21,15 @@ export function PasswordChanged({
   otherDevices,
   href,
   label,
-  labelUr,
+  labelSubline,
 }: PasswordChangedProps) {
+  const t = useTranslations("auth");
   return (
     <div className="bg-card rounded-card shadow-card flex w-full max-w-[420px] flex-col overflow-hidden">
       <div className="relative h-[150px] bg-brand-from">
         <Image
           src="/images/wheat-field.webp"
-          alt={t.imageAlt}
+          alt={t("passwordChanged.imageAlt")}
           fill
           sizes="420px"
           className="object-cover object-[center_70%]"
@@ -44,16 +46,18 @@ export function PasswordChanged({
         </div>
         <div className="flex flex-col gap-1.5">
           <h2 className="font-heading text-[26px] font-extrabold tracking-tight">
-            {t.title}
+            {t("passwordChanged.title")}
           </h2>
           <p
             role="status"
             className="text-muted-foreground text-[15px]/relaxed"
           >
-            {t.ready}
-            {t.signedOut(revokedSessions, otherDevices)}
+            {t("passwordChanged.ready")}
+            {revokedSessions > 0
+              ? ` ${t("passwordChanged.signedOut", { n: revokedSessions, other: otherDevices ? "yes" : "no" })}`
+              : ""}
           </p>
-          <UrduLine>{t.ur}</UrduLine>
+          <SubLine>{t("passwordChanged.subline")}</SubLine>
         </div>
         <Link
           href={href}
@@ -64,9 +68,9 @@ export function PasswordChanged({
         >
           {label}
           <span aria-hidden>·</span>
-          <span lang="ur" className="font-urdu text-[15px] font-semibold">
-            {labelUr}
-          </span>
+          <OtherLanguage className="text-[15px] font-semibold">
+            {labelSubline}
+          </OtherLanguage>
         </Link>
       </div>
     </div>

@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { units } from "@/features/settings/schemas";
-import { commodityText } from "./text";
+import type { Translator } from "@/i18n/types";
 import type {
   Commodity,
   CreateCommodityInput,
   UpdateCommodityInput,
 } from "./types";
 
-const e = commodityText.errors;
+/** Messages come from the `commodities` messages of the interface language. */
+export type CommoditiesTranslator = Translator<"commodities">;
 
 // Same rules as the server's DTO; decimals stay strings.
 const PERCENT = /^(100(\.0{1,2})?|\d{1,2}(\.\d{1,2})?)$/;
@@ -15,7 +16,11 @@ const MONEY = /^\d{1,12}(\.\d{1,2})?$/;
 // numeric(8,3): up to 99999.999 kg.
 const BAG_WEIGHT = /^\d{1,5}(\.\d{1,3})?$/;
 
-const text = (max: number) => z.string().trim().max(max, e.tooLong(max));
+const text = (t: CommoditiesTranslator, max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, t("errors.tooLong", { max: max }));
 /** "" = not set (for a charge: the shop default applies). */
 const optional = (regex: RegExp, message: string) =>
   z
@@ -23,30 +28,45 @@ const optional = (regex: RegExp, message: string) =>
     .trim()
     .refine((v) => v === "" || regex.test(v), message);
 
-export const commodityFormSchema = z.object({
-  name: z.string().trim().min(2, e.nameRequired).max(80, e.tooLong(80)),
-  nameUr: text(80),
-  category: text(40),
-  defaultUnit: z.enum(units, { error: e.unitRequired }),
-  bagWeightKg: optional(BAG_WEIGHT, e.bagWeight).refine(
-    // One message per problem: "0" is well-formed but not more than 0.
-    (v) => v === "" || !BAG_WEIGHT.test(v) || /[1-9]/.test(v),
-    e.bagWeightZero,
-  ),
-  commissionPct: optional(PERCENT, e.percent),
-  marketFeePct: optional(PERCENT, e.percent),
-  labourPerBag: optional(MONEY, e.money),
-  isActive: z.boolean(),
-});
+export const commodityFormSchema = (t: CommoditiesTranslator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, t("errors.nameRequired"))
+      .max(80, t("errors.tooLong", { max: 80 })),
+    nameUr: text(t, 80),
+    category: text(t, 40),
+    defaultUnit: z.enum(units, { error: t("errors.unitRequired") }),
+    bagWeightKg: optional(BAG_WEIGHT, t("errors.bagWeight")).refine(
+      // One message per problem: "0" is well-formed but not more than 0.
+      (v) => v === "" || !BAG_WEIGHT.test(v) || /[1-9]/.test(v),
+      t("errors.bagWeightZero"),
+    ),
+    commissionPct: optional(PERCENT, t("errors.percent")),
+    marketFeePct: optional(PERCENT, t("errors.percent")),
+    labourPerBag: optional(MONEY, t("errors.money")),
+    isActive: z.boolean(),
+  });
 
 /** Form values: strings ("" = not set) plus the active flag. */
-export type CommodityFormValues = z.infer<typeof commodityFormSchema>;
+export type CommodityFormValues = z.infer<
+  ReturnType<typeof commodityFormSchema>
+>;
 export type CommodityField = keyof CommodityFormValues;
 
 /** Form fields the server may report errors on. */
-export const commodityFields = Object.keys(
-  commodityFormSchema.shape,
-) as CommodityField[];
+export const commodityFields = [
+  "name",
+  "nameUr",
+  "category",
+  "defaultUnit",
+  "bagWeightKg",
+  "commissionPct",
+  "marketFeePct",
+  "labourPerBag",
+  "isActive",
+] as const satisfies readonly CommodityField[];
 
 /** An empty form; new commodities are counted in maunds unless changed. */
 export function emptyCommodityValues(): CommodityFormValues {

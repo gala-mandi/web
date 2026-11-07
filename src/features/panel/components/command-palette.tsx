@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -23,9 +24,6 @@ import type { User } from "@/features/auth/types";
 import { hasPermission } from "@/lib/can";
 import { useUiStore } from "@/stores/ui";
 import { menuFor } from "../menu";
-import { panelText } from "../text";
-
-const t = panelText.palette;
 
 /** Ctrl+K (⌘K on Mac) toggles the palette, also while typing in a field. */
 export function usePaletteShortcut() {
@@ -49,6 +47,7 @@ export function usePaletteShortcut() {
 
 /** Header button that opens the palette (for mouse and touch users). */
 export function PaletteButton() {
+  const t = useTranslations("panel");
   const setOpen = useUiStore((s) => s.setPaletteOpen);
   return (
     <Button
@@ -58,12 +57,12 @@ export function PaletteButton() {
       className="text-muted-foreground h-10 gap-2 rounded-xl px-2.5 lg:w-56 lg:justify-start lg:px-3"
     >
       <Search aria-hidden />
-      <span className="sr-only lg:not-sr-only">{t.open}</span>
+      <span className="sr-only lg:not-sr-only">{t("palette.open")}</span>
       <kbd
         aria-hidden
         className="bg-muted text-muted-foreground ms-auto hidden rounded-md px-1.5 py-0.5 font-sans text-[11px] font-semibold lg:inline"
       >
-        {t.shortcut}
+        {t("palette.shortcut")}
       </kbd>
     </Button>
   );
@@ -79,10 +78,11 @@ export function CommandPalette({
 }: {
   user: Pick<User, "permissions"> | null;
 }) {
+  const t = useTranslations("panel");
   const router = useRouter();
   const open = useUiStore((s) => s.paletteOpen);
   const setOpen = useUiStore((s) => s.setPaletteOpen);
-  const pages = menuFor(user);
+  const pages = menuFor(user, t);
   const showTraders = hasPermission(user, "trader.view");
   const returnFocus = useRef<HTMLElement | null>(null);
 
@@ -110,14 +110,17 @@ export function CommandPalette({
         }}
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>{t.title}</DialogTitle>
-          <DialogDescription>{t.description}</DialogDescription>
+          <DialogTitle>{t("palette.title")}</DialogTitle>
+          <DialogDescription>{t("palette.description")}</DialogDescription>
         </DialogHeader>
         <Command>
-          <CommandInput placeholder={t.placeholder} aria-label={t.title} />
+          <CommandInput
+            placeholder={t("palette.placeholder")}
+            aria-label={t("palette.title")}
+          />
           <CommandList>
-            <CommandEmpty>{t.empty}</CommandEmpty>
-            <CommandGroup heading={t.pages}>
+            <CommandEmpty>{t("palette.empty")}</CommandEmpty>
+            <CommandGroup heading={t("palette.pages")}>
               {pages.map((page) => {
                 const Icon = page.icon;
                 return (
@@ -133,10 +136,10 @@ export function CommandPalette({
               })}
             </CommandGroup>
             {showTraders ? (
-              <CommandGroup heading={t.traders} forceMount>
+              <CommandGroup heading={t("palette.traders")} forceMount>
                 <CommandItem value="traders-search" disabled forceMount>
                   <Users aria-hidden />
-                  {t.tradersSoon}
+                  {t("palette.tradersSoon")}
                 </CommandItem>
               </CommandGroup>
             ) : null}

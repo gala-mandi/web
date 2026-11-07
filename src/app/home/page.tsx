@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import {
   AuthGuard,
@@ -6,7 +7,10 @@ import {
 } from "@/features/auth/components/auth-guard";
 import { LandingRedirect } from "@/features/panel/components/landing-redirect";
 
-export const metadata: Metadata = { title: "Galla Mandi" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("panel");
+  return { title: t("appName") };
+}
 
 function first(value: string | string[] | undefined): string | null {
   return (Array.isArray(value) ? value[0] : value) ?? null;

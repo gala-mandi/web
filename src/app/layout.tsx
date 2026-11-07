@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Nastaliq_Urdu, Plus_Jakarta_Sans } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
+import { localeDirection } from "@/i18n/config";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -13,7 +16,7 @@ const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
 });
 
-// Only the short Urdu sub-lines of the designs use it; not preloaded.
+// The Urdu interface and the Urdu parchi/print text.
 const nastaliq = Noto_Nastaliq_Urdu({
   variable: "--font-nastaliq",
   subsets: ["arabic"],
@@ -26,15 +29,25 @@ export const metadata: Metadata = {
   description: "Shop panel for galla mandi commission shops",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/**
+ * The language comes from this browser's cookies, so every page renders per
+ * request (`<html lang dir>` and the text are right from the first paint);
+ * this opts the app out of the static-shell check.
+ */
+export const instant = false;
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang={locale}
+      dir={localeDirection[locale]}
       className={`${inter.variable} ${jakarta.variable} ${nastaliq.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,3 +1,4 @@
+import { testTranslator } from "@/test/intl";
 import { describe, expect, it } from "vitest";
 import {
   emptyItem,
@@ -9,6 +10,8 @@ import {
 } from "./schemas";
 import { chanaItem, gandumItem, savedPurchase, ticketInput } from "./test-data";
 import { liveTotals, savedItemCharges, savedRates } from "./totals";
+
+const tr = testTranslator("purchases");
 
 const row = (
   overrides: Partial<PurchaseItemFormValues> = {},
@@ -56,13 +59,16 @@ describe("toFormField", () => {
 
 describe("liveTotals", () => {
   it("leaves unfinished rows out until they are complete", () => {
-    const live = liveTotals([row(), row({ commodity: chanaItem, rate: "" })]);
+    const live = liveTotals(tr, [
+      row(),
+      row({ commodity: chanaItem, rate: "" }),
+    ]);
     expect(live.itemAmounts).toEqual(["100000.00", null]);
     expect(live.totals?.netAmount).toBe("97300.00");
   });
 
   it("says why a bill can't be totalled", () => {
-    const live = liveTotals([row({ rate: "0.01", weight: "0.001" })]);
+    const live = liveTotals(tr, [row({ rate: "0.01", weight: "0.001" })]);
     expect(live.totals).toBeNull();
     expect(live.error).toBe(
       "Can’t total this bill: the charges of item 1 are more than its amount.",
@@ -88,6 +94,8 @@ describe("liveTotals", () => {
     });
     // A Chana row added on edit also takes the bill's 2% (shop default 2.5%).
     const live = liveTotals(
+      tr,
+
       [...values.items, row({ commodity: chanaItem, bags: "", weight: "1" })],
       savedRates(purchase.charges),
     );

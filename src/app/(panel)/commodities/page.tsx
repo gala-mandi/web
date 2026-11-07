@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
 import { CommoditiesPage } from "@/features/commodities/components/commodities-page";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.sections.commodities.label),
-};
+export const generateMetadata = pageMetadata(
+  "panel.sections.commodities.label",
+);
 
 export default function Page() {
   return <CommoditiesPage />;

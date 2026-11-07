@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -15,15 +17,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { type ApiError, toApiError } from "@/lib/api-error";
 import { useDeleteCommodity, useUpdateCommodity } from "../hooks";
-import { commodityText } from "../text";
+import type { CommoditiesTranslator } from "../schemas";
 import type { Commodity } from "../types";
 
 export type CommodityStatusAction = "deactivate" | "activate";
 
 /** Message for an error that isn't about one form field. */
-export function commodityErrorMessage(error: ApiError): string {
-  if (error.status === 0) return commodityText.errors.network;
-  return error.message ?? commodityText.errors.generic;
+export function commodityErrorMessage(
+  error: ApiError,
+  t: CommoditiesTranslator,
+): string {
+  if (error.status === 0) return t("errors.network");
+  return error.message ?? t("errors.generic");
 }
 
 /** Deactivate / Activate confirmation (`PATCH { isActive }`). */
@@ -36,8 +41,8 @@ export function CommodityStatusDialog({
   action: CommodityStatusAction;
   onClose: () => void;
 }) {
+  const t = useTranslations("commodities");
   const mutation = useUpdateCommodity();
-  const t = commodityText.status[action];
   const pending = mutation.isPending;
 
   const confirm = () => {
@@ -46,11 +51,13 @@ export function CommodityStatusDialog({
       { id: commodity.id, input: { isActive: action === "activate" } },
       {
         onSuccess: (updated) => {
-          toast.success(t.done(updated.name));
+          toast.success(
+            t(`status.${action}.done`, { name: bidi(updated.name) }),
+          );
           onClose();
         },
         onError: (error) =>
-          toast.error(commodityErrorMessage(toApiError(error))),
+          toast.error(commodityErrorMessage(toApiError(error), t)),
       },
     );
   };
@@ -65,13 +72,17 @@ export function CommodityStatusDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            <bdi dir="auto">{t.title(commodity.name)}</bdi>
+            <bdi dir="auto">
+              {t(`status.${action}.title`, { name: bidi(commodity.name) })}
+            </bdi>
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>
+            {t(`status.${action}.body`)}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>
-            {commodityText.status.cancel}
+            {t("status.cancel")}
           </AlertDialogCancel>
           <Button
             variant={action === "deactivate" ? "destructive" : "default"}
@@ -81,7 +92,9 @@ export function CommodityStatusDialog({
             className="gap-2"
           >
             {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {pending ? t.pending : t.confirm}
+            {pending
+              ? t(`status.${action}.pending`)
+              : t(`status.${action}.confirm`)}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -106,8 +119,8 @@ export function DeleteCommodityDialog({
   onDeactivate: () => void;
   onClose: () => void;
 }) {
+  const t = useTranslations("commodities");
   const mutation = useDeleteCommodity();
-  const t = commodityText.delete;
   const pending = mutation.isPending;
   const [blocked, setBlocked] = useState<string | null>(null);
 
@@ -115,15 +128,15 @@ export function DeleteCommodityDialog({
     if (pending) return;
     mutation.mutate(commodity.id, {
       onSuccess: () => {
-        toast.success(t.done(commodity.name));
+        toast.success(t("delete.done", { name: bidi(commodity.name) }));
         onClose();
       },
       onError: (error) => {
         const e = toApiError(error);
         if (e.status === 409 && e.code === "COMMODITY_IN_USE") {
-          setBlocked(e.message ?? t.inUse);
+          setBlocked(e.message ?? t("delete.inUse"));
         } else {
-          toast.error(commodityErrorMessage(e));
+          toast.error(commodityErrorMessage(e, t));
         }
       },
     });
@@ -139,9 +152,11 @@ export function DeleteCommodityDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            <bdi dir="auto">{t.title(commodity.name)}</bdi>
+            <bdi dir="auto">
+              {t("delete.title", { name: bidi(commodity.name) })}
+            </bdi>
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>{t("delete.body")}</AlertDialogDescription>
         </AlertDialogHeader>
         {blocked ? (
           <p
@@ -153,12 +168,12 @@ export function DeleteCommodityDialog({
         ) : null}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>
-            {blocked ? t.close : t.cancel}
+            {blocked ? t("delete.close") : t("delete.cancel")}
           </AlertDialogCancel>
           {blocked ? (
             canDeactivate ? (
               <Button variant="destructive" onClick={onDeactivate}>
-                {t.deactivateInstead}
+                {t("delete.deactivateInstead")}
               </Button>
             ) : null
           ) : (
@@ -172,7 +187,7 @@ export function DeleteCommodityDialog({
               {pending ? (
                 <Loader2 aria-hidden className="animate-spin" />
               ) : null}
-              {pending ? t.pending : t.confirm}
+              {pending ? t("delete.pending") : t("delete.confirm")}
             </Button>
           )}
         </AlertDialogFooter>

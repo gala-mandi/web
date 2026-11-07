@@ -4,7 +4,9 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { api } from "@/lib/api";
 import { httpError } from "@/test/fake-api";
 import { resetStores } from "@/test/render-panel";
-import { settingsText } from "../text";
+import { testMessages } from "@/test/intl";
+
+const settingsText = testMessages.en.settings;
 import { fakeFile, LOGO_URL, settingsServer, shopSettings } from "../test-data";
 import { loaded, renderSettings } from "./test-utils";
 

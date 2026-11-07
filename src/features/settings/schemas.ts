@@ -1,60 +1,85 @@
 import { z } from "zod";
 import { normalizePhone } from "@/features/auth/schemas";
-import { settingsText } from "./text";
+import type { Translator } from "@/i18n/types";
 import type { Settings, UpdateSettingsInput } from "./types";
 
-const e = settingsText.errors;
+/** Error messages come from the `settings` messages of the interface language. */
+export type SettingsTranslator = Translator<"settings">;
 
 export const units = ["kg", "maund", "bag"] as const;
 export const languages = ["en", "ur"] as const;
 
 // Same rules as the server; decimals stay strings.
-const percent = z
-  .string()
-  .trim()
-  .regex(/^(100(\.0{1,2})?|\d{1,2}(\.\d{1,2})?)$/, e.percent);
-const optional = (max: number) => z.string().trim().max(max, e.tooLong(max));
+const percent = (t: SettingsTranslator) =>
+  z
+    .string()
+    .trim()
+    .regex(/^(100(\.0{1,2})?|\d{1,2}(\.\d{1,2})?)$/, t("errors.percent"));
+const optional = (t: SettingsTranslator, max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, t("errors.tooLong", { max: max }));
 
-export const settingsSchema = z.object({
-  name: z.string().trim().min(2, e.nameRequired).max(120, e.tooLong(120)),
-  phone: z
-    .string()
-    .trim()
-    .min(1, e.phoneRequired)
-    .refine((v) => normalizePhone(v) !== null, e.phoneInvalid),
-  email: z.union([z.literal(""), z.email(e.emailInvalid).max(160)]),
-  city: optional(80),
-  address: optional(500),
-  displayName: optional(120),
-  parchiFooter: optional(500),
-  defaultCommissionPct: percent,
-  marketFeePct: percent,
-  labourPerBag: z
-    .string()
-    .trim()
-    .regex(/^\d{1,12}(\.\d{1,2})?$/, e.money),
-  defaultUnit: z.enum(units),
-  maundKg: z
-    .string()
-    .trim()
-    .regex(/^\d{1,3}(\.\d{1,3})?$/, e.maundKg)
-    .refine((v) => /[1-9]/.test(v), e.maundKg),
-  language: z.enum(languages),
-  billPrefix: z
-    .string()
-    .trim()
-    .max(10, e.tooLong(10))
-    .regex(/^[A-Za-z0-9/-]*$/, e.billPrefix),
-  financialYearStart: z.union([z.literal(""), z.iso.date(e.date)]),
-});
+export const settingsSchema = (t: SettingsTranslator) =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, t("errors.nameRequired"))
+      .max(120, t("errors.tooLong", { max: 120 })),
+    phone: z
+      .string()
+      .trim()
+      .min(1, t("errors.phoneRequired"))
+      .refine((v) => normalizePhone(v) !== null, t("errors.phoneInvalid")),
+    email: z.union([z.literal(""), z.email(t("errors.emailInvalid")).max(160)]),
+    city: optional(t, 80),
+    address: optional(t, 500),
+    displayName: optional(t, 120),
+    parchiFooter: optional(t, 500),
+    defaultCommissionPct: percent(t),
+    marketFeePct: percent(t),
+    labourPerBag: z
+      .string()
+      .trim()
+      .regex(/^\d{1,12}(\.\d{1,2})?$/, t("errors.money")),
+    defaultUnit: z.enum(units),
+    maundKg: z
+      .string()
+      .trim()
+      .regex(/^\d{1,3}(\.\d{1,3})?$/, t("errors.maundKg"))
+      .refine((v) => /[1-9]/.test(v), t("errors.maundKg")),
+    language: z.enum(languages),
+    billPrefix: z
+      .string()
+      .trim()
+      .max(10, t("errors.tooLong", { max: 10 }))
+      .regex(/^[A-Za-z0-9/-]*$/, t("errors.billPrefix")),
+    financialYearStart: z.union([z.literal(""), z.iso.date(t("errors.date"))]),
+  });
 
-export type SettingsValues = z.infer<typeof settingsSchema>;
+export type SettingsValues = z.infer<ReturnType<typeof settingsSchema>>;
 export type SettingsField = keyof SettingsValues;
 
 /** Form fields the server may report errors on. */
-export const settingsFields = Object.keys(
-  settingsSchema.shape,
-) as SettingsField[];
+export const settingsFields = [
+  "name",
+  "phone",
+  "email",
+  "city",
+  "address",
+  "displayName",
+  "parchiFooter",
+  "defaultCommissionPct",
+  "marketFeePct",
+  "labourPerBag",
+  "defaultUnit",
+  "maundKg",
+  "language",
+  "billPrefix",
+  "financialYearStart",
+] as const satisfies readonly SettingsField[];
 
 const nullable = new Set<SettingsField>([
   "email",

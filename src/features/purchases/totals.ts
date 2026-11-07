@@ -9,7 +9,7 @@ import {
   type PurchaseTotals,
 } from "@/lib/charges/purchase-totals";
 import { MAUND_KG } from "@/lib/units";
-import { purchaseText } from "./text";
+import type { PurchasesTranslator } from "./schemas";
 import {
   isCompleteItem,
   type PurchaseItemFormValues,
@@ -86,17 +86,22 @@ export function savedItemCharges(
 
 /** The calculator's refusal in the form's words (see `text.ts`). */
 function reasonOf(
+  t: PurchasesTranslator,
   error: InvalidQuantityError,
   rows: readonly number[],
 ): string {
-  const r = purchaseText.breakdown.reasons;
   const item = /^items\.(\d+)$/.exec(error.field);
-  if (item) return r.itemChargesOverGross(rows[Number(item[1])] + 1);
-  if (error.message.includes("Rs 0")) return r.netZero;
-  if (error.message.includes("too large")) return r.tooLarge;
+  if (item) {
+    return t("breakdown.reasons.itemChargesOverGross", {
+      n: rows[Number(item[1])] + 1,
+    });
+  }
+  if (error.message.includes("Rs 0")) return t("breakdown.reasons.netZero");
+  if (error.message.includes("too large"))
+    return t("breakdown.reasons.tooLarge");
   if (error.message.includes("more than the gross"))
-    return r.deductionsOverGross;
-  return r.other;
+    return t("breakdown.reasons.deductionsOverGross");
+  return t("breakdown.reasons.other");
 }
 
 export interface LiveTotals {
@@ -114,6 +119,7 @@ export interface LiveTotals {
  * the total saved. Unfinished rows are left out until they are complete.
  */
 export function liveTotals(
+  t: PurchasesTranslator,
   items: readonly PurchaseItemFormValues[],
   manual: ManualCharges = {},
 ): LiveTotals {
@@ -144,6 +150,6 @@ export function liveTotals(
     return { totals, itemAmounts, error: null };
   } catch (error) {
     if (!(error instanceof InvalidQuantityError)) throw error;
-    return { totals: null, itemAmounts, error: reasonOf(error, rows) };
+    return { totals: null, itemAmounts, error: reasonOf(t, error, rows) };
   }
 }

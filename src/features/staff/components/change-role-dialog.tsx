@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Loader2 } from "lucide-react";
 import { type FormEvent, useRef } from "react";
@@ -35,10 +37,7 @@ import {
   changeRoleSchema,
   staffRoles,
 } from "../schemas";
-import { roleHint, roleText, staffText } from "../text";
 import type { StaffMember } from "../types";
-
-const t = staffText.changeRole;
 
 /** Change one person's role; their new permissions apply at the next refresh. */
 export function ChangeRoleDialog({
@@ -48,6 +47,7 @@ export function ChangeRoleDialog({
   member: StaffMember;
   onClose: () => void;
 }) {
+  const t = useTranslations("staff");
   const mutation = useChangeRole();
   const inFlight = useRef(false);
   const form = useForm<ChangeRoleValues>({
@@ -63,12 +63,21 @@ export function ChangeRoleDialog({
     }
     try {
       const updated = await mutation.mutateAsync({ id: member.id, role });
-      toast.success(t.done(updated.name, roleText[updated.role]));
+      toast.success(
+        t("changeRole.done", {
+          name: updated.name,
+          role: t(`roles.${updated.role}`),
+        }),
+      );
       onClose();
     } catch (error) {
       const e = toApiError(error);
-      if (!applyServerErrors(e, form.setError, ["role"])) {
-        toast.error(generalErrorMessage(e));
+      if (
+        !applyServerErrors(e, form.setError, ["role"], {
+          fallback: t("errors.generic"),
+        })
+      ) {
+        toast.error(generalErrorMessage(e, t));
       }
     }
   };
@@ -94,9 +103,9 @@ export function ChangeRoleDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading text-lg font-bold">
-            {t.title(member.name)}
+            {t("changeRole.title", { name: bidi(member.name) })}
           </DialogTitle>
-          <DialogDescription>{t.description}</DialogDescription>
+          <DialogDescription>{t("changeRole.description")}</DialogDescription>
         </DialogHeader>
         <form
           method="post"
@@ -111,7 +120,7 @@ export function ChangeRoleDialog({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-2">
                 <FieldLabel id="change-role-label" htmlFor="change-role">
-                  {t.label}
+                  {t("changeRole.label")}
                 </FieldLabel>
                 <Select
                   name={field.name}
@@ -139,13 +148,13 @@ export function ChangeRoleDialog({
                   <SelectContent position="popper">
                     {staffRoles.map((role) => (
                       <SelectItem key={role} value={role}>
-                        {roleText[role]}
+                        {t(`roles.${role}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <FieldDescription id="change-role-hint">
-                  {roleHint[field.value]}
+                  {t(`roleHints.${field.value}`)}
                 </FieldDescription>
                 <FieldError
                   id="change-role-error"
@@ -159,7 +168,7 @@ export function ChangeRoleDialog({
             className="bg-secondary text-secondary-foreground flex gap-2.5 rounded-xl px-3.5 py-3 text-[13px]/relaxed font-medium"
           >
             <Info aria-hidden className="mt-0.5 size-4 flex-none" />
-            {t.appliesSoon}
+            {t("changeRole.appliesSoon")}
           </p>
           <DialogFooter className="gap-2">
             <Button
@@ -169,7 +178,7 @@ export function ChangeRoleDialog({
               disabled={busy}
               onClick={onClose}
             >
-              {t.cancel}
+              {t("changeRole.cancel")}
             </Button>
             <Button
               type="submit"
@@ -180,7 +189,7 @@ export function ChangeRoleDialog({
               {busy ? (
                 <Loader2 aria-hidden className="size-4 animate-spin" />
               ) : null}
-              {busy ? t.saving : t.save}
+              {busy ? t("changeRole.saving") : t("changeRole.save")}
             </Button>
           </DialogFooter>
         </form>

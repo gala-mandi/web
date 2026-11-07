@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/i18n/metadata";
 import { Suspense } from "react";
 import { AuthShell } from "@/components/auth-shell";
 import { AuthCardSkeleton } from "@/features/auth/components/auth-card-skeleton";
 import { LoginForm } from "@/features/auth/components/login-form";
 
-export const metadata: Metadata = { title: "Sign in — Galla Mandi" };
+export const generateMetadata = pageMetadata("auth.meta.signIn");
 
 function first(value: string | string[] | undefined): string | null {
   return (Array.isArray(value) ? value[0] : value) ?? null;

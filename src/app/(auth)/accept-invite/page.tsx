@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { AuthShell } from "@/components/auth-shell";
 import { AuthCardSkeleton } from "@/features/auth/components/auth-card-skeleton";
 import { AcceptInviteForm } from "@/features/staff/components/accept-invite-form";
+import { pageTitle } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: "Accept invite — Galla Mandi",
-  // The URL holds the invite token until the page removes it.
-  referrer: "no-referrer",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("auth.meta");
+  return {
+    title: await pageTitle(t("acceptInvite")),
+    // The URL holds the invite token until the page removes it.
+    referrer: "no-referrer",
+  };
+}
 
 function first(value: string | string[] | undefined): string | null {
   return (Array.isArray(value) ? value[0] : value) ?? null;

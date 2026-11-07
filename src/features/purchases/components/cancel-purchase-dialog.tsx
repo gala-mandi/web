@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -14,10 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toApiError } from "@/lib/api-error";
 import { useCancelPurchase } from "../hooks";
-import { purchaseText } from "../text";
 import type { PurchaseSummary } from "../types";
-
-const t = purchaseText.cancel;
 
 /** Confirms `POST /purchases/:id/cancel` (owner only, `purchase.delete`). */
 export function CancelPurchaseDialog({
@@ -27,6 +25,7 @@ export function CancelPurchaseDialog({
   purchase: Pick<PurchaseSummary, "id" | "billNo">;
   onClose: () => void;
 }) {
+  const t = useTranslations("purchases");
   const mutation = useCancelPurchase();
   const pending = mutation.isPending;
 
@@ -34,20 +33,19 @@ export function CancelPurchaseDialog({
     if (pending) return;
     mutation.mutate(purchase.id, {
       onSuccess: (cancelled) => {
-        toast.success(t.done(cancelled.billNo));
+        toast.success(t("cancel.done", { billNo: cancelled.billNo }));
         onClose();
       },
       onError: (error) => {
         const e = toApiError(error);
-        const errors = purchaseText.errors;
         toast.error(
           e.status === 0
-            ? errors.network
+            ? t("errors.network")
             : e.code === "PURCHASE_CANCELLED"
-              ? errors.alreadyCancelled
+              ? t("errors.alreadyCancelled")
               : e.status === 403
-                ? errors.forbidden
-                : (e.message ?? errors.generic),
+                ? t("errors.forbidden")
+                : (e.message ?? t("errors.generic")),
         );
       },
     });
@@ -63,12 +61,14 @@ export function CancelPurchaseDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            {t.title(purchase.billNo)}
+            {t("cancel.title", { billNo: purchase.billNo })}
           </AlertDialogTitle>
-          <AlertDialogDescription>{t.body}</AlertDialogDescription>
+          <AlertDialogDescription>{t("cancel.body")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>{t.keep}</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>
+            {t("cancel.keep")}
+          </AlertDialogCancel>
           <Button
             variant="destructive"
             disabled={pending}
@@ -77,7 +77,7 @@ export function CancelPurchaseDialog({
             className="gap-2"
           >
             {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {pending ? t.pending : t.confirm}
+            {pending ? t("cancel.pending") : t("cancel.confirm")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
 import { CashBookPage } from "@/features/payments/components/cash-book-page";
-import { pageTitle } from "@/features/panel/text";
-import { paymentText } from "@/features/payments/text";
+import { pageMetadata } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: pageTitle(paymentText.cashBook.title),
-};
+export const generateMetadata = pageMetadata("payments.cashBook.title");
 
 /** The Payments section opens on the cash book (today by default). */
 export default function Page() {

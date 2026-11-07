@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Loader2, MailX, RotateCw, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -22,16 +23,14 @@ import { Button } from "@/components/ui/button";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
-import { formatDate, formatDateTime, formatRelative } from "@/lib/format";
+import { type Formatters, useFormat } from "@/lib/use-format";
 import { generalErrorMessage } from "../form-errors";
 import { useCancelInvitation, useInvitations, useInviteStaff } from "../hooks";
-import { staffText } from "../text";
+import type { StaffTranslator } from "../schemas";
 import type { Invitation } from "../types";
 import { InvitationStatusBadge, RoleBadge } from "./badges";
 import { OneTimeSecretDialog } from "./one-time-secret-dialog";
 import { useClientPage } from "./use-client-page";
-
-const t = staffText.invitations;
 
 interface RowHandlers {
   onCancel: (invitation: Invitation) => void;
@@ -51,6 +50,7 @@ function RowActions({
   invitation: Invitation;
   handlers: RowHandlers;
 }) {
+  const t = useTranslations("staff");
   const resending = handlers.resendingId === invitation.id;
   return (
     <span className="flex justify-end gap-2">
@@ -61,7 +61,7 @@ function RowActions({
           className="gap-1.5"
           disabled={handlers.resendingId !== null}
           aria-busy={resending || undefined}
-          aria-label={`${t.resend} ${invitation.phone}`}
+          aria-label={`${t("invitations.resend")} ${invitation.phone}`}
           onClick={() => handlers.onResend(invitation)}
         >
           {resending ? (
@@ -69,7 +69,7 @@ function RowActions({
           ) : (
             <RotateCw aria-hidden />
           )}
-          {resending ? t.resending : t.resend}
+          {resending ? t("invitations.resending") : t("invitations.resend")}
         </Button>
       ) : null}
       {invitation.status === "pending" ? (
@@ -77,11 +77,11 @@ function RowActions({
           variant="ghost"
           size="sm"
           className="text-destructive hover:text-destructive gap-1.5"
-          aria-label={`${t.cancel} ${invitation.phone}`}
+          aria-label={`${t("invitations.cancel")} ${invitation.phone}`}
           onClick={() => handlers.onCancel(invitation)}
         >
           <MailX aria-hidden />
-          {t.cancel}
+          {t("invitations.cancel")}
         </Button>
       ) : null}
     </span>
@@ -91,27 +91,29 @@ function RowActions({
 const col = dataTableColumnHelper<Invitation>();
 
 function invitationColumns(
+  t: StaffTranslator,
+  { formatDate, formatDateTime, formatRelative }: Formatters,
   handlers: RowHandlers,
 ): DataTableColumn<Invitation>[] {
   return col.columns([
     col.accessor("phone", {
-      header: t.phone,
+      header: t("invitations.phone"),
       cell: ({ getValue }) => (
-        <span dir="ltr" className="font-semibold tabular-nums">
+        <span dir="auto" className="font-semibold tabular-nums">
           {getValue()}
         </span>
       ),
     }),
     col.accessor("role", {
-      header: t.role,
+      header: t("invitations.role"),
       cell: ({ getValue }) => <RoleBadge role={getValue()} />,
     }),
     col.accessor("status", {
-      header: t.status,
+      header: t("invitations.status"),
       cell: ({ getValue }) => <InvitationStatusBadge status={getValue()} />,
     }),
     col.accessor("expiresAt", {
-      header: t.expires,
+      header: t("invitations.expires"),
       cell: ({ row }) => {
         const { expiresAt, status } = row.original;
         const live = status === "pending" || status === "expired";
@@ -132,14 +134,14 @@ function invitationColumns(
       },
     }),
     col.accessor("createdAt", {
-      header: t.sent,
+      header: t("invitations.sent"),
       cell: ({ getValue }) => (
         <time dateTime={getValue()}>{formatDateTime(getValue())}</time>
       ),
     }),
     col.display({
       id: "actions",
-      header: () => <span className="sr-only">{t.actions}</span>,
+      header: () => <span className="sr-only">{t("invitations.actions")}</span>,
       cell: ({ row }) => (
         <RowActions invitation={row.original} handlers={handlers} />
       ),
@@ -155,18 +157,19 @@ function CancelDialog({
   invitation: Invitation;
   onClose: () => void;
 }) {
+  const t = useTranslations("staff");
   const mutation = useCancelInvitation();
-  const c = t.cancelDialog;
   const pending = mutation.isPending;
 
   const confirm = () => {
     if (pending) return;
     mutation.mutate(invitation.id, {
       onSuccess: () => {
-        toast.success(c.done);
+        toast.success(t("invitations.cancelDialog.done"));
         onClose();
       },
-      onError: (error) => toast.error(generalErrorMessage(toApiError(error))),
+      onError: (error) =>
+        toast.error(generalErrorMessage(toApiError(error), t)),
     });
   };
 
@@ -180,12 +183,16 @@ function CancelDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="font-heading text-lg font-bold">
-            {c.title(invitation.phone)}
+            {t("invitations.cancelDialog.title", { phone: invitation.phone })}
           </AlertDialogTitle>
-          <AlertDialogDescription>{c.body}</AlertDialogDescription>
+          <AlertDialogDescription>
+            {t("invitations.cancelDialog.body")}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>{c.keep}</AlertDialogCancel>
+          <AlertDialogCancel disabled={pending}>
+            {t("invitations.cancelDialog.keep")}
+          </AlertDialogCancel>
           <Button
             variant="destructive"
             disabled={pending}
@@ -194,7 +201,9 @@ function CancelDialog({
             className="gap-2"
           >
             {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
-            {pending ? c.pending : c.confirm}
+            {pending
+              ? t("invitations.cancelDialog.pending")
+              : t("invitations.cancelDialog.confirm")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -204,6 +213,8 @@ function CancelDialog({
 
 /** Invitations tab: cancel pending ones, resend pending or expired ones. */
 export function InvitationsTable() {
+  const t = useTranslations("staff");
+  const format = useFormat();
   const query = useInvitations();
   const resend = useInviteStaff();
   const [cancelling, setCancelling] = useState<Invitation | null>(null);
@@ -213,7 +224,7 @@ export function InvitationsTable() {
 
   const columns = useMemo(
     () =>
-      invitationColumns({
+      invitationColumns(t, format, {
         resendingId,
         onCancel: setCancelling,
         onResend: (invitation) => {
@@ -222,15 +233,15 @@ export function InvitationsTable() {
           sendAgain(
             { phone: invitation.phone, role: invitation.role, method: "link" },
             {
-              onSuccess: () => toast.success(t.resent),
+              onSuccess: () => toast.success(t("invitations.resent")),
               onError: (error) =>
-                toast.error(generalErrorMessage(toApiError(error))),
+                toast.error(generalErrorMessage(toApiError(error), t)),
               onSettled: () => setResendingId(null),
             },
           );
         },
       }),
-    [resendingId, sendAgain],
+    [resendingId, sendAgain, t, format],
   );
   // Read-only shop: no role, activate or cancel buttons (the server refuses).
   const readOnly = useReadOnly();
@@ -246,7 +257,7 @@ export function InvitationsTable() {
   return (
     <>
       <DataTable<Invitation>
-        caption={t.caption}
+        caption={t("invitations.caption")}
         columns={visibleColumns}
         data={paged.page}
         getRowId={(row) => row.id}
@@ -260,8 +271,8 @@ export function InvitationsTable() {
         empty={
           <EmptyState
             icon={Send}
-            title={t.emptyTitle}
-            body={t.emptyBody}
+            title={t("invitations.emptyTitle")}
+            body={t("invitations.emptyBody")}
             className="rounded-none border-0"
           />
         }

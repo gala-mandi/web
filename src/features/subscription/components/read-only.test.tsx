@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import type { ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
 import { RequirePermission } from "@/features/panel/components/require-permission";
@@ -72,10 +73,15 @@ describe("read-only mode", () => {
     });
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith(
-        expect.stringContaining("the shop is read-only"),
+        expect.objectContaining({
+          props: { id: "subscription.toast.readOnly" },
+        }),
         { id: "SUBSCRIPTION_READ_ONLY" },
       ),
     );
+    // The toast text follows the interface language.
+    render(vi.mocked(toast.error).mock.calls[0][0] as ReactElement);
+    expect(screen.getByText(/the shop is read-only/)).toBeInTheDocument();
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ["subscription"] });
     // No redirect away from the page: viewing keeps working.
     expect(useSessionStore.getState().accessToken).toBe("token-1");

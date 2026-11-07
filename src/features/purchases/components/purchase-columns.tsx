@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
 import { Eye, Pencil, Printer, XCircle } from "lucide-react";
 import Link from "next/link";
 import {
@@ -12,14 +14,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { TraderName } from "@/features/traders/components/trader-name";
-import { formatDate, formatRs } from "@/lib/format";
+import type { Formatters } from "@/lib/use-format";
 import { purchaseRoutes } from "@/lib/routes";
-import { purchaseStatusText, purchaseText } from "../text";
 import type { PurchaseSummary } from "../types";
 import { PurchaseStatusBadge } from "./badges";
 
-const t = purchaseText.list.columns;
-const a = purchaseText.actions;
 const col = dataTableColumnHelper<PurchaseSummary>();
 
 export interface PurchaseRowActions {
@@ -39,24 +38,25 @@ function RowActions({
   purchase: PurchaseSummary;
   actions: PurchaseRowActions;
 }) {
+  const t = useTranslations("purchases");
   const active = purchase.status !== "cancelled";
   return (
     <DataTableRowActions rowName={purchase.billNo}>
       <DropdownMenuItem asChild>
         <Link href={purchaseRoutes.detail(purchase.id)}>
           <Eye aria-hidden />
-          {a.view}
+          {t("actions.view")}
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem onSelect={() => actions.onReprint(purchase)}>
         <Printer aria-hidden />
-        {a.reprint}
+        {t("actions.reprint")}
       </DropdownMenuItem>
       {actions.canEdit && active ? (
         <DropdownMenuItem asChild>
           <Link href={purchaseRoutes.edit(purchase.id)}>
             <Pencil aria-hidden />
-            {a.edit}
+            {t("actions.edit")}
           </Link>
         </DropdownMenuItem>
       ) : null}
@@ -68,7 +68,7 @@ function RowActions({
             onSelect={() => actions.onCancel(purchase)}
           >
             <XCircle aria-hidden />
-            {a.cancel}
+            {t("actions.cancel")}
           </DropdownMenuItem>
         </>
       ) : null}
@@ -77,6 +77,7 @@ function RowActions({
 }
 
 const money = (
+  formatRs: (value: string) => string,
   key: "grossAmount" | "totalDeductions" | "netAmount" | "outstanding",
   header: string,
 ) =>
@@ -90,7 +91,7 @@ const money = (
     },
     cell: ({ getValue }) => (
       <span
-        dir="ltr"
+        dir="auto"
         className={
           key === "netAmount" ? "font-semibold tabular-nums" : "tabular-nums"
         }
@@ -102,12 +103,15 @@ const money = (
 
 /** Columns of the purchases list; bill number and date sort (server-side). */
 export function purchaseColumns(
+  t: Translator<"purchases">,
+  format: Formatters,
   actions: PurchaseRowActions,
 ): DataTableColumn<PurchaseSummary>[] {
+  const { formatDate, formatRs } = format;
   return col.columns([
     col.accessor("billNo", {
-      header: t.billNo,
-      meta: { label: t.billNo },
+      header: t("list.columns.billNo"),
+      meta: { label: t("list.columns.billNo") },
       cell: ({ row }) => (
         <Link
           href={purchaseRoutes.detail(row.original.id)}
@@ -119,10 +123,10 @@ export function purchaseColumns(
       ),
     }),
     col.accessor("purchaseDate", {
-      header: t.purchaseDate,
+      header: t("list.columns.purchaseDate"),
       sortDescFirst: true,
       meta: {
-        label: t.purchaseDate,
+        label: t("list.columns.purchaseDate"),
         exportValue: (row: PurchaseSummary) => formatDate(row.purchaseDate),
       },
       cell: ({ getValue }) => (
@@ -131,21 +135,21 @@ export function purchaseColumns(
     }),
     col.accessor((row) => row.trader.name, {
       id: "trader",
-      header: t.trader,
+      header: t("list.columns.trader"),
       enableSorting: false,
-      meta: { label: t.trader },
+      meta: { label: t("list.columns.trader") },
       cell: ({ getValue }) => <TraderName name={getValue()} />,
     }),
-    money("grossAmount", t.grossAmount),
-    money("totalDeductions", t.totalDeductions),
-    money("netAmount", t.netAmount),
-    money("outstanding", t.outstanding),
+    money(formatRs, "grossAmount", t("list.columns.grossAmount")),
+    money(formatRs, "totalDeductions", t("list.columns.totalDeductions")),
+    money(formatRs, "netAmount", t("list.columns.netAmount")),
+    money(formatRs, "outstanding", t("list.columns.outstanding")),
     col.accessor("status", {
-      header: t.status,
+      header: t("list.columns.status"),
       enableSorting: false,
       meta: {
-        label: t.status,
-        exportValue: (row: PurchaseSummary) => purchaseStatusText[row.status],
+        label: t("list.columns.status"),
+        exportValue: (row: PurchaseSummary) => t(`statuses.${row.status}`),
       },
       cell: ({ getValue }) => <PurchaseStatusBadge status={getValue()} />,
     }),

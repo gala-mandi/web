@@ -1,12 +1,13 @@
 "use client";
 
 import { Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "../hooks";
-import { subscriptionText } from "../text";
 
 /** "3 of 5 users on your Basic plan", with a bar; amber when full. */
 export function PlanUsage() {
+  const t = useTranslations("subscription.limit");
   const sub = useSubscription().data?.subscription;
   if (!sub) return null;
   const { usersUsed: used, plan } = sub;
@@ -24,7 +25,7 @@ export function PlanUsage() {
         )}
       >
         <Users aria-hidden className="size-4" />
-        {subscriptionText.limit.usage(used, plan.maxUsers, plan.name)}
+        {t("usage", { used, max: plan.maxUsers, plan: plan.name })}
       </span>
       <div
         aria-hidden

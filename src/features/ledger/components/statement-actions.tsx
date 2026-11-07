@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { FileDown, FileSpreadsheet, Printer } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -17,15 +19,12 @@ import { selectTenant, useSessionStore } from "@/stores/session";
 import { useFullStatementLoader } from "../hooks";
 import { exportStatementToExcel, statementFileBase } from "../statement";
 import {
-  ledgerText,
   type StatementLanguage,
   statementLanguageNames,
   statementLanguages,
-} from "../text";
+} from "../statement-words";
 import type { Statement } from "../types";
 import { StatementDocument, statementPageStyle } from "./statement-document";
-
-const t = ledgerText.statement;
 
 type Action = "print" | "pdf" | "excel";
 
@@ -58,8 +57,10 @@ export function StatementActions({
   from,
   to,
 }: StatementActionsProps) {
+  const t = useTranslations("ledger");
   const languageId = useId();
-  const [lang, setLang] = useState<StatementLanguage>("en");
+  // Starts in the interface language; can be switched for this statement.
+  const [lang, setLang] = useState<StatementLanguage>(useLocale());
   const [busy, setBusy] = useState<Action | null>(null);
   const [job, setJob] = useState<PrintJob | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -78,7 +79,7 @@ export function StatementActions({
         ? undefined
         : document.documentElement.className,
     print: printWhenReady,
-    onPrintError: () => toast.error(t.failed),
+    onPrintError: () => toast.error(t("statement.failed")),
   });
 
   // Print once the job's document is on the page (react-to-print copies it).
@@ -99,12 +100,12 @@ export function StatementActions({
       if (action === "excel") {
         await exportStatementToExcel(statement, lang, shopName);
       } else {
-        if (action === "pdf") toast.info(t.pdfHint);
+        if (action === "pdf") toast.info(t("statement.pdfHint"));
         printPending.current = true;
         setJob({ statement, lang, printedAt: new Date() });
       }
     } catch {
-      toast.error(t.failed);
+      toast.error(t("statement.failed"));
     } finally {
       setBusy(null);
     }
@@ -120,7 +121,7 @@ export function StatementActions({
       onClick={() => void run(action)}
     >
       <Icon aria-hidden />
-      {busy === action ? t.preparing : label}
+      {busy === action ? t("statement.preparing") : label}
     </Button>
   );
 
@@ -128,7 +129,7 @@ export function StatementActions({
     <div className="flex flex-wrap items-end gap-2">
       <div className="flex flex-col gap-1.5">
         <label htmlFor={languageId} className="text-[13px] font-semibold">
-          {t.languageLabel}
+          {t("statement.languageLabel")}
         </label>
         <Select
           value={lang}
@@ -154,9 +155,9 @@ export function StatementActions({
           </SelectContent>
         </Select>
       </div>
-      {button("print", Printer, t.print)}
-      {button("excel", FileSpreadsheet, t.excel)}
-      {button("pdf", FileDown, t.pdf)}
+      {button("print", Printer, t("statement.print"))}
+      {button("excel", FileSpreadsheet, t("statement.excel"))}
+      {button("pdf", FileDown, t("statement.pdf"))}
 
       {job ? (
         <div className="hidden">

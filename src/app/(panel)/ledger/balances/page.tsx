@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
 import { BalancesPage } from "@/features/ledger/components/balances-page";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.crumbs.balances),
-};
+export const generateMetadata = pageMetadata("panel.crumbs.balances");
 
 export default function Page() {
   return <BalancesPage />;

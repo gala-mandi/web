@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import {
   BookOpen,
   Clock,
@@ -9,7 +10,7 @@ import {
   Wifi,
 } from "lucide-react";
 import Image from "next/image";
-import { brandText } from "@/features/auth/text";
+import { OtherLanguage } from "@/features/auth/components/auth-ui";
 import { cn } from "@/lib/utils";
 
 const chipIcons = [BookOpen, Scale, LineChart];
@@ -20,7 +21,17 @@ const toneClass = {
   flat: "text-white/85",
 } as const;
 
+/** One line of the sample rates card (the `brand.rates` messages). */
+interface SampleRate {
+  name: string;
+  en: string;
+  price: string;
+  change: string;
+  tone: keyof typeof toneClass;
+}
+
 export function BrandLogo({ className }: { className?: string }) {
+  const t = useTranslations("auth");
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <div className="flex size-11 items-center justify-center rounded-xl border border-white/30 bg-white/20">
@@ -28,15 +39,11 @@ export function BrandLogo({ className }: { className?: string }) {
       </div>
       <div className="flex flex-col gap-0.5">
         <span className="font-heading text-xl font-extrabold tracking-tight">
-          {brandText.name}
+          {t("brand.name")}
         </span>
-        <span
-          lang="ur"
-          dir="rtl"
-          className="font-urdu text-xs/relaxed text-white/85"
-        >
-          {brandText.nameUr}
-        </span>
+        <OtherLanguage className="text-xs/relaxed text-white/85">
+          {t("brand.nameSubline")}
+        </OtherLanguage>
       </div>
     </div>
   );
@@ -44,6 +51,7 @@ export function BrandLogo({ className }: { className?: string }) {
 
 /** Left side of every desktop auth screen (wraps above the form on phones). */
 export function BrandPanel() {
+  const t = useTranslations("auth");
   return (
     <aside className="bg-brand-from relative w-full overflow-hidden text-white">
       <Image
@@ -61,20 +69,19 @@ export function BrandPanel() {
 
         <div className="flex max-w-[540px] flex-col gap-4">
           <h1 className="font-heading text-3xl/tight font-extrabold tracking-tight sm:text-5xl/[1.04]">
-            {brandText.headline}
+            {t("brand.headline")}
           </h1>
-          <p
-            lang="ur"
-            dir="rtl"
-            className="font-urdu text-start text-lg/loose sm:text-xl/loose"
+          <OtherLanguage
+            block
+            className="text-start text-lg/loose sm:text-xl/loose"
           >
-            {brandText.headlineUr}
-          </p>
+            {t("brand.headlineSubline")}
+          </OtherLanguage>
           <p className="hidden text-base/relaxed text-white/90 sm:block">
-            {brandText.intro}
+            {t("brand.intro")}
           </p>
           <ul className="hidden flex-wrap gap-2 sm:flex">
-            {brandText.chips.map((chip, i) => {
+            {(t.raw("brand.chips") as string[]).map((chip, i) => {
               const Icon = chipIcons[i];
               return (
                 <li
@@ -94,26 +101,22 @@ export function BrandPanel() {
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
                 <span className="text-[13px] font-bold">
-                  {brandText.ratesTitle}
+                  {t("brand.ratesTitle")}
                 </span>
-                <span
-                  lang="ur"
-                  dir="rtl"
-                  className="font-urdu text-start text-[11px]/relaxed text-white/85"
-                >
-                  {brandText.ratesTitleUr}
-                </span>
+                <OtherLanguage className="text-start text-[11px]/relaxed text-white/85">
+                  {t("brand.ratesTitleSubline")}
+                </OtherLanguage>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold">
                 <span
                   aria-hidden
                   className="size-[7px] rounded-full bg-green-300"
                 />
-                {brandText.ratesBadge}
+                {t("brand.ratesBadge")}
               </span>
             </div>
             <ul>
-              {brandText.rates.map((rate) => (
+              {(t.raw("brand.rates") as SampleRate[]).map((rate) => (
                 <li
                   key={rate.name}
                   className="flex items-center gap-2.5 border-t border-white/15 py-2"
@@ -141,7 +144,7 @@ export function BrandPanel() {
         </div>
 
         <ul className="hidden flex-wrap gap-x-5 gap-y-2 text-[12.5px] text-white/90 sm:flex">
-          {brandText.features.map((feature, i) => {
+          {(t.raw("brand.features") as string[]).map((feature, i) => {
             const Icon = featureIcons[i];
             return (
               <li key={feature} className="inline-flex items-center gap-1.5">
@@ -157,10 +160,11 @@ export function BrandPanel() {
 }
 
 function MandiIllustration() {
+  const t = useTranslations("auth");
   return (
     <svg
       role="img"
-      aria-label={brandText.illustrationLabel}
+      aria-label={t("brand.illustrationLabel")}
       width="220"
       height="150"
       viewBox="0 0 220 150"

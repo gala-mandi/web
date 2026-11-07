@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 import type { Tenant } from "@/features/auth/types";
@@ -20,7 +21,6 @@ import {
   parchiPageStyle,
   thermalPageRule,
 } from "./parchi";
-import { parchiText } from "./text";
 import type {
   PaperSize,
   ParchiBill,
@@ -78,10 +78,11 @@ export function useParchiShop(): { shop: ParchiShop; isLoading: boolean } {
 }
 
 /**
- * Paper and language to print with: this computer's last choice, else the
- * shop's language from Settings, else English.
+ * Paper and language to print with: this computer's last choice of paper;
+ * the language picked on a parchi screen, else the interface language (the
+ * user's choice, or the shop default from Settings).
  */
-export function useParchiChoice(shop: ParchiShop): {
+export function useParchiChoice(): {
   paper: PaperSize;
   lang: ParchiLanguage;
   setPaper: (paper: PaperSize) => void;
@@ -91,7 +92,8 @@ export function useParchiChoice(shop: ParchiShop): {
   const saved = useParchiPrefs((s) => s.lang);
   const setPaper = useParchiPrefs((s) => s.setPaper);
   const setLang = useParchiPrefs((s) => s.setLang);
-  return { paper, lang: saved ?? shop.language ?? "en", setPaper, setLang };
+  const locale = useLocale();
+  return { paper, lang: saved ?? locale, setPaper, setLang };
 }
 
 /**
@@ -134,6 +136,7 @@ export function useParchiPrint({
   /** Before the number at the top of later sheets; default "Bill no". */
   numberLabel?: string;
 }) {
+  const t = useTranslations("parchi");
   return useReactToPrint({
     contentRef,
     documentTitle:
@@ -145,7 +148,7 @@ export function useParchiPrint({
         ? undefined
         : document.documentElement.className,
     print: (iframe) => printParchiFrame(iframe, paper),
-    onPrintError: () => toast.error(parchiText.failed),
+    onPrintError: () => toast.error(t("failed")),
   });
 }
 
@@ -160,8 +163,9 @@ export interface ReprintJob {
  * to render into `contentRef`.
  */
 export function useReprint(load: (id: string) => Promise<ParchiBill>) {
+  const t = useTranslations("parchi");
   const { shop } = useParchiShop();
-  const { paper, lang } = useParchiChoice(shop);
+  const { paper, lang } = useParchiChoice();
   const [job, setJob] = useState<ReprintJob | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const contentRef = useRef<HTMLElement>(null);
@@ -186,18 +190,22 @@ export function useReprint(load: (id: string) => Promise<ParchiBill>) {
   });
 
   /** Stable, so a memoised table column can hold it. */
-  const reprint = useCallback(async (id: string) => {
-    setPendingId(id);
-    try {
-      const bill = await loadRef.current(id);
-      printPending.current = true;
-      setJob({ bill, printedAt: new Date() });
-    } catch {
-      toast.error(parchiText.failed);
-    } finally {
-      setPendingId(null);
-    }
-  }, []);
+  const reprint = useCallback(
+    async (id: string) => {
+      setPendingId(id);
+      try {
+        const bill = await loadRef.current(id);
+        printPending.current = true;
+        setJob({ bill, printedAt: new Date() });
+      } catch {
+        toast.error(t("failed"));
+      } finally {
+        setPendingId(null);
+      }
+      // Stable per language: a memoised table column can hold it.
+    },
+    [t],
+  );
 
   return { reprint, pendingId, job, contentRef, shop, paper, lang };
 }

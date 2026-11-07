@@ -1,10 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ShopLogo } from "@/features/panel/components/shop-logo";
 import { sampleBillNumber, type SettingsValues } from "../schemas";
-import { settingsText } from "../text";
-
-const t = settingsText.preview;
 
 type PreviewValues = Pick<
   SettingsValues,
@@ -25,6 +23,7 @@ export function ParchiPreview({
   values: PreviewValues;
   logoUrl: string | null;
 }) {
+  const t = useTranslations("settings");
   const title = values.displayName.trim() || values.name.trim();
   const place = [values.address.trim(), values.city.trim()]
     .filter(Boolean)
@@ -40,9 +39,11 @@ export function ParchiPreview({
           id="parchi-preview-title"
           className="font-heading text-base font-bold"
         >
-          {t.title}
+          {t("preview.title")}
         </h2>
-        <p className="text-muted-foreground text-xs">{t.description}</p>
+        <p className="text-muted-foreground text-xs">
+          {t("preview.description")}
+        </p>
       </div>
       <div
         data-testid="parchi-preview"
@@ -63,17 +64,17 @@ export function ParchiPreview({
               </p>
             ) : null}
             {values.phone.trim() ? (
-              <p className="text-xs" dir="ltr" data-testid="preview-phone">
-                {t.phone}: {values.phone.trim()}
+              <p className="text-xs" dir="auto" data-testid="preview-phone">
+                {t("preview.phone")}: {values.phone.trim()}
               </p>
             ) : null}
           </div>
         </div>
         <div className="flex justify-between text-xs">
           <span>
-            {t.bill}{" "}
+            {t("preview.bill")}{" "}
             <span
-              dir="ltr"
+              dir="auto"
               className="font-semibold"
               data-testid="preview-bill"
             >
@@ -81,7 +82,7 @@ export function ParchiPreview({
             </span>
           </span>
           <span>
-            {t.date} {t.sampleDate}
+            {t("preview.date")} {t("preview.sampleDate")}
           </span>
         </div>
         <div className="flex flex-col gap-1.5" aria-hidden>

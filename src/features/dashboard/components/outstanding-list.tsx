@@ -1,5 +1,8 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
+import { TraderName } from "@/features/traders/components/trader-name";
 import Link from "next/link";
 import {
   Card,
@@ -11,11 +14,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { TraderTypeBadge } from "@/features/traders/components/badges";
 import { useCan } from "@/lib/can";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { ledgerRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { barShare } from "../series";
-import { dashboardText } from "../text";
 import type { OutstandingSide } from "../types";
 import {
   MoneyFigure,
@@ -23,8 +25,6 @@ import {
   SectionEmpty,
   SectionError,
 } from "./chart-parts";
-
-const t = dashboardText.outstanding;
 
 /**
  * Receivable is green and payable red everywhere, as in the ledger; the
@@ -58,7 +58,8 @@ export function OutstandingList({
   onRetry,
   className,
 }: OutstandingListProps) {
-  const text = t[kind];
+  const { formatRs } = useFormat();
+  const t = useTranslations("dashboard");
   const titleId = `dash-${kind}-title`;
   const canOpenKhata = useCan("ledger.view");
   const largest = side?.traders[0]?.amount ?? "0";
@@ -72,13 +73,15 @@ export function OutstandingList({
     >
       <CardHeader className="px-5">
         <CardTitle id={titleId} className="font-heading text-lg">
-          {text.title}
+          {t(`outstanding.${kind}.title`)}
         </CardTitle>
-        <CardDescription>{text.description}</CardDescription>
+        <CardDescription>
+          {t(`outstanding.${kind}.description`)}
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 px-5">
         {isError && !side ? (
-          <SectionError message={t.error} onRetry={onRetry} />
+          <SectionError message={t("outstanding.error")} onRetry={onRetry} />
         ) : isPending || !side ? (
           <div className="flex flex-col gap-3">
             <Skeleton className="h-14 w-full rounded-xl" />
@@ -91,7 +94,7 @@ export function OutstandingList({
             <div className="bg-surface-muted/60 flex flex-wrap items-end justify-between gap-2 rounded-xl px-4 py-3">
               <div className="flex flex-col">
                 <span className="text-muted-foreground text-xs font-semibold">
-                  {text.total}
+                  {t(`outstanding.${kind}.total`)}
                 </span>
                 <MoneyFigure
                   value={side.total}
@@ -103,15 +106,17 @@ export function OutstandingList({
               </div>
               {side.count > 0 ? (
                 <span className="text-muted-foreground text-xs">
-                  {t.shown(
-                    side.traders.length,
-                    dashboardText.traders(side.count),
-                  )}
+                  {t("outstanding.shown", {
+                    shown: side.traders.length,
+                    count: t("traders", { n: side.count }),
+                  })}
                 </span>
               ) : null}
             </div>
             {side.traders.length === 0 ? (
-              <SectionEmpty className="py-6">{text.empty}</SectionEmpty>
+              <SectionEmpty className="py-6">
+                {t(`outstanding.${kind}.empty`)}
+              </SectionEmpty>
             ) : (
               <ol className="flex flex-col gap-3">
                 {side.traders.map((trader, i) => (
@@ -130,14 +135,16 @@ export function OutstandingList({
                       {canOpenKhata ? (
                         <Link
                           href={ledgerRoutes.khata(trader.traderId)}
-                          aria-label={t.openKhata(trader.name)}
+                          aria-label={t("outstanding.openKhata", {
+                            name: bidi(trader.name),
+                          })}
                           className="hover:text-primary focus-visible:ring-ring/50 min-w-0 truncate rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-[3px]"
                         >
-                          {trader.name}
+                          <TraderName name={trader.name} />
                         </Link>
                       ) : (
                         <span className="min-w-0 truncate font-medium">
-                          {trader.name}
+                          <TraderName name={trader.name} />
                         </span>
                       )}
                       {/* On a phone the name gets the room; the khata shows the type. */}

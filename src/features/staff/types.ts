@@ -69,3 +69,12 @@ export interface AcceptInviteResult {
   phone: string;
   shopName: string;
 }
+
+/** Error codes the accept-invite endpoint returns for a dead invite. */
+export const inviteErrorCodes = [
+  "INVITE_INVALID",
+  "INVITE_USED",
+  "INVITE_CANCELLED",
+  "INVITE_EXPIRED",
+] as const;
+export type InviteErrorCode = (typeof inviteErrorCodes)[number];

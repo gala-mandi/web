@@ -6,8 +6,7 @@ import {
   reportSlugs,
   sectionOf,
 } from "@/lib/routes";
-import { landingItemFor, menuItem } from "./menu";
-import { panelText } from "./text";
+import { landingItemFor, menuItem, type PanelTranslator } from "./menu";
 
 export interface Crumb {
   label: string;
@@ -24,15 +23,16 @@ export interface Crumb {
 export function breadcrumbsFor(
   pathname: string,
   user: Pick<User, "permissions"> | null | undefined,
+  t: PanelTranslator,
 ): Crumb[] {
-  const home = landingItemFor(user);
+  const home = landingItemFor(user, t);
   const section = sectionOf(pathname);
   if (section === home.key && pathname === home.href) {
     return [{ label: home.label, href: null }];
   }
-  const detail = section ? detailCrumb(section, pathname) : null;
+  const detail = section ? detailCrumb(section, pathname, t) : null;
   if (section && detail) {
-    const item = menuItem(section);
+    const item = menuItem(section, t);
     const crumbs: Crumb[] = [
       { label: item.label, href: item.href },
       { label: detail, href: null },
@@ -41,7 +41,7 @@ export function breadcrumbsFor(
       ? crumbs
       : [{ label: home.label, href: home.href }, ...crumbs];
   }
-  const current = section ? menuItem(section).label : panelText.notFound.title;
+  const current = section ? menuItem(section, t).label : t("notFound.title");
   return [
     { label: home.label, href: home.href },
     { label: current, href: null },
@@ -61,41 +61,42 @@ function billCrumbs(newBill: string, bill: string, editBill: string) {
  * Pages below a section, by section: the crumb for the rest of the path
  * (`["abc"]` for `/traders/abc`), or null when the section has no such page.
  */
-const detailCrumbs: Partial<
-  Record<PanelSection, (parts: string[]) => string | null>
-> = {
-  traders: (parts) =>
-    parts.length === 1 ? panelText.crumbs.traderProfile : null,
+const detailCrumbs = (
+  t: PanelTranslator,
+): Partial<Record<PanelSection, (parts: string[]) => string | null>> => ({
+  traders: (parts) => (parts.length === 1 ? t("crumbs.traderProfile") : null),
   purchases: billCrumbs(
-    panelText.crumbs.newPurchase,
-    panelText.crumbs.purchase,
-    panelText.crumbs.editPurchase,
+    t("crumbs.newPurchase"),
+    t("crumbs.purchase"),
+    t("crumbs.editPurchase"),
   ),
   ledger: (parts) =>
-    parts.length === 1 && parts[0] === "balances"
-      ? panelText.crumbs.balances
-      : null,
+    parts.length === 1 && parts[0] === "balances" ? t("crumbs.balances") : null,
   sales: billCrumbs(
-    panelText.crumbs.newSale,
-    panelText.crumbs.sale,
-    panelText.crumbs.editSale,
+    t("crumbs.newSale"),
+    t("crumbs.sale"),
+    t("crumbs.editSale"),
   ),
   reports: (parts) =>
     parts.length === 1 && (reportSlugs as readonly string[]).includes(parts[0])
-      ? panelText.crumbs.reports[parts[0] as ReportSlug]
+      ? t(`crumbs.reports.${parts[0] as ReportSlug}`)
       : null,
   // Vouchers are never edited (cancel instead): `new` and `:id` only.
   payments: (parts) =>
     parts.length === 1
       ? parts[0] === "new"
-        ? panelText.crumbs.newVoucher
-        : panelText.crumbs.voucher
+        ? t("crumbs.newVoucher")
+        : t("crumbs.voucher")
       : null,
-};
+});
 
 /** `/traders/abc` → "Trader profile"; null for the section page itself. */
-function detailCrumb(section: PanelSection, pathname: string): string | null {
+function detailCrumb(
+  section: PanelSection,
+  pathname: string,
+  t: PanelTranslator,
+): string | null {
   const rest = pathname.slice(panelRoutes[section].length).replace(/\/$/, "");
   if (!/^(\/[^/]+)+$/.test(rest)) return null;
-  return detailCrumbs[section]?.(rest.slice(1).split("/")) ?? null;
+  return detailCrumbs(t)[section]?.(rest.slice(1).split("/")) ?? null;
 }

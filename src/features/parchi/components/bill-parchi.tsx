@@ -1,7 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { parchiText } from "../text";
 import type { ParchiBill } from "../types";
 import { ParchiDesk } from "./parchi-desk";
 import { ParchiDocument } from "./parchi-document";
@@ -19,10 +19,11 @@ export interface BillParchiProps {
  * header has loaded.
  */
 export function BillParchi({ bill, aside }: BillParchiProps) {
+  const t = useTranslations("parchi");
   return (
     <ParchiDesk
       docNo={bill.billNo}
-      label={parchiText.preview(bill.billNo)}
+      label={t("preview", { billNo: bill.billNo })}
       aside={aside}
     >
       {({ ref, shop, lang, paper, printedAt }) => (

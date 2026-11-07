@@ -1,3 +1,4 @@
+import { forgetSignedInUser, rememberSignedInUser } from "@/i18n/client";
 import type { Session, User } from "@/features/auth/types";
 import { toApiError } from "@/lib/api-error";
 import { hardRedirect } from "@/lib/navigation";
@@ -21,6 +22,8 @@ export function blockedPageFor(code: string | undefined): string | null {
 /** Stores a session from login or refresh (memory only). */
 export function startSession(session: Session): Session {
   useSessionStore.getState().setSession(session);
+  // The next server render picks this user's language.
+  rememberSignedInUser(session.user.id);
   return session;
 }
 
@@ -38,6 +41,7 @@ export function homePathFor(user: User, next: string | null): string {
 /** Clears everything the browser knows about the user. */
 export function clearSession(): void {
   useSessionStore.getState().clear();
+  forgetSignedInUser();
   getQueryClient().clear();
 }
 

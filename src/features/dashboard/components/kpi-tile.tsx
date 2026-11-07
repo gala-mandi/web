@@ -1,8 +1,8 @@
+import { useTranslations } from "next-intl";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { dashboardText } from "../text";
 
 /** Colour of a tile's icon chip and its soft corner glow (theme tokens). */
 export const tileTones = {
@@ -42,6 +42,7 @@ export function KpiTile({
   hint,
   loading = false,
 }: KpiTileProps) {
+  const t = useTranslations("dashboard");
   const { chip, glow } = tileTones[tone];
   return (
     <Card
@@ -72,7 +73,7 @@ export function KpiTile({
       <dd className="flex min-w-0 flex-col gap-1">
         {loading ? (
           <span className="flex h-9 items-center">
-            <span className="sr-only">{dashboardText.loading}</span>
+            <span className="sr-only">{t("loading")}</span>
             <span
               aria-hidden
               data-testid="kpi-skeleton"

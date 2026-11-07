@@ -21,7 +21,7 @@ import {
   sectionPermission,
   sectionsFor,
 } from "@/lib/routes";
-import { panelText } from "./text";
+import type { Translator } from "@/i18n/types";
 
 export interface MenuItem {
   key: PanelSection;
@@ -45,20 +45,18 @@ const icons: Record<PanelSection, LucideIcon> = {
   settings: Settings,
 };
 
-export function menuItem(key: PanelSection): MenuItem {
+/** Menu labels come from the `panel` messages of the interface language. */
+export type PanelTranslator = Translator<"panel">;
+
+export function menuItem(key: PanelSection, t: PanelTranslator): MenuItem {
   return {
     key,
-    label: panelText.sections[key].label,
+    label: t(`sections.${key}.label`),
     href: panelRoutes[key],
     icon: icons[key],
     permission: sectionPermission[key],
   };
 }
-
-/** Every panel page in menu order (see `sectionPermission` for the gating). */
-export const menuItems: readonly MenuItem[] = (
-  Object.keys(panelRoutes) as PanelSection[]
-).map(menuItem);
 
 /**
  * The menu for this user: only items whose permission the server gave them.
@@ -67,13 +65,15 @@ export const menuItems: readonly MenuItem[] = (
  */
 export function menuFor(
   user: Pick<User, "permissions"> | null | undefined,
+  t: PanelTranslator,
 ): MenuItem[] {
-  return sectionsFor(user).map(menuItem);
+  return sectionsFor(user).map((key) => menuItem(key, t));
 }
 
 /** The menu item of the user's landing page (first item they may open). */
 export function landingItemFor(
   user: Pick<User, "permissions"> | null | undefined,
+  t: PanelTranslator,
 ): MenuItem {
-  return menuItem(landingSectionFor(user));
+  return menuItem(landingSectionFor(user), t);
 }

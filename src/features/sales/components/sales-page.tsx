@@ -1,5 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { Translator } from "@/i18n/types";
+import { useFormat } from "@/lib/use-format";
 import { Plus, ReceiptText, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +23,6 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
-import { panelText } from "@/features/panel/text";
 import { useEveryCommodity } from "@/features/rates/hooks";
 import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import type { TraderLookupItem } from "@/features/traders/types";
@@ -31,25 +33,22 @@ import { saleParchi } from "@/features/parchi/parchi";
 import { useCanWrite } from "@/features/subscription/hooks";
 import { toListSearchParams } from "@/lib/list-query";
 import { saleRoutes } from "@/lib/routes";
-import { purchaseStatusText } from "@/features/purchases/text";
 import { useSaleLoader, useSales } from "../hooks";
 import {
   SALES_TABLE_ID,
   saleListFilters,
   saleListStatuses,
 } from "../search-params";
-import { saleText } from "../text";
 import { type SaleListQuery, saleSortFields, type SaleSummary } from "../types";
 import { CancelSaleDialog } from "./cancel-sale-dialog";
 import { saleColumns } from "./sale-columns";
 
-const t = saleText.list;
-
-const statusOptions = saleListStatuses.map((status) => ({
-  value: status,
-  label: purchaseStatusText[status],
-  dotClassName: status === "posted" ? "bg-success" : "bg-destructive",
-}));
+const statusOptions = (tp: Translator<"purchases">) =>
+  saleListStatuses.map((status) => ({
+    value: status,
+    label: tp(`statuses.${status}`),
+    dotClassName: status === "posted" ? "bg-success" : "bg-destructive",
+  }));
 
 const getRowId = (row: SaleSummary) => row.id;
 const getRowLabel = (row: SaleSummary) => row.billNo;
@@ -69,8 +68,10 @@ export function SalesPage() {
  * cancel for the owner only.
  */
 function SalesList() {
+  const tp = useTranslations("purchases");
+  const t = useTranslations("sales");
   const router = useRouter();
-  const section = panelText.sections.sales;
+  const section = useTranslations("panel.sections.sales");
   const canCreate = useCanWrite("sale.create");
   const canEdit = useCanWrite("sale.edit");
   const canCancel = useCanWrite("sale.delete");
@@ -94,15 +95,16 @@ function SalesList() {
   const query = useSales(listQuery);
   const rows = query.data?.data;
 
+  const format = useFormat();
   const columns = useMemo(
     () =>
-      saleColumns({
+      saleColumns(t, tp, format, {
         canEdit,
         canCancel,
         onCancel: setCancelling,
         onReprint: (row) => void reprint(row.id),
       }),
-    [canEdit, canCancel, reprint],
+    [canEdit, canCancel, reprint, t, tp, format],
   );
 
   if (query.isError && toApiError(query.error).status === 403) {
@@ -120,7 +122,7 @@ function SalesList() {
           type: "beopari",
           name:
             rows?.find((row) => row.buyer.id === buyerId)?.buyer.name ??
-            t.buyerLabel,
+            t("list.buyerLabel"),
           fatherName: null,
           phone: null,
           village: null,
@@ -135,7 +137,7 @@ function SalesList() {
     <Button asChild size="lg" className="h-10 gap-2 px-4 font-semibold">
       <Link href={saleRoutes.new}>
         <Plus aria-hidden />
-        {t.newButton}
+        {t("list.newButton")}
       </Link>
     </Button>
   ) : null;
@@ -143,8 +145,8 @@ function SalesList() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={section.label}
-        description={section.description}
+        title={section("label")}
+        description={section("description")}
         actions={newButton}
       />
 
@@ -152,13 +154,13 @@ function SalesList() {
         search={{
           value: list.search,
           onChange: list.setSearch,
-          label: t.searchLabel,
-          placeholder: t.searchPlaceholder,
+          label: t("list.searchLabel"),
+          placeholder: t("list.searchPlaceholder"),
         }}
         filters={
           <>
             <DataTableDateRangeFilter
-              label={t.dateLabel}
+              label={t("list.dateLabel")}
               value={{ from: list.filters.from, to: list.filters.to }}
               onChange={({ from, to }) => list.setFilters({ from, to })}
             />
@@ -167,14 +169,14 @@ function SalesList() {
                 htmlFor="sales-buyer-filter"
                 className="text-[13px] font-semibold"
               >
-                {t.buyerLabel}
+                {t("list.buyerLabel")}
               </label>
               <TraderCombobox
                 id="sales-buyer-filter"
                 type="beopari"
                 allowQuickAdd={false}
                 value={buyerValue}
-                placeholder={t.buyerAll}
+                placeholder={t("list.buyerAll")}
                 onChange={(trader) => {
                   setPickedBuyer(trader);
                   list.setFilter("buyer", trader?.id ?? null);
@@ -183,17 +185,17 @@ function SalesList() {
               />
             </div>
             <DataTableSelectFilter
-              label={t.commodityLabel}
-              allLabel={t.commodityAll}
+              label={t("list.commodityLabel")}
+              allLabel={t("list.commodityAll")}
               value={list.filters.commodity}
               options={commodityOptions}
               onChange={(value) => list.setFilter("commodity", value)}
             />
             <DataTableStatusFilter
-              label={t.statusLabel}
-              allLabel={t.statusAll}
+              label={t("list.statusLabel")}
+              allLabel={t("list.statusAll")}
               value={list.filters.status}
-              options={statusOptions}
+              options={statusOptions(tp)}
               onChange={(value) => list.setFilter("status", value)}
             />
           </>
@@ -211,7 +213,7 @@ function SalesList() {
               onColumnVisibilityChange={onColumnVisibilityChange}
             />
             <DataTableExport
-              fileName={t.exportFileName}
+              fileName={t("list.exportFileName")}
               columns={columns}
               rows={rows}
               columnVisibility={columnVisibility}
@@ -221,7 +223,7 @@ function SalesList() {
       />
 
       <DataTable
-        caption={t.caption}
+        caption={t("list.caption")}
         columns={columns}
         data={rows}
         getRowId={getRowId}
@@ -242,8 +244,8 @@ function SalesList() {
           list.isFiltered ? (
             <EmptyState
               icon={Search}
-              title={t.noMatches.title}
-              body={t.noMatches.body}
+              title={t("list.noMatches.title")}
+              body={t("list.noMatches.body")}
               className="rounded-none border-0"
               action={
                 <Button
@@ -253,15 +255,15 @@ function SalesList() {
                     list.clearAll();
                   }}
                 >
-                  {t.noMatches.clear}
+                  {t("list.noMatches.clear")}
                 </Button>
               }
             />
           ) : (
             <EmptyState
               icon={ReceiptText}
-              title={t.empty.title}
-              body={t.empty.body}
+              title={t("list.empty.title")}
+              body={t("list.empty.body")}
               className="rounded-none border-0"
               action={newButton}
             />

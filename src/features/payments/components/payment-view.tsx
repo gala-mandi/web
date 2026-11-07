@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ArrowLeft, CircleAlert, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -17,17 +18,14 @@ import { PurchaseStatusBadge } from "@/features/purchases/components/badges";
 import { toApiError } from "@/lib/api-error";
 import { useCan } from "@/lib/can";
 import { useCanWrite } from "@/features/subscription/hooks";
-import { formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { ledgerRoutes, paymentRoutes } from "@/lib/routes";
 import { usePayment } from "../hooks";
-import { paymentText } from "../text";
 import type { Payment } from "../types";
 import { voucherWords } from "../voucher-words";
 import { DirectionBadge } from "./badges";
 import { CancelPaymentDialog } from "./cancel-payment-dialog";
 import { VoucherDocument } from "./voucher-document";
-
-const t = paymentText.view;
 
 /** `/payments/:id`: everyone with `payment.view`. `?print=1` prints it. */
 export function PaymentDetailPage({ id }: { id: string }) {
@@ -39,12 +37,13 @@ export function PaymentDetailPage({ id }: { id: string }) {
 }
 
 function PaymentDetail({ id }: { id: string }) {
+  const t = useTranslations("payments");
   const query = usePayment(id);
   if (query.isPending) {
     return (
       <div className="flex flex-col gap-6" aria-busy>
         <span role="status" className="sr-only">
-          {t.loading}
+          {t("view.loading")}
         </span>
         <Skeleton className="h-9 w-64" />
         <Skeleton className="rounded-card h-96" />
@@ -60,12 +59,12 @@ function PaymentDetail({ id }: { id: string }) {
       <EmptyState
         role="alert"
         icon={CircleAlert}
-        title={t.error.title}
-        body={t.error.body}
+        title={t("view.error.title")}
+        body={t("view.error.body")}
         headingLevel="h1"
         action={
           <Button variant="outline" onClick={() => void query.refetch()}>
-            {t.error.retry}
+            {t("view.error.retry")}
           </Button>
         }
       />
@@ -76,6 +75,8 @@ function PaymentDetail({ id }: { id: string }) {
 
 /** The voucher as it prints, with Print, Cancel (owner) and the khata link. */
 function PaymentView({ payment }: { payment: Payment }) {
+  const { formatDate } = useFormat();
+  const t = useTranslations("payments");
   const canCancel = useCanWrite("payment.delete");
   const canOpenKhata = useCan("ledger.view");
   const [cancelling, setCancelling] = useState(false);
@@ -88,11 +89,14 @@ function PaymentView({ payment }: { payment: Payment }) {
         className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex w-fit items-center gap-1.5 rounded-sm text-sm font-semibold outline-none focus-visible:ring-3"
       >
         <ArrowLeft aria-hidden className="size-4 rtl:rotate-180" />
-        {t.back}
+        {t("view.back")}
       </Link>
 
       <PageHeader
-        title={paymentText.voucherOf(payment.direction, payment.voucherNo)}
+        title={t("voucherOf", {
+          direction: payment.direction,
+          voucherNo: payment.voucherNo,
+        })}
         description={
           <span className="flex flex-wrap items-center gap-2">
             <DirectionBadge direction={payment.direction} />
@@ -109,7 +113,7 @@ function PaymentView({ payment }: { payment: Payment }) {
               onClick={() => setCancelling(true)}
             >
               <XCircle aria-hidden />
-              {paymentText.actions.cancel}
+              {t("actions.cancel")}
             </Button>
           ) : null
         }
@@ -117,23 +121,23 @@ function PaymentView({ payment }: { payment: Payment }) {
 
       {active ? null : (
         <p role="note" className="text-destructive text-sm font-semibold">
-          {t.cancelledNote}
+          {t("view.cancelledNote")}
         </p>
       )}
 
       <ParchiDesk
         docNo={payment.voucherNo}
-        label={t.preview(payment.voucherNo)}
+        label={t("view.preview", { voucherNo: payment.voucherNo })}
         documentTitle={`voucher-${payment.voucherNo}`}
         numberLabel={(lang) => voucherWords[lang].voucherNo}
-        printLabel={paymentText.actions.print}
+        printLabel={t("actions.print")}
         aside={
           canOpenKhata ? (
             <Link
               href={ledgerRoutes.khata(payment.trader.id)}
               className="text-primary focus-visible:ring-ring/50 rounded-sm text-sm font-semibold outline-none hover:underline focus-visible:ring-3"
             >
-              {t.khataLink}
+              {t("view.khataLink")}
             </Link>
           ) : null
         }

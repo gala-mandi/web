@@ -1,9 +1,7 @@
+import { useTranslations } from "next-intl";
 import type { ChargeLine } from "@/lib/charges/calculate-transaction";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
-import { purchaseText } from "../text";
-
-const t = purchaseText.breakdown;
 
 export interface BreakdownValues {
   grossAmount: string;
@@ -21,7 +19,10 @@ export function rateText(value: string): string {
 }
 
 /** "-0.46" → "-Rs 0.46", "0.50" → "+Rs 0.50". */
-export function signedRs(value: string): string {
+export function signedRs(
+  value: string,
+  formatRs: (value: string) => string,
+): string {
   const shown = formatRs(value);
   return value.startsWith("-") || !/[1-9]/.test(value) ? shown : `+${shown}`;
 }
@@ -38,6 +39,8 @@ export function BreakdownLines({
   values: BreakdownValues;
   className?: string;
 }) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("purchases");
   const paid = values.paidAmount && /[1-9]/.test(values.paidAmount);
   return (
     <dl
@@ -45,36 +48,37 @@ export function BreakdownLines({
       className={cn("flex flex-col gap-1.5 text-sm", className)}
     >
       <BreakdownLine
-        label={t.gross}
+        label={t("breakdown.gross")}
         value={formatRs(values.grossAmount)}
         strong
       />
       {values.charges.map((charge) => (
         <BreakdownLine
           key={`${charge.type}|${charge.basis}|${charge.value}`}
-          label={t.charge(
-            charge.type,
-            charge.basis,
-            charge.basis === "percent"
-              ? rateText(charge.value)
-              : formatRs(charge.value),
-          )}
+          label={t("breakdown.charge", {
+            label: t(`chargeTypes.${charge.type}`),
+            basis: charge.basis,
+            value:
+              charge.basis === "percent"
+                ? rateText(charge.value)
+                : formatRs(charge.value),
+          })}
           value={`-${formatRs(charge.amount)}`}
           muted
         />
       ))}
       <BreakdownLine
-        label={t.totalDeductions}
+        label={t("breakdown.totalDeductions")}
         value={`-${formatRs(values.totalDeductions)}`}
         className="border-t pt-1.5"
       />
       <BreakdownLine
-        label={t.rounding}
-        value={signedRs(values.rounding)}
+        label={t("breakdown.rounding")}
+        value={signedRs(values.rounding, formatRs)}
         muted
       />
       <BreakdownLine
-        label={t.net}
+        label={t("breakdown.net")}
         value={formatRs(values.netAmount)}
         strong
         className="font-heading border-t pt-2 text-base"
@@ -82,7 +86,7 @@ export function BreakdownLines({
       />
       {paid ? (
         <BreakdownLine
-          label={t.paid}
+          label={t("breakdown.paid")}
           value={formatRs(values.paidAmount)}
           muted
         />
@@ -117,7 +121,7 @@ export function BreakdownLine({
       )}
     >
       <dt>{label}</dt>
-      <dd data-testid={testId} dir="ltr" className="tabular-nums">
+      <dd data-testid={testId} dir="auto" className="tabular-nums">
         {value}
       </dd>
     </div>

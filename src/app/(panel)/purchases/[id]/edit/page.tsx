@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
-import { pageTitle, panelText } from "@/features/panel/text";
+import { pageMetadata } from "@/i18n/metadata";
 import { EditPurchasePage } from "@/features/purchases/components/purchase-pages";
 
-export const metadata: Metadata = {
-  title: pageTitle(panelText.crumbs.editPurchase),
-};
+export const generateMetadata = pageMetadata("panel.crumbs.editPurchase");
 
 export default async function Page({
   params,

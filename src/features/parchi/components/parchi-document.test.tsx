@@ -141,9 +141,9 @@ describe("ParchiDocument", () => {
       "dir",
       "ltr",
     );
-    expect(within(parchi).getByText("Rs 101,000.00")).toHaveAttribute(
+    expect(within(parchi).getByText("101,000.00 روپے")).toHaveAttribute(
       "dir",
-      "ltr",
+      "auto",
     );
     expect(parchi).toHaveTextContent("25 من 10 کلو");
     expect(parchi).toHaveTextContent("فی من");

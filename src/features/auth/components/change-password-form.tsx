@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, Lock } from "lucide-react";
@@ -12,7 +13,6 @@ import { useSessionStore } from "@/stores/session";
 import { changePassword } from "../api";
 import { authKeys, useLogout } from "../hooks";
 import { type ChangePasswordValues, changePasswordSchema } from "../schemas";
-import { changePasswordText, loginText, passwordChangedText } from "../text";
 import {
   AuthCard,
   CardHeading,
@@ -22,8 +22,6 @@ import {
 } from "./auth-ui";
 import { NewPasswordFields } from "./new-password-fields";
 import { PasswordChanged } from "./password-changed";
-
-const t = changePasswordText;
 
 function initials(name: string): string {
   return name
@@ -36,6 +34,7 @@ function initials(name: string): string {
 
 /** 3.2 First login — change password (also used for a normal change). */
 export function ChangePasswordForm() {
+  const t = useTranslations("auth");
   const user = useSessionStore((s) => s.user);
   const setUser = useSessionStore((s) => s.setUser);
   const queryClient = useQueryClient();
@@ -43,10 +42,10 @@ export function ChangePasswordForm() {
   const [revoked, setRevoked] = useState<number | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const mustChange = Boolean(user?.mustChangePassword);
-  const copy = mustChange ? t.mustChange : t.voluntary;
+  const copy = mustChange ? "mustChange" : "voluntary";
 
   const form = useForm<ChangePasswordValues>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(changePasswordSchema(t)),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -74,8 +73,8 @@ export function ChangePasswordForm() {
         if (!shown) {
           setFormError(
             e.status === 0
-              ? loginText.errors.network
-              : (e.message ?? loginText.errors.unknown),
+              ? t("login.errors.network")
+              : (e.message ?? t("login.errors.unknown")),
           );
         }
       }
@@ -88,8 +87,8 @@ export function ChangePasswordForm() {
         revokedSessions={revoked}
         otherDevices
         href={landingPathFor(user)}
-        label={passwordChangedText.toDashboard}
-        labelUr={passwordChangedText.toDashboardUr}
+        label={t("passwordChanged.toDashboard")}
+        labelSubline={t("passwordChanged.toDashboardSubline")}
       />
     );
   }
@@ -106,17 +105,19 @@ export function ChangePasswordForm() {
           </div>
           <div className="flex flex-col">
             <span className="text-muted-foreground text-[13px]">
-              {t.greeting}
+              {t("changePassword.greeting")}
             </span>
-            <span className="font-bold">{user.name}</span>
+            <bdi dir="auto" className="font-bold">
+              {user.name}
+            </bdi>
           </div>
         </div>
       ) : null}
       <CardHeading
         size="md"
-        title={copy.title}
-        description={copy.body}
-        ur={copy.ur}
+        title={t(`changePassword.${copy}.title`)}
+        description={t(`changePassword.${copy}.body`)}
+        subline={t(`changePassword.${copy}.subline`)}
       />
       {formError ? (
         <div
@@ -140,7 +141,7 @@ export function ChangePasswordForm() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid} className="gap-2">
                 <FieldLabel htmlFor="ct-current" className={fieldLabelClass}>
-                  {copy.currentLabel}
+                  {t(`changePassword.${copy}.currentLabel`)}
                 </FieldLabel>
                 <PasswordInput
                   {...field}
@@ -161,9 +162,11 @@ export function ChangePasswordForm() {
             type="submit"
             disabled={form.formState.isSubmitting}
             pending={form.formState.isSubmitting}
-            ur={t.submitUr}
+            subline={t("changePassword.submitSubline")}
           >
-            {form.formState.isSubmitting ? t.submitting : t.submit}
+            {form.formState.isSubmitting
+              ? t("changePassword.submitting")
+              : t("changePassword.submit")}
           </PrimaryButton>
         </form>
       </FormProvider>
@@ -173,7 +176,7 @@ export function ChangePasswordForm() {
         disabled={logout.isPending}
         className="text-muted-foreground self-center text-[13px] font-semibold hover:underline"
       >
-        {t.signOut}
+        {t("changePassword.signOut")}
       </button>
     </AuthCard>
   );

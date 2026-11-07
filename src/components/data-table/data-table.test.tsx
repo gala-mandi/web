@@ -341,7 +341,7 @@ describe("DataTable with a large server-side list", () => {
     const body = screen.getAllByRole("rowgroup")[1];
     expect(within(body).getAllByRole("row")).toHaveLength(PAGE_SIZE);
     expect(screen.getByText("Page 1 of 200")).toBeInTheDocument();
-    expect(screen.getByText("Showing 1–50 of 10000")).toBeInTheDocument();
+    expect(screen.getByText("Showing 1–50 of 10,000")).toBeInTheDocument();
   });
 
   it("pages to the last page (200)", () => {
@@ -350,7 +350,9 @@ describe("DataTable with a large server-side list", () => {
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
 
     expect(screen.getByText("Page 200 of 200")).toBeInTheDocument();
-    expect(screen.getByText("Showing 9951–10000 of 10000")).toBeInTheDocument();
+    expect(
+      screen.getByText("Showing 9,951–10,000 of 10,000"),
+    ).toBeInTheDocument();
     const body = screen.getAllByRole("rowgroup")[1];
     expect(within(body).getAllByRole("row")).toHaveLength(PAGE_SIZE);
     expect(within(body).getAllByRole("row").at(-1)).toHaveTextContent(

@@ -1,5 +1,7 @@
 "use client";
 
+import { bidi } from "@/i18n/bidi";
+import { useTranslations } from "next-intl";
 import { ChevronsUpDown, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,13 +20,10 @@ import {
 import { useCan } from "@/lib/can";
 import { cn } from "@/lib/utils";
 import { useTraderLookup } from "../hooks";
-import { traderText } from "../text";
 import type { Trader, TraderLookupItem, TraderType } from "../types";
 import { TraderTypeBadge } from "./badges";
 import { TraderFormSheet } from "./trader-form-sheet";
 import { TraderName } from "./trader-name";
-
-const t = traderText.combobox;
 
 /** Typing waits this long before asking the server. */
 export const TRADER_SEARCH_DEBOUNCE_MS = 250;
@@ -91,7 +90,7 @@ export function TraderCombobox({
   value,
   onChange,
   type,
-  placeholder = t.placeholder,
+  placeholder,
   disabled = false,
   allowQuickAdd = true,
   id,
@@ -100,6 +99,7 @@ export function TraderCombobox({
   "aria-invalid": invalid,
   className,
 }: TraderComboboxProps) {
+  const t = useTranslations("traders");
   const canCreate = useCan("trader.create");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -171,14 +171,13 @@ export function TraderCombobox({
                 />
                 {value.fatherName ? (
                   <span className="text-muted-foreground truncate text-xs">
-                    {traderText.fatherPrefix}{" "}
-                    <TraderName name={value.fatherName} />
+                    {t("fatherPrefix")} <TraderName name={value.fatherName} />
                   </span>
                 ) : null}
               </span>
             ) : (
               <span className="text-muted-foreground truncate">
-                {placeholder}
+                {placeholder ?? t("combobox.placeholder")}
               </span>
             )}
             <ChevronsUpDown aria-hidden className="text-muted-foreground" />
@@ -188,28 +187,30 @@ export function TraderCombobox({
           align="start"
           className="w-(--radix-popover-trigger-width) min-w-72 p-0"
         >
-          <Command shouldFilter={false} label={t.searchLabel}>
+          <Command shouldFilter={false} label={t("combobox.searchLabel")}>
             <CommandInput
               value={search}
               onValueChange={setSearch}
-              placeholder={t.searchPlaceholder}
-              aria-label={t.searchLabel}
+              placeholder={t("combobox.searchPlaceholder")}
+              aria-label={t("combobox.searchLabel")}
               dir="auto"
             />
-            <CommandList aria-label={t.results}>
+            <CommandList aria-label={t("combobox.results")}>
               {lookup.isError && !typing ? (
                 <div
                   role="alert"
                   className="flex flex-col items-center gap-2 px-3 py-4 text-center text-sm"
                 >
-                  <span className="text-destructive">{t.error}</span>
+                  <span className="text-destructive">
+                    {t("combobox.error")}
+                  </span>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => void lookup.refetch()}
                   >
-                    {t.retry}
+                    {t("combobox.retry")}
                   </Button>
                 </div>
               ) : null}
@@ -218,7 +219,7 @@ export function TraderCombobox({
                   role="status"
                   className="text-muted-foreground px-3 py-4 text-center text-sm"
                 >
-                  {t.loading}
+                  {t("combobox.loading")}
                 </p>
               ) : null}
               {items.length > 0 ? (
@@ -241,7 +242,7 @@ export function TraderCombobox({
                           />
                           {item.fatherName ? (
                             <span className="text-muted-foreground truncate text-xs">
-                              {traderText.fatherPrefix}{" "}
+                              {t("fatherPrefix")}{" "}
                               <TraderName name={item.fatherName} />
                             </span>
                           ) : null}
@@ -249,7 +250,7 @@ export function TraderCombobox({
                         {item.phone || item.village ? (
                           <span className="text-muted-foreground flex gap-2 text-xs">
                             {item.phone ? (
-                              <span dir="ltr" className="tabular-nums">
+                              <span dir="auto" className="tabular-nums">
                                 {item.phone}
                               </span>
                             ) : null}
@@ -269,7 +270,11 @@ export function TraderCombobox({
                   role="status"
                   className="text-muted-foreground px-3 py-4 text-center text-sm"
                 >
-                  <bdi dir="auto">{t.empty(q)}</bdi>
+                  <bdi dir="auto">
+                    {q
+                      ? t("combobox.empty", { query: bidi(q) })
+                      : t("combobox.emptyAll")}
+                  </bdi>
                 </p>
               ) : null}
               {showQuickAdd ? (
@@ -280,7 +285,9 @@ export function TraderCombobox({
                     className="text-primary font-semibold"
                   >
                     <Plus aria-hidden />
-                    <bdi dir="auto">{t.quickAdd(q)}</bdi>
+                    <bdi dir="auto">
+                      {t("combobox.quickAdd", { query: bidi(q) })}
+                    </bdi>
                   </CommandItem>
                 </CommandGroup>
               ) : null}

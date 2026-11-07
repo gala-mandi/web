@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { UrduName } from "@/features/commodities/components/commodity-name";
 import { TraderName } from "@/features/traders/components/trader-name";
 import { formatCell } from "../cell-format";
@@ -15,6 +16,7 @@ export function ReportCellView({
   /** Off on paper. */
   links?: boolean;
 }) {
+  const locale = useLocale();
   if (cell.kind === "text") {
     const name =
       links && cell.href ? (
@@ -40,13 +42,13 @@ export function ReportCellView({
   if (cell.kind === "date") {
     return (
       <time dateTime={cell.value} className="whitespace-nowrap">
-        {formatCell(cell)}
+        {formatCell(cell, undefined, locale)}
       </time>
     );
   }
   return (
-    <span dir="ltr" className="whitespace-nowrap tabular-nums">
-      {formatCell(cell, maundKg)}
+    <span dir="auto" className="whitespace-nowrap tabular-nums">
+      {formatCell(cell, maundKg, locale)}
     </span>
   );
 }

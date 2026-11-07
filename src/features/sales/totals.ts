@@ -15,14 +15,14 @@ import {
 } from "@/lib/charges/sale-totals";
 import { MAUND_KG } from "@/lib/units";
 import type { SaleItemFormValues } from "./schemas";
-import { saleText } from "./text";
+import type { SalesTranslator } from "./schemas";
 
 /** The calculator's refusal in the form's words (see `text.ts`). */
-function reasonOf(error: InvalidQuantityError): string {
-  const r = saleText.breakdown.reasons;
-  if (error.message.includes("Rs 0")) return r.netZero;
-  if (error.message.includes("too large")) return r.tooLarge;
-  return r.other;
+function reasonOf(t: SalesTranslator, error: InvalidQuantityError): string {
+  if (error.message.includes("Rs 0")) return t("breakdown.reasons.netZero");
+  if (error.message.includes("too large"))
+    return t("breakdown.reasons.tooLarge");
+  return t("breakdown.reasons.other");
 }
 
 export interface LiveSaleTotals {
@@ -40,6 +40,7 @@ export interface LiveSaleTotals {
  * the total shown is the total saved. Unfinished rows are left out.
  */
 export function liveSaleTotals(
+  t: SalesTranslator,
   items: readonly SaleItemFormValues[],
   manual: ManualCharges = {},
 ): LiveSaleTotals {
@@ -70,7 +71,7 @@ export function liveSaleTotals(
     return { totals, itemAmounts, error: null };
   } catch (error) {
     if (!(error instanceof InvalidQuantityError)) throw error;
-    return { totals: null, itemAmounts, error: reasonOf(error) };
+    return { totals: null, itemAmounts, error: reasonOf(t, error) };
   }
 }
 

@@ -1,10 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { CircleCheck, Eraser, Hand, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatDate, formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 import {
   allocationTotals,
@@ -13,10 +14,6 @@ import {
   type OutstandingBill,
   totalOutstanding,
 } from "../allocation";
-import { paymentText } from "../text";
-
-const t = paymentText.bills;
-const c = t.columns;
 
 export interface AllocationTableProps {
   bills: readonly OutstandingBill[];
@@ -61,6 +58,8 @@ export function AllocationTable({
   more = false,
   idPrefix = "payment",
 }: AllocationTableProps) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("payments");
   const totals = allocationTotals(amount, shares);
   const anyShare = shares.some((share) => isAboveZero(share));
 
@@ -84,10 +83,10 @@ export function AllocationTable({
           ) : (
             <Sparkles aria-hidden className="size-3.5" />
           )}
-          {manual ? t.manual : t.auto}
+          {manual ? t("bills.manual") : t("bills.auto")}
         </p>
         <p className="text-muted-foreground text-xs">
-          {manual ? t.manualHint : t.autoHint}
+          {manual ? t("bills.manualHint") : t("bills.autoHint")}
         </p>
         <div className="ms-auto flex flex-wrap gap-2">
           {manual ? (
@@ -99,7 +98,7 @@ export function AllocationTable({
               onClick={onAuto}
             >
               <Sparkles aria-hidden />
-              {t.autoButton}
+              {t("bills.autoButton")}
             </Button>
           ) : null}
           <Button
@@ -111,34 +110,34 @@ export function AllocationTable({
             onClick={onClear}
           >
             <Eraser aria-hidden />
-            {t.clearButton}
+            {t("bills.clearButton")}
           </Button>
         </div>
       </div>
 
       <div className="rounded-card overflow-x-auto border">
         <table className="w-full min-w-[38rem] border-collapse text-sm">
-          <caption className="sr-only">{t.caption}</caption>
+          <caption className="sr-only">{t("bills.caption")}</caption>
           <thead className="bg-surface-muted text-muted-foreground text-xs tracking-wide uppercase">
             <tr>
               <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {c.bill}
+                {t("bills.columns.bill")}
               </th>
 
               <th scope="col" className="px-3 py-2.5 text-end font-semibold">
-                {c.net}
+                {t("bills.columns.net")}
               </th>
               <th scope="col" className="px-3 py-2.5 text-end font-semibold">
-                {c.outstanding}
+                {t("bills.columns.outstanding")}
               </th>
               <th
                 scope="col"
                 className="w-36 px-3 py-2.5 text-end font-semibold"
               >
-                {c.allocate}
+                {t("bills.columns.allocate")}
               </th>
               <th scope="col" className="px-4 py-2.5 text-end font-semibold">
-                {c.left}
+                {t("bills.columns.left")}
               </th>
             </tr>
           </thead>
@@ -162,23 +161,25 @@ export function AllocationTable({
                 colSpan={2}
                 className="px-4 py-3 text-start font-semibold"
               >
-                {t.total}
+                {t("bills.total")}
               </th>
               <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
-                <span dir="ltr">{formatRs(totalOutstanding(bills))}</span>
+                <span dir="auto">{formatRs(totalOutstanding(bills))}</span>
               </td>
               <td
                 className="px-3 py-3 text-end whitespace-nowrap tabular-nums"
                 data-testid="allocation-total"
               >
-                <span dir="ltr">{formatRs(totals.allocated)}</span>
+                <span dir="auto">{formatRs(totals.allocated)}</span>
               </td>
               <td />
             </tr>
           </tfoot>
         </table>
       </div>
-      {more ? <p className="text-muted-foreground text-xs">{t.more}</p> : null}
+      {more ? (
+        <p className="text-muted-foreground text-xs">{t("bills.more")}</p>
+      ) : null}
     </div>
   );
 }
@@ -198,6 +199,8 @@ function BillRow({
   inputId: string;
   onChange: (value: string) => void;
 }) {
+  const { formatDate, formatRs } = useFormat();
+  const t = useTranslations("payments");
   const takes = isAboveZero(share);
   const left = leftAfter(bill, share);
   const settled = takes && !isAboveZero(left);
@@ -218,7 +221,7 @@ function BillRow({
         scope="row"
         className="px-4 py-3 text-start font-semibold whitespace-nowrap"
       >
-        <span dir="ltr" className="block tabular-nums">
+        <span dir="auto" className="block tabular-nums">
           {bill.billNo}
         </span>
         <time
@@ -229,10 +232,10 @@ function BillRow({
         </time>
       </th>
       <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
-        <span dir="ltr">{formatRs(bill.netAmount)}</span>
+        <span dir="auto">{formatRs(bill.netAmount)}</span>
       </td>
       <td className="px-3 py-3 text-end font-semibold whitespace-nowrap tabular-nums">
-        <span dir="ltr">{formatRs(bill.outstanding)}</span>
+        <span dir="auto">{formatRs(bill.outstanding)}</span>
       </td>
       <td className="px-3 py-2">
         <Input
@@ -241,7 +244,7 @@ function BillRow({
           autoComplete="off"
           dir="ltr"
           placeholder="0"
-          aria-label={t.allocateLabel(bill.billNo)}
+          aria-label={t("bills.allocateLabel", { billNo: bill.billNo })}
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={error ? errorId : undefined}
           value={shown}
@@ -259,7 +262,7 @@ function BillRow({
       </td>
       <td className="px-4 py-3 text-end">
         <span className="flex flex-col items-end gap-1">
-          <span dir="ltr" className="whitespace-nowrap tabular-nums">
+          <span dir="auto" className="whitespace-nowrap tabular-nums">
             {formatRs(left)}
           </span>
           {settled ? (
@@ -268,14 +271,14 @@ function BillRow({
               className="text-success gap-1 border-transparent bg-success/10 font-semibold"
             >
               <CircleCheck aria-hidden />
-              {t.settled}
+              {t("bills.settled")}
             </Badge>
           ) : takes ? (
             <Badge
               variant="outline"
               className="bg-secondary text-secondary-foreground border-transparent font-semibold"
             >
-              {t.part}
+              {t("bills.part")}
             </Badge>
           ) : null}
         </span>

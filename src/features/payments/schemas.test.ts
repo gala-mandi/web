@@ -1,3 +1,4 @@
+import { testTranslator } from "@/test/intl";
 import { describe, expect, it } from "vitest";
 import { KISSAN } from "@/features/purchases/test-data";
 import {
@@ -8,6 +9,8 @@ import {
   toPaymentInput,
 } from "./schemas";
 import { openBills, TODAY } from "./test-data";
+
+const tr = testTranslator("payments");
 
 const rafiq = {
   id: KISSAN.id,
@@ -26,7 +29,13 @@ const values = (over: Partial<PaymentFormValues> = {}): PaymentFormValues => ({
 });
 
 const issues = (v: PaymentFormValues) => {
-  const result = paymentFormSchema(TODAY, "paid", openBills).safeParse(v);
+  const result = paymentFormSchema(
+    TODAY,
+    "paid",
+    openBills,
+    tr,
+    "en",
+  ).safeParse(v);
   return result.success
     ? []
     : result.error.issues.map((i) => [i.path.join("."), i.message]);

@@ -2,6 +2,7 @@ import * as XLSX from "xlsx";
 import { describe, expect, it } from "vitest";
 import { dailySummary, purchasesByDay } from "@/features/dashboard/test-data";
 import { formatMaund, formatRs } from "@/lib/format";
+import { testTranslator } from "@/test/intl";
 import { formatCell } from "./cell-format";
 import {
   buildReportWorkbook,
@@ -28,10 +29,16 @@ import {
   monthSales,
 } from "./test-data";
 
+const words = {
+  t: testTranslator("reports"),
+  tp: testTranslator("payments"),
+  locale: "en" as const,
+};
+
 const NOW = new Date("2026-11-06T07:00:00Z");
 
 function workbook(sheet: ReportSheet) {
-  const book = buildReportWorkbook(XLSX, sheet, "Demo Mandi", NOW);
+  const book = buildReportWorkbook(XLSX, words, sheet, "Demo Mandi", NOW);
   // Round-trip through a real .xlsx file, as Excel would open it.
   const file = XLSX.write(book, { type: "array", bookType: "xlsx" });
   const read = XLSX.read(file, { cellNF: true });
@@ -94,7 +101,7 @@ describe("excel cells", () => {
 
 describe("report workbooks", () => {
   it("starts with the title, shop, period, filters and print date", () => {
-    const ws = workbook(bookSheet("purchases", monthPurchases));
+    const ws = workbook(bookSheet(words, "purchases", monthPurchases));
     const head = rows(ws)
       .slice(0, 5)
       .map((row) => row.filter((c) => c.t !== "z").map((c) => c.v));
@@ -108,7 +115,7 @@ describe("report workbooks", () => {
   });
 
   it("puts Rs and kg in the headings and formats every number cell", () => {
-    const ws = workbook(bookSheet("purchases", monthPurchases));
+    const ws = workbook(bookSheet(words, "purchases", monthPurchases));
     const all = rows(ws);
     const heading = all.findIndex((row) => row[0]?.v === "Date");
     expect(all[heading].map((c) => c.v)).toEqual([
@@ -130,7 +137,7 @@ describe("report workbooks", () => {
   });
 
   it("the purchases totals row is the server's totals, as on screen", () => {
-    const sheet = bookSheet("purchases", monthPurchases);
+    const sheet = bookSheet(words, "purchases", monthPurchases);
     const totals = monthPurchases.totals;
     const excel = totalsRow(workbook(sheet)).map((c) => c.v);
     expect(excel).toEqual([
@@ -157,9 +164,9 @@ describe("report workbooks", () => {
 
   it("the sales totals row has the charges and net of the server", () => {
     const totals = monthSales.totals;
-    const excel = totalsRow(workbook(bookSheet("sales", monthSales))).map(
-      (c) => c.v,
-    );
+    const excel = totalsRow(
+      workbook(bookSheet(words, "sales", monthSales)),
+    ).map((c) => c.v);
     expect(excel.slice(4)).toEqual([
       Number(totals.grossAmount),
       Number(totals.totalCharges),
@@ -168,7 +175,7 @@ describe("report workbooks", () => {
   });
 
   it("by commodity, leaves out the bill-level columns the server can't split", () => {
-    const sheet = bookSheet("purchases", monthPurchasesByCommodity, {
+    const sheet = bookSheet(words, "purchases", monthPurchasesByCommodity, {
       urduNames: new Map(commodities.map((c) => [c.id, c.nameUr])),
     });
     expect(sheet.tables[0].columns.map((c) => c.id)).toEqual([
@@ -193,7 +200,7 @@ describe("report workbooks", () => {
   });
 
   it("commission: the totals row is the server's; other charges have none", () => {
-    const ws = workbook(commissionSheet(monthCommission));
+    const ws = workbook(commissionSheet(words, monthCommission));
     const t = monthCommission.totals;
     expect(totalsRow(ws).map((c) => c.v)).toEqual([
       "Total",
@@ -210,7 +217,7 @@ describe("report workbooks", () => {
   });
 
   it("outstanding: each side ends with its total and trader count", () => {
-    const ws = workbook(outstandingSheet(fullOutstanding));
+    const ws = workbook(outstandingSheet(words, fullOutstanding));
     const totals = rows(ws).filter((row) =>
       String(row[0]?.v ?? "").startsWith("Total"),
     );
@@ -222,7 +229,7 @@ describe("report workbooks", () => {
   });
 
   it("cash book: opening, cash in and out, and cash in hand of the server", () => {
-    const ws = workbook(cashBookSheet(monthCashBook));
+    const ws = workbook(cashBookSheet(words, monthCashBook));
     expect(totalsRow(ws).map((c) => c.v)).toEqual([
       "Total",
       Number(monthCashBook.openingCash),
@@ -239,7 +246,7 @@ describe("report workbooks", () => {
     const names = new Map(
       commodities.map((c) => [c.id, { name: c.name, nameUr: c.nameUr }]),
     );
-    const ws = workbook(dailySummarySheet(dailySummary, names));
+    const ws = workbook(dailySummarySheet(words, dailySummary, names));
     const line = (label: string) =>
       rows(ws).find((row) => row[0]?.v === label) ?? [];
     expect(line("Weight (kg)")[1]).toMatchObject({
@@ -254,12 +261,12 @@ describe("report workbooks", () => {
   });
 
   it("names the file after the report and its dates", () => {
-    expect(reportFileBase(bookSheet("purchases", monthPurchases))).toBe(
+    expect(reportFileBase(bookSheet(words, "purchases", monthPurchases))).toBe(
       "purchases-report-2026-11-01_2026-11-06",
     );
     expect(
       reportFileBase(
-        bookSheet("sales", {
+        bookSheet(words, "sales", {
           ...purchasesByDay,
           from: "2026-11-06",
           to: "2026-11-06",

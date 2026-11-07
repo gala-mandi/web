@@ -1,19 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { manager, owner } from "@/test/fake-api";
+import { testTranslator } from "@/test/intl";
 import { breadcrumbsFor } from "./breadcrumbs";
+
+const tp = testTranslator("panel");
 
 describe("breadcrumbsFor", () => {
   it("links a trader profile back to the Traders list", () => {
-    expect(breadcrumbsFor("/traders/abc-123", owner)).toEqual([
+    expect(breadcrumbsFor("/traders/abc-123", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Traders", href: "/traders" },
       { label: "Trader profile", href: null },
     ]);
-    expect(breadcrumbsFor("/traders/abc-123/", manager)).toHaveLength(3);
+    expect(breadcrumbsFor("/traders/abc-123/", manager, tp)).toHaveLength(3);
   });
 
   it("links the balances page back to the Ledger", () => {
-    expect(breadcrumbsFor("/ledger/balances", manager)).toEqual([
+    expect(breadcrumbsFor("/ledger/balances", manager, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Ledger", href: "/ledger" },
       { label: "Balances", href: null },
@@ -21,42 +24,44 @@ describe("breadcrumbsFor", () => {
   });
 
   it("links each report back to the Reports hub", () => {
-    expect(breadcrumbsFor("/reports/cash-book", owner)).toEqual([
+    expect(breadcrumbsFor("/reports/cash-book", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Reports", href: "/reports" },
       { label: "Cash book", href: null },
     ]);
-    expect(breadcrumbsFor("/reports/daily-summary", manager).at(-1)).toEqual({
+    expect(
+      breadcrumbsFor("/reports/daily-summary", manager, tp).at(-1),
+    ).toEqual({
       label: "Daily summary",
       href: null,
     });
-    expect(breadcrumbsFor("/reports/unknown", owner).at(-1)).toEqual({
+    expect(breadcrumbsFor("/reports/unknown", owner, tp).at(-1)).toEqual({
       label: "Reports",
       href: null,
     });
   });
 
   it("keeps the section as the last crumb on the list itself", () => {
-    expect(breadcrumbsFor("/traders", owner)).toEqual([
+    expect(breadcrumbsFor("/traders", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Traders", href: null },
     ]);
   });
 
   it("adds no detail crumb for sections without one or deeper paths", () => {
-    expect(breadcrumbsFor("/ledger/42", owner).at(-1)).toEqual({
+    expect(breadcrumbsFor("/ledger/42", owner, tp).at(-1)).toEqual({
       label: "Ledger",
       href: null,
     });
-    expect(breadcrumbsFor("/traders/a/b", owner).at(-1)).toEqual({
+    expect(breadcrumbsFor("/traders/a/b", owner, tp).at(-1)).toEqual({
       label: "Traders",
       href: null,
     });
   });
 
   it("names the purchase pages below Purchases", () => {
-    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
-    expect(breadcrumbsFor("/purchases/new", owner)).toEqual([
+    const last = (path: string) => breadcrumbsFor(path, owner, tp).at(-1);
+    expect(breadcrumbsFor("/purchases/new", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Purchases", href: "/purchases" },
       { label: "New purchase", href: null },
@@ -73,8 +78,8 @@ describe("breadcrumbsFor", () => {
   });
 
   it("names the sale pages below Sales", () => {
-    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
-    expect(breadcrumbsFor("/sales/new", owner)).toEqual([
+    const last = (path: string) => breadcrumbsFor(path, owner, tp).at(-1);
+    expect(breadcrumbsFor("/sales/new", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Sales", href: "/sales" },
       { label: "New sale", href: null },
@@ -85,8 +90,8 @@ describe("breadcrumbsFor", () => {
   });
 
   it("names the voucher pages below Payments", () => {
-    const last = (path: string) => breadcrumbsFor(path, owner).at(-1);
-    expect(breadcrumbsFor("/payments/new", owner)).toEqual([
+    const last = (path: string) => breadcrumbsFor(path, owner, tp).at(-1);
+    expect(breadcrumbsFor("/payments/new", owner, tp)).toEqual([
       { label: "Dashboard", href: "/dashboard" },
       { label: "Payments", href: "/payments" },
       { label: "New voucher", href: null },

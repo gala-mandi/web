@@ -6,6 +6,7 @@ import {
   Footer,
   labelCase,
   Logo,
+  Amount,
   Ltr,
   sheetClass,
   ShopLines,
@@ -15,7 +16,7 @@ import {
   Watermark,
 } from "@/features/parchi/components/parchi-document";
 import { isNonZero, parchiDay, parchiRs } from "@/features/parchi/parchi";
-import { parchiWords } from "@/features/parchi/text";
+import { parchiWords } from "@/features/parchi/parchi-words";
 import type {
   PaperSize,
   ParchiLanguage,
@@ -168,7 +169,7 @@ function SheetLayout({ payment, shop, lang, w }: LayoutProps) {
             data-testid="voucher-amount"
             className="text-[1.9em] leading-[1.2] font-extrabold"
           >
-            <Ltr>{parchiRs(payment.amount)}</Ltr>
+            <Amount>{parchiRs(payment.amount, lang)}</Amount>
           </span>
         </div>
         <dl className="border-ink-rule grid flex-1 grid-cols-[auto_1fr] content-center gap-x-[1em] gap-y-[0.2em] rounded-[0.5em] border px-[1em] py-[0.6em]">
@@ -194,7 +195,7 @@ function SheetLayout({ payment, shop, lang, w }: LayoutProps) {
         <div className="min-w-0 flex-1">
           <Notes payment={payment} w={w} />
         </div>
-        <Sums payment={payment} w={w} className="w-[48%]" />
+        <Sums payment={payment} w={w} lang={lang} className="w-[48%]" />
       </section>
 
       <Signatures payment={payment} w={w} />
@@ -266,7 +267,7 @@ function Bills({
                   {parchiDay(a.billDate, lang)}
                 </td>
                 <td className={cn(td, "ps-[0.5em] text-end font-bold")}>
-                  <Ltr>{parchiRs(a.amount)}</Ltr>
+                  <Amount>{parchiRs(a.amount, lang)}</Amount>
                 </td>
               </tr>
             ))}
@@ -285,10 +286,12 @@ function Bills({
 function Sums({
   payment,
   w,
+  lang,
   className,
 }: {
   payment: Payment;
   w: VoucherWords;
+  lang: ParchiLanguage;
   className?: string;
 }) {
   return (
@@ -300,19 +303,19 @@ function Sums({
       <div className="flex items-baseline justify-between gap-[1em]">
         <dt>{w.allocated}</dt>
         <dd>
-          <Ltr>{parchiRs(payment.allocated)}</Ltr>
+          <Amount>{parchiRs(payment.allocated, lang)}</Amount>
         </dd>
       </div>
       <div className="border-ink-rule flex items-baseline justify-between gap-[1em] border-t pt-[0.25em] font-bold">
         <dt>{w.advance}</dt>
         <dd>
-          <Ltr>{parchiRs(payment.advance)}</Ltr>
+          <Amount>{parchiRs(payment.advance, lang)}</Amount>
         </dd>
       </div>
       <div className="bg-ink text-paper mt-[0.35em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.35em] text-[1.15em] font-extrabold">
         <dt>{w.amount}</dt>
         <dd>
-          <Ltr>{parchiRs(payment.amount)}</Ltr>
+          <Amount>{parchiRs(payment.amount, lang)}</Amount>
         </dd>
       </div>
     </dl>
@@ -434,7 +437,7 @@ function RollLayout({ payment, shop, lang, w }: LayoutProps) {
       <div className="bg-ink text-paper mt-[0.6em] flex items-baseline justify-between gap-[1em] rounded-[0.35em] px-[0.7em] py-[0.4em] font-extrabold">
         <span>{w.amount}</span>
         <span data-testid="voucher-amount" className="text-[1.3em]">
-          <Ltr>{parchiRs(payment.amount)}</Ltr>
+          <Amount>{parchiRs(payment.amount, lang)}</Amount>
         </span>
       </div>
 
@@ -462,7 +465,7 @@ function RollLayout({ payment, shop, lang, w }: LayoutProps) {
                   {parchiDay(a.billDate, lang)}
                 </bdi>
               </span>
-              <Ltr className="font-bold">{parchiRs(a.amount)}</Ltr>
+              <Amount className="font-bold">{parchiRs(a.amount, lang)}</Amount>
             </li>
           ))}
         </ol>
@@ -476,7 +479,7 @@ function RollLayout({ payment, shop, lang, w }: LayoutProps) {
         <div className="flex items-baseline justify-between gap-[1em]">
           <dt>{w.allocated}</dt>
           <dd>
-            <Ltr>{parchiRs(payment.allocated)}</Ltr>
+            <Amount>{parchiRs(payment.allocated, lang)}</Amount>
           </dd>
         </div>
         <div
@@ -487,7 +490,7 @@ function RollLayout({ payment, shop, lang, w }: LayoutProps) {
         >
           <dt>{w.advance}</dt>
           <dd>
-            <Ltr>{parchiRs(payment.advance)}</Ltr>
+            <Amount>{parchiRs(payment.advance, lang)}</Amount>
           </dd>
         </div>
       </dl>

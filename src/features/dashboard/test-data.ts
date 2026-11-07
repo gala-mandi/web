@@ -335,14 +335,14 @@ export const emptyShop = {
 
 /** Commodity rows as `GET /commodities` lists them (for names). */
 export const commodityList = [
-  [commodityIds.rice, "Chawal (Basmati)"],
-  [commodityIds.wheat, "Gandum"],
-  [commodityIds.cotton, "Kapas"],
-  [commodityIds.maize, "Makai"],
-].map(([id, name]) => ({
+  [commodityIds.rice, "Chawal (Basmati)", "چاول (باسمتی)"],
+  [commodityIds.wheat, "Gandum", "گندم"],
+  [commodityIds.cotton, "Kapas", "کپاس"],
+  [commodityIds.maize, "Makai", "مکئی"],
+].map(([id, name, nameUr]) => ({
   id,
   name,
-  nameUr: null,
+  nameUr,
   category: "grain",
   defaultUnit: "maund",
   bagWeightKg: null,

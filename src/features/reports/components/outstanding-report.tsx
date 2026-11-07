@@ -1,16 +1,18 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import type { SheetWords } from "../sheet";
+import { useSheetWords } from "../use-sheet-words";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { useMemo } from "react";
 import { DataTableSelectFilter } from "@/components/data-table";
 import type { OutstandingQuery } from "@/features/dashboard/types";
 import { RequirePermission } from "@/features/panel/components/require-permission";
 import { traderTypes } from "@/features/traders/types";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { useOutstandingReport } from "../hooks";
 import { useOutstandingFilters, useToday } from "../search-params";
 import { outstandingSheet } from "../sheet";
-import { reportText } from "../text";
 import { ReportDayFilter } from "./day-filter";
 import {
   CardFigure,
@@ -21,12 +23,11 @@ import {
 } from "./report-frame";
 import { ReportTableView } from "./report-table";
 
-const t = reportText;
-
-const typeOptions = traderTypes.map((type) => ({
-  value: type,
-  label: t.traderTypes[type],
-}));
+const typeOptions = (t: SheetWords["t"]) =>
+  traderTypes.map((type) => ({
+    value: type,
+    label: t(`traderTypes.${type}`),
+  }));
 
 /** `/reports/outstanding`, for `report.view`. */
 export function OutstandingReportPage() {
@@ -42,6 +43,8 @@ export function OutstandingReportPage() {
  * receivable and payable, largest first, each with the server's total.
  */
 function OutstandingReportView() {
+  const { formatRs } = useFormat();
+  const t = useTranslations("reports");
   const today = useToday();
   const [filters, setFilters] = useOutstandingFilters();
   const { shopName, maundKg } = useReportShop();
@@ -50,15 +53,17 @@ function OutstandingReportView() {
     ...(filters.type ? { type: filters.type } : {}),
   };
   const report = useOutstandingReport(query);
+  const words = useSheetWords();
   const sheet = useMemo(
     () =>
       report.data
         ? outstandingSheet(
+            words,
             report.data,
-            filters.type ? t.traderTypes[filters.type] : null,
+            filters.type ? t(`traderTypes.${filters.type}`) : null,
           )
         : null,
-    [report.data, filters.type],
+    [words, report.data, filters.type, t],
   );
 
   const data = report.data;
@@ -66,19 +71,19 @@ function OutstandingReportView() {
     ? [
         {
           id: "receivable",
-          label: t.cards.receivable,
+          label: t("cards.receivable"),
           icon: ArrowDownLeft,
           tone: "green",
           value: <CardFigure>{formatRs(data.receivable.total)}</CardFigure>,
-          hint: `${t.cards.receivableHint} · ${t.traders(data.receivable.count)}`,
+          hint: `${t("cards.receivableHint")} · ${t("traders", { n: data.receivable.count })}`,
         },
         {
           id: "payable",
-          label: t.cards.payable,
+          label: t("cards.payable"),
           icon: ArrowUpRight,
           tone: "orange",
           value: <CardFigure>{formatRs(data.payable.total)}</CardFigure>,
-          hint: `${t.cards.payableHint} · ${t.traders(data.payable.count)}`,
+          hint: `${t("cards.payableHint")} · ${t("traders", { n: data.payable.count })}`,
         },
       ]
     : [];
@@ -93,18 +98,18 @@ function OutstandingReportView() {
       filters={
         <>
           <ReportDayFilter
-            label={t.asOf.label}
+            label={t("asOf.label")}
             value={filters.asOf}
             today={today}
             nullIsToday={false}
-            resetLabel={t.asOf.now}
+            resetLabel={t("asOf.now")}
             onChange={(asOf) => void setFilters({ asOf })}
           />
           <DataTableSelectFilter
-            label={t.filters.traderType}
+            label={t("filters.traderType")}
             value={filters.type}
-            options={typeOptions}
-            allLabel={t.filters.allTypes}
+            options={typeOptions(t)}
+            allLabel={t("filters.allTypes")}
             onChange={(type) => void setFilters({ type })}
           />
         </>

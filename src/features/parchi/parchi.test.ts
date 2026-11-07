@@ -85,13 +85,13 @@ describe("charge labels and signs", () => {
         { type: "labour", basis: "per_bag", value: "20.00" },
         "ur",
       ),
-    ).toBe("مزدوری ⁦Rs 20.00⁩ فی بوری");
+    ).toBe("مزدوری 20.00 روپے فی بوری");
   });
 
   it("signs the rounding line", () => {
-    expect(parchiSignedRs("-0.46")).toBe("-Rs 0.46");
-    expect(parchiSignedRs("0.50")).toBe("+Rs 0.50");
-    expect(parchiSignedRs("0.00")).toBe("Rs 0.00");
+    expect(parchiSignedRs("-0.46", "en")).toBe("-Rs 0.46");
+    expect(parchiSignedRs("0.50", "en")).toBe("+Rs 0.50");
+    expect(parchiSignedRs("0.00", "en")).toBe("Rs 0.00");
   });
 });
 
