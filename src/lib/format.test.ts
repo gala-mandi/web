@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  formatCount,
   formatDate,
   formatDateTime,
   formatKg,
@@ -129,5 +130,45 @@ describe("format", () => {
       expect(formatRs("1,000")).toBe("");
       expect(formatRs(".5")).toBe("");
     });
+  });
+});
+
+describe("format in Urdu", () => {
+  it("puts روپے after the amount, Western digits, no float maths", () => {
+    expect(formatRs("50000.5", "ur")).toBe("50,000.50 روپے");
+    expect(formatRs("-1200", "ur")).toBe("-1,200.00 روپے");
+    expect(formatRs("-0.00", "ur")).toBe("0.00 روپے");
+    expect(formatRs("999999999999.99", "ur")).toBe("999,999,999,999.99 روپے");
+    expect(formatRs("abc", "ur")).toBe("");
+  });
+
+  it("shows weights as من and کلو", () => {
+    expect(formatMaund("495", "40", "ur")).toBe("12 من 15 کلو");
+    expect(formatMaund("1000", "40", "ur")).toBe("25 من");
+    expect(formatMaund("15", "40", "ur")).toBe("15 کلو");
+    expect(formatKg("1250.500", "ur")).toBe("1,250.5 کلو");
+  });
+
+  it("shows dates with Urdu month names in Pakistan time, Western digits", () => {
+    expect(formatDate("2026-10-27T20:00:00.000Z", "ur")).toBe(
+      "28 اکتوبر، 2026",
+    );
+    expect(formatDateTime("2026-10-27T10:30:00.000Z", "ur")).toMatch(
+      /^27 اکتوبر، 2026، 3:30/,
+    );
+    const now = Date.parse("2026-10-28T10:00:00.000Z");
+    expect(formatRelative("2026-10-28T07:00:00.000Z", now, "ur")).toBe(
+      "3 گھنٹے پہلے",
+    );
+  });
+
+  it("groups counts for the language", () => {
+    expect(formatCount(1250, "en")).toBe("1,250");
+    expect(formatCount(1250, "ur")).toBe("1,250");
+  });
+
+  it("keeps English as the default", () => {
+    expect(formatRs("1200")).toBe("Rs 1,200.00");
+    expect(formatMaund("495")).toBe("12 mn 15 kg");
   });
 });
