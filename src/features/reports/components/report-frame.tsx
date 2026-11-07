@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { CircleAlert, type LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -63,10 +63,33 @@ export function ReportCards({ cards }: { cards: ReportCard[] }) {
 }
 
 /** A figure in a card: left to right, like every amount. */
+/**
+ * A card's big figure. A weight wraps only between its parts ("21,683 من"
+ * · "31.625 کلو"), never inside a number.
+ */
 export function CardFigure({ children }: { children: ReactNode }) {
+  const parts =
+    typeof children === "string"
+      ? children
+          .split(/(?<=\D) (?=\d)/)
+          .reduce<string[]>(
+            (out, part) =>
+              out.length && /^-?Rs$/.test(out[out.length - 1])
+                ? [...out.slice(0, -1), `${out[out.length - 1]} ${part}`]
+                : [...out, part],
+            [],
+          )
+      : null;
   return (
     <span dir="auto" className="tabular-nums">
-      {children}
+      {parts
+        ? parts.map((part, i) => (
+            <Fragment key={i}>
+              {i > 0 ? " " : null}
+              <span className="whitespace-nowrap">{part}</span>
+            </Fragment>
+          ))
+        : children}
     </span>
   );
 }

@@ -221,6 +221,8 @@ export function LoginForm({
               <IconInput
                 {...field}
                 id="login-identifier"
+                // Phone numbers and emails read left to right in Urdu too.
+                dir="ltr"
                 icon={<User />}
                 autoComplete="username"
                 inputMode="email"

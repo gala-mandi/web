@@ -83,7 +83,14 @@ function answer(method: string, path: string, url: URL): unknown {
     return todayCashBook;
   }
   if (path === "/rates/today") {
-    return todayRates([rate({ commodityId: gandum.id })]);
+    return todayRates([
+      rate({
+        commodityId: gandum.id,
+        minRate: "3900.00",
+        maxRate: "4100.00",
+        avgRate: "4000.00",
+      }),
+    ]);
   }
   if (path === "/rates")
     return { data: [], meta: { page: 1, limit: 100, total: 0 } };
@@ -191,7 +198,13 @@ async function shot(page: Page, name: string, fullPage = true) {
   if (!SHOTS) return;
   fs.mkdirSync(SHOTS, { recursive: true });
   // Nastaliq loads late; wait so the picture shows the real glyphs.
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.scrollIntoView({ block: "nearest" });
+    }
+  });
+  if (fullPage) await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `${SHOTS}/${name}.png`, fullPage });
 }
 
@@ -216,7 +229,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function overflowingText(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const selector = [
-      "button",
+      "button:not([role=checkbox]):not([role=radio])",
       "a[data-slot=button]",
       "[data-slot=badge]",
       "input",
@@ -357,18 +370,41 @@ test.describe("Urdu interface", () => {
     await page.keyboard.press("Enter");
     await expect(kissan).toContainText("محمد رفیق");
 
-    const commodityBox = page.getByRole("combobox", {
-      name: `${f.commodity}، ${f.itemLabel.replace("{n, number}", "1")}`,
-    });
-    await commodityBox.click();
+    const item = (label: string, n = 1) =>
+      `${label}، ${f.itemLabel.replace("{n, number}", String(n))}`;
+    // (The screenshot of the open picker can take focus; start at Notes.)
+    await page.getByLabel(f.notes).focus();
+    await page.keyboard.press("Tab");
+    await expect(
+      page.getByRole("combobox", { name: item(f.commodity) }),
+    ).toBeFocused();
+    await page.keyboard.press("Enter");
     await page.keyboard.type("Gan");
-    await page.getByRole("option", { name: /Gandum/ }).click();
+    await expect(page.getByRole("option", { name: /Gandum/ })).toBeVisible();
+    await page.keyboard.press("Enter");
+    const commodityBox = page.getByRole("combobox", {
+      name: item(f.commodity),
+    });
+    // The Urdu name leads on the Urdu interface.
+    await expect(commodityBox).toHaveText(/گندم/);
+    await expect(commodityBox).toBeFocused();
     await page.keyboard.press("Tab");
     await page.keyboard.type("10");
     await page.keyboard.press("Enter");
+    await expect(page.getByLabel(item(f.weight))).toBeFocused();
     await page.keyboard.type("25.25");
+    await expect(page.getByTestId("purchase-item-0-kg")).toHaveText(
+      "= 1,010 کلو (25 من 10 کلو)",
+    );
     await page.keyboard.press("Enter");
-    await page.keyboard.type("4000");
+    await expect(page.getByLabel(item(f.rate))).toHaveValue("4000");
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("combobox", { name: item(f.commodity, 2) }),
+    ).toBeFocused();
+    await expect(page.getByTestId("purchase-net")).toHaveText(
+      /^[\d,]+\.\d{2} روپے$/,
+    );
     await expect(page.getByTestId("purchase-breakdown")).toContainText("روپے");
     await checkPage(page, "new purchase");
     await shot(page, "08-new-purchase-ur");

@@ -297,14 +297,19 @@ html:lang(ur) [data-slot="checkbox"] {
 }
 
 /*
- * Text cut with "…" (truncate) clips at its own box; Nastaliq rises and
- * falls far past the line, so the clip box gets room without moving
- * anything.
+ * Text cut with "…" (truncate) clips at its own box; Nastaliq's kaf and
+ * gaf rise far above the line, so in Urdu only the sides are cut.
  */
-html:lang(ur) .truncate {
-  padding-block: 0.3em;
-  margin-block: -0.3em;
+html:lang(ur) :is(.truncate, [data-slot="sidebar-menu-button"]) {
+  overflow-x: clip;
+  overflow-y: visible;
 }
 [dir="rtl"] :is(.lucide-trending-up, .lucide-trending-down) {
   scale: -1 1;
+}
+
+/* Phone numbers, amounts and codes typed left to right still start at the
+   start side of an Urdu form. */
+html:lang(ur) input[dir="ltr"] {
+  text-align: right;
 }

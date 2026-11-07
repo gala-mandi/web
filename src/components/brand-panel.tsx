@@ -10,6 +10,7 @@ import {
   Wifi,
 } from "lucide-react";
 import Image from "next/image";
+import { OtherLanguage } from "@/features/auth/components/auth-ui";
 import { cn } from "@/lib/utils";
 
 const chipIcons = [BookOpen, Scale, LineChart];
@@ -40,13 +41,9 @@ export function BrandLogo({ className }: { className?: string }) {
         <span className="font-heading text-xl font-extrabold tracking-tight">
           {t("brand.name")}
         </span>
-        <span
-          lang="ur"
-          dir="rtl"
-          className="font-urdu text-xs/relaxed text-white/85"
-        >
+        <OtherLanguage className="text-xs/relaxed text-white/85">
           {t("brand.nameSubline")}
-        </span>
+        </OtherLanguage>
       </div>
     </div>
   );
@@ -74,13 +71,12 @@ export function BrandPanel() {
           <h1 className="font-heading text-3xl/tight font-extrabold tracking-tight sm:text-5xl/[1.04]">
             {t("brand.headline")}
           </h1>
-          <p
-            lang="ur"
-            dir="rtl"
-            className="font-urdu text-start text-lg/loose sm:text-xl/loose"
+          <OtherLanguage
+            block
+            className="text-start text-lg/loose sm:text-xl/loose"
           >
             {t("brand.headlineSubline")}
-          </p>
+          </OtherLanguage>
           <p className="hidden text-base/relaxed text-white/90 sm:block">
             {t("brand.intro")}
           </p>
@@ -107,13 +103,9 @@ export function BrandPanel() {
                 <span className="text-[13px] font-bold">
                   {t("brand.ratesTitle")}
                 </span>
-                <span
-                  lang="ur"
-                  dir="rtl"
-                  className="font-urdu text-start text-[11px]/relaxed text-white/85"
-                >
+                <OtherLanguage className="text-start text-[11px]/relaxed text-white/85">
                   {t("brand.ratesTitleSubline")}
-                </span>
+                </OtherLanguage>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold">
                 <span

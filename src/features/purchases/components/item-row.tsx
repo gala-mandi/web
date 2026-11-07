@@ -157,7 +157,7 @@ export function ItemRow<T extends ItemsFormValues>({
   return (
     <fieldset
       data-testid={`${idPrefix}-item-${index}`}
-      className="rounded-card bg-card grid gap-3 border p-3 sm:grid-cols-2 sm:p-4 xl:grid-cols-[minmax(10rem,1.4fr)_5.5rem_minmax(9rem,1fr)_minmax(9rem,1fr)_auto]"
+      className="rounded-card bg-card grid gap-3 border p-3 sm:grid-cols-2 sm:p-4 min-[1360px]:grid-cols-[minmax(10rem,1.4fr)_5.5rem_minmax(9rem,1fr)_minmax(9rem,1fr)_auto]"
     >
       <legend className="sr-only">{t("form.itemLabel", { n })}</legend>
 

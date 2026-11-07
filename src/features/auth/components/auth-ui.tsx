@@ -95,19 +95,23 @@ export function SubLine({
 export function OtherLanguage({
   children,
   className,
+  block = false,
 }: {
   children: ReactNode;
   className?: string;
+  /** A paragraph instead of an inline span. */
+  block?: boolean;
 }) {
   const other = useLocale() === "ur" ? "en" : "ur";
+  const Tag = block ? "p" : "span";
   return (
-    <span
+    <Tag
       lang={other}
       dir={localeDirection[other]}
       className={cn(other === "ur" ? "font-urdu" : "font-sans", className)}
     >
       {children}
-    </span>
+    </Tag>
   );
 }
 
