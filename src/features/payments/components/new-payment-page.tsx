@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
@@ -9,11 +10,8 @@ import { RequirePermission } from "@/features/panel/components/require-permissio
 import { karachiToday } from "@/lib/format";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { paymentText } from "../text";
 import { type PaymentDirection, paymentDirections } from "../types";
 import { PaymentForm } from "./payment-form";
-
-const t = paymentText.form;
 
 const directionParser =
   parseAsStringLiteral(paymentDirections).withDefault("paid");
@@ -24,6 +22,7 @@ const directionParser =
  * "Receive from beopari" are links; switching starts a fresh form.
  */
 export function NewPaymentPage() {
+  const t = useTranslations("payments");
   // Read once: a form left open past midnight keeps its own day.
   const [today] = useState(() => karachiToday());
   const [direction] = useQueryState("direction", directionParser);
@@ -31,8 +30,8 @@ export function NewPaymentPage() {
     <RequirePermission permission="payment.create" write>
       <div className="flex flex-col gap-6">
         <PageHeader
-          title={t.newTitle[direction]}
-          description={t.newDescription[direction]}
+          title={t(`form.newTitle.${direction}`)}
+          description={t(`form.newDescription.${direction}`)}
           actions={<DirectionSwitch direction={direction} />}
         />
         <PaymentForm key={direction} direction={direction} today={today} />
@@ -44,9 +43,10 @@ export function NewPaymentPage() {
 const icons = { paid: ArrowUpRight, received: ArrowDownLeft } as const;
 
 function DirectionSwitch({ direction }: { direction: PaymentDirection }) {
+  const t = useTranslations("payments");
   return (
     <nav
-      aria-label={t.directionLabel}
+      aria-label={t("form.directionLabel")}
       className="bg-surface-muted inline-flex rounded-full border p-1"
     >
       {paymentDirections.map((value) => {
@@ -65,7 +65,7 @@ function DirectionSwitch({ direction }: { direction: PaymentDirection }) {
             )}
           >
             <Icon aria-hidden className="size-4" />
-            {t.direction[value]}
+            {t(`form.direction.${value}`)}
           </Link>
         );
       })}

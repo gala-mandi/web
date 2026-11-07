@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, ReceiptText, TriangleAlert, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,7 @@ import { TraderCombobox } from "@/features/traders/components/trader-combobox";
 import { useTrader } from "@/features/traders/hooks";
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning";
 import { type ApiError, toApiError } from "@/lib/api-error";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { newIdempotencyKey } from "@/lib/idempotency";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -37,9 +38,9 @@ import {
   paymentFormSchema,
   sharesOf,
   toPaymentFormField,
+  type PaymentsTranslator,
   toPaymentInput,
 } from "../schemas";
-import { methodText, paymentText } from "../text";
 import {
   OVERPAYMENT,
   type PaymentDirection,
@@ -48,24 +49,22 @@ import {
 } from "../types";
 import { AllocationTable } from "./allocation-table";
 
-const t = paymentText.form;
 const TRADER_ID = "payment-trader";
 const BALANCE_ID = "payment-trader-balance";
 const NO_BILLS: readonly OutstandingBill[] = [];
 
 /** Message for an error that no form field shows. */
-function generalMessage(error: ApiError): string {
-  const e = paymentText.errors;
-  if (error.status === 0) return e.network;
-  if (error.status === 403) return e.forbidden;
-  return error.message ?? e.generic;
+function generalMessage(t: PaymentsTranslator, error: ApiError): string {
+  if (error.status === 0) return t("errors.network");
+  if (error.status === 403) return t("errors.forbidden");
+  return error.message ?? t("errors.generic");
 }
 
 /** Saved above what the khata owed (shop setting "advance"): say so. */
-function showWarnings(payment: PaymentWithWarnings) {
+function showWarnings(t: PaymentsTranslator, payment: PaymentWithWarnings) {
   for (const warning of payment.warnings ?? []) {
     if (warning.code === OVERPAYMENT) {
-      toast.warning(paymentText.overpayment.saved, {
+      toast.warning(t("overpayment.saved"), {
         description: warning.message,
       });
     }
@@ -91,6 +90,8 @@ export interface PaymentFormProps {
  * succeeds, so a retry never makes a second voucher.
  */
 export function PaymentForm({ direction, today }: PaymentFormProps) {
+  const t = useTranslations("payments");
+  const locale = useLocale();
   const router = useRouter();
   const create = useCreatePayment();
   const methodLabelId = useId();
@@ -105,11 +106,9 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
   // resolver reads them when it runs, not when the form is made.
   const billsRef = useRef<readonly OutstandingBill[]>(NO_BILLS);
   const resolver: Resolver<PaymentFormValues> = (values, context, options) =>
-    zodResolver(paymentFormSchema(today, direction, billsRef.current))(
-      values,
-      context,
-      options,
-    );
+    zodResolver(
+      paymentFormSchema(today, direction, billsRef.current, t, locale),
+    )(values, context, options);
 
   const form = useForm<PaymentFormValues>({
     resolver,
@@ -132,7 +131,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
   const { isDirty, isSubmitted, errors } = form.formState;
   const busy = form.formState.isSubmitting || create.isPending;
 
-  useUnsavedChangesWarning(isDirty && !leaving, t.leaveWarning);
+  useUnsavedChangesWarning(isDirty && !leaving, t("form.leaveWarning"));
 
   const setManual = (next: Record<string, string> | null) =>
     form.setValue("manual", next, {
@@ -152,7 +151,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
     setFormError(null);
     // Auto-allocation needs the bills: never save a split it couldn't see.
     if (values.trader && !billsQuery.isSuccess) {
-      const message = paymentText.bills.error;
+      const message = t("bills.error");
       setFormError(message);
       toast.error(message);
       return;
@@ -160,8 +159,10 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
     const { input, billIds } = toPaymentInput(values, direction, bills);
     try {
       const { payment } = await create.mutateAsync({ input, idempotencyKey });
-      toast.success(t.saved(direction, payment.voucherNo));
-      showWarnings(payment);
+      toast.success(
+        t("form.saved", { direction, voucherNo: payment.voucherNo }),
+      );
+      showWarnings(t, payment);
 
       if (intent === "new") {
         // A new voucher gets a new key; the date and method stay.
@@ -187,10 +188,12 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
         e.errors,
         (field) => toPaymentFormField(field, billIds),
         form.setError,
-        paymentText.errors.generic,
+        t("errors.generic"),
       );
       if (placed > 0 && unplaced.length === 0) return;
-      const message = unplaced.length ? unplaced.join(" ") : generalMessage(e);
+      const message = unplaced.length
+        ? unplaced.join(" ")
+        : generalMessage(t, e);
       setFormError(message);
       toast.error(message);
     }
@@ -247,11 +250,11 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
             id="payment-header-title"
             className="font-heading text-lg font-bold"
           >
-            {t.header}
+            {t("form.header")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)]">
             <Field data-invalid={Boolean(errors.paymentDate) || undefined}>
-              <FieldLabel htmlFor="payment-date">{t.date}</FieldLabel>
+              <FieldLabel htmlFor="payment-date">{t("form.date")}</FieldLabel>
               <Input
                 id="payment-date"
                 type="date"
@@ -269,7 +272,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid || undefined}>
                   <FieldLabel htmlFor={TRADER_ID}>
-                    {t.trader[direction]}
+                    {t(`form.trader.${direction}`)}
                   </FieldLabel>
                   <TraderCombobox
                     id={TRADER_ID}
@@ -281,7 +284,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
                       // Another trader has other bills: back to auto.
                       form.setValue("manual", null);
                     }}
-                    placeholder={t.traderPlaceholder[direction]}
+                    placeholder={t(`form.traderPlaceholder.${direction}`)}
                     aria-describedby={field.value ? BALANCE_ID : undefined}
                     aria-invalid={fieldState.invalid}
                   />
@@ -296,7 +299,9 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
 
           <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
             <Field data-invalid={Boolean(errors.amount) || undefined}>
-              <FieldLabel htmlFor="payment-amount">{t.amount}</FieldLabel>
+              <FieldLabel htmlFor="payment-amount">
+                {t("form.amount")}
+              </FieldLabel>
               <div className="relative" dir="ltr">
                 <span
                   aria-hidden
@@ -308,7 +313,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
                   id="payment-amount"
                   inputMode="decimal"
                   autoComplete="off"
-                  placeholder={t.amountPlaceholder}
+                  placeholder={t("form.amountPlaceholder")}
                   aria-invalid={Boolean(errors.amount) || undefined}
                   className="rounded-field bg-card font-heading h-14 ps-12 text-2xl font-extrabold tabular-nums md:text-2xl"
                   {...form.register("amount")}
@@ -319,7 +324,9 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
             <Field>
               <FieldLabel id={methodLabelId} asChild>
                 <span>
-                  {direction === "paid" ? t.method : t.methodReceived}
+                  {direction === "paid"
+                    ? t("form.method")
+                    : t("form.methodReceived")}
                 </span>
               </FieldLabel>
               <Controller
@@ -338,7 +345,7 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
                         className="rounded-field bg-card has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/[0.06] has-[:focus-visible]:ring-ring/50 flex h-14 cursor-pointer items-center justify-center gap-2 border px-2 text-sm font-semibold has-[:focus-visible]:ring-3"
                       >
                         <RadioGroupItem value={value} />
-                        {methodText[value]}
+                        {t(`methods.${value}`)}
                       </label>
                     ))}
                   </RadioGroup>
@@ -349,12 +356,14 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field data-invalid={Boolean(errors.reference) || undefined}>
-              <FieldLabel htmlFor="payment-reference">{t.reference}</FieldLabel>
+              <FieldLabel htmlFor="payment-reference">
+                {t("form.reference")}
+              </FieldLabel>
               <Input
                 id="payment-reference"
                 dir="auto"
                 autoComplete="off"
-                placeholder={t.referenceHint}
+                placeholder={t("form.referenceHint")}
                 aria-invalid={Boolean(errors.reference) || undefined}
                 className={inputClass}
                 {...form.register("reference")}
@@ -362,12 +371,12 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
               <FieldError errors={[errors.reference]} />
             </Field>
             <Field data-invalid={Boolean(errors.notes) || undefined}>
-              <FieldLabel htmlFor="payment-notes">{t.notes}</FieldLabel>
+              <FieldLabel htmlFor="payment-notes">{t("form.notes")}</FieldLabel>
               <Textarea
                 id="payment-notes"
                 rows={1}
                 dir="auto"
-                placeholder={t.notesPlaceholder}
+                placeholder={t("form.notesPlaceholder")}
                 aria-invalid={Boolean(errors.notes) || undefined}
                 className="rounded-field bg-card min-h-11"
                 {...form.register("notes")}
@@ -386,10 +395,10 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
               id="payment-bills-title"
               className="font-heading text-lg font-bold"
             >
-              {paymentText.bills.title}
+              {t("bills.title")}
             </h2>
             <p className="text-muted-foreground text-sm">
-              {paymentText.bills.description[direction]}
+              {t(`bills.description.${direction}`)}
             </p>
           </div>
           <BillsBody
@@ -420,18 +429,16 @@ export function PaymentForm({ direction, today }: PaymentFormProps) {
           id="payment-summary-title"
           className="font-heading text-lg font-bold"
         >
-          {paymentText.summary.title}
+          {t("summary.title")}
         </h2>
         <Summary
           amount={amount}
           allocated={totals.allocated}
           advance={totals.advance}
           over={totals.over}
-          method={methodText[method]}
+          method={t(`methods.${method}`)}
         />
-        <p className="text-muted-foreground text-xs">
-          {paymentText.summary.preview}
-        </p>
+        <p className="text-muted-foreground text-xs">{t("summary.preview")}</p>
         <SaveButtons
           busy={busy || (Boolean(trader) && billsQuery.isPending)}
           showNew
@@ -454,15 +461,17 @@ function BillsBody({
   query: ReturnType<typeof useOutstandingBills>;
   children: React.ReactNode;
 }) {
-  const b = paymentText.bills;
+  const t = useTranslations("payments");
   if (!hasTrader) {
-    return <Placeholder icon={Users} text={b.pickTrader[direction]} />;
+    return (
+      <Placeholder icon={Users} text={t(`bills.pickTrader.${direction}`)} />
+    );
   }
   if (query.isPending) {
     return (
       <div className="flex flex-col gap-2" aria-busy>
         <span role="status" className="sr-only">
-          {b.loading}
+          {t("bills.loading")}
         </span>
         <Skeleton className="h-10" />
         <Skeleton className="h-12" />
@@ -477,7 +486,7 @@ function BillsBody({
         className="bg-destructive-soft border-destructive-border text-destructive flex flex-wrap items-center gap-3 rounded-xl border px-3.5 py-3 text-[13px] font-semibold"
       >
         <CircleAlert aria-hidden className="size-4 flex-none" />
-        {b.error}
+        {t("bills.error")}
         <Button
           type="button"
           variant="outline"
@@ -485,7 +494,7 @@ function BillsBody({
           className="ms-auto"
           onClick={() => void query.refetch()}
         >
-          {b.retry}
+          {t("bills.retry")}
         </Button>
       </div>
     );
@@ -494,8 +503,8 @@ function BillsBody({
     return (
       <Placeholder
         icon={ReceiptText}
-        title={b.none.title}
-        text={b.none.body}
+        title={t("bills.none.title")}
+        text={t("bills.none.body")}
         testId="no-outstanding-bills"
       />
     );
@@ -546,13 +555,14 @@ function Summary({
   over: boolean;
   method: string;
 }) {
-  const s = paymentText.summary;
+  const { formatRs } = useFormat();
+  const t = useTranslations("payments");
   const shownAmount = formatRs(amount.trim()) || formatRs("0");
   return (
     <div className="flex flex-col gap-3" aria-live="polite">
       <div className="bg-primary text-primary-foreground rounded-xl px-4 py-3">
         <p className="text-xs font-semibold opacity-80">
-          {s.amount} · {method}
+          {t("summary.amount")} · {method}
         </p>
         <p
           dir="ltr"
@@ -564,7 +574,7 @@ function Summary({
       </div>
       <dl data-testid="payment-summary" className="flex flex-col gap-2 text-sm">
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="text-muted-foreground">{s.allocated}</dt>
+          <dt className="text-muted-foreground">{t("summary.allocated")}</dt>
           <dd
             dir="ltr"
             data-testid="payment-allocated"
@@ -574,7 +584,7 @@ function Summary({
           </dd>
         </div>
         <div className="flex items-baseline justify-between gap-3 border-t pt-2">
-          <dt className="text-muted-foreground">{s.advance}</dt>
+          <dt className="text-muted-foreground">{t("summary.advance")}</dt>
           <dd
             dir="ltr"
             data-testid="payment-advance"
@@ -593,7 +603,7 @@ function Summary({
           className="border-warning/40 bg-warning-soft text-warning flex items-start gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-semibold"
         >
           <TriangleAlert aria-hidden className="mt-px size-4 flex-none" />
-          {s.over}
+          {t("summary.over")}
         </p>
       ) : null}
     </div>
@@ -608,12 +618,13 @@ const balanceTone = {
 
 /** Next to the trader: their khata balance now (`GET /traders/:id`). */
 function TraderBalance({ id, traderId }: { id: string; traderId: string }) {
-  const b = paymentText.balance;
+  const { formatRs } = useFormat();
+  const t = useTranslations("payments");
   const trader = useTrader(traderId);
   if (trader.isPending || trader.isError) {
     return (
       <p id={id} className="text-muted-foreground text-xs">
-        {trader.isPending ? b.loading : b.error}
+        {trader.isPending ? t("balance.loading") : t("balance.error")}
       </p>
     );
   }
@@ -624,14 +635,14 @@ function TraderBalance({ id, traderId }: { id: string; traderId: string }) {
       data-testid="payment-trader-balance"
       className="text-muted-foreground text-xs"
     >
-      {b.label}:{" "}
+      {t("balance.label")}:{" "}
       <span
         dir="ltr"
         className={cn("font-semibold tabular-nums", balanceTone[kind])}
       >
         {formatRs(amount)}
       </span>{" "}
-      {b[kind]}
+      {t(`balance.${kind}`)}
     </p>
   );
 }

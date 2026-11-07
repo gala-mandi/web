@@ -6,20 +6,23 @@ import {
   dataTableColumnHelper,
 } from "@/components/data-table";
 import { TraderName } from "@/features/traders/components/trader-name";
-import { formatDate, formatRs } from "@/lib/format";
+import type { Formatters } from "@/lib/use-format";
 import { paymentRoutes } from "@/lib/routes";
-import { directionText, paymentText } from "../text";
+import type { PaymentsTranslator } from "../schemas";
 import type { PaymentSummary } from "../types";
 import { DirectionBadge } from "./badges";
 
-const t = paymentText.cashBook.vouchers;
 const col = dataTableColumnHelper<PaymentSummary>();
 
 /** A receipt's amount is cash in, a payment's cash out. */
 const side = (row: PaymentSummary, direction: PaymentSummary["direction"]) =>
   row.direction === direction ? row.amount : null;
 
-function money(direction: PaymentSummary["direction"], header: string) {
+function money(
+  formatRs: (value: string) => string,
+  direction: PaymentSummary["direction"],
+  header: string,
+) {
   return col.accessor((row) => side(row, direction), {
     id: direction === "received" ? "cashIn" : "cashOut",
     header,
@@ -41,11 +44,14 @@ function money(direction: PaymentSummary["direction"], header: string) {
 }
 
 /** The cash vouchers behind the cash book; voucher no and date sort. */
-export function cashVoucherColumns(): DataTableColumn<PaymentSummary>[] {
+export function cashVoucherColumns(
+  t: PaymentsTranslator,
+  { formatDate, formatRs }: Formatters,
+): DataTableColumn<PaymentSummary>[] {
   return col.columns([
     col.accessor("voucherNo", {
-      header: t.voucherNo,
-      meta: { label: t.voucherNo },
+      header: t("cashBook.vouchers.voucherNo"),
+      meta: { label: t("cashBook.vouchers.voucherNo") },
       cell: ({ row }) => (
         <Link
           href={paymentRoutes.detail(row.original.id)}
@@ -57,8 +63,8 @@ export function cashVoucherColumns(): DataTableColumn<PaymentSummary>[] {
       ),
     }),
     col.accessor("paymentDate", {
-      header: t.date,
-      meta: { label: t.date },
+      header: t("cashBook.vouchers.date"),
+      meta: { label: t("cashBook.vouchers.date") },
       cell: ({ getValue }) => (
         <time dateTime={getValue()} className="whitespace-nowrap">
           {formatDate(getValue())}
@@ -66,22 +72,22 @@ export function cashVoucherColumns(): DataTableColumn<PaymentSummary>[] {
       ),
     }),
     col.accessor("direction", {
-      header: t.type,
+      header: t("cashBook.vouchers.type"),
       enableSorting: false,
       meta: {
-        label: t.type,
-        exportValue: (row: PaymentSummary) => directionText[row.direction],
+        label: t("cashBook.vouchers.type"),
+        exportValue: (row: PaymentSummary) => t(`directions.${row.direction}`),
       },
       cell: ({ getValue }) => <DirectionBadge direction={getValue()} />,
     }),
     col.accessor((row) => row.trader.name, {
       id: "trader",
-      header: t.trader,
+      header: t("cashBook.vouchers.trader"),
       enableSorting: false,
-      meta: { label: t.trader },
+      meta: { label: t("cashBook.vouchers.trader") },
       cell: ({ getValue }) => <TraderName name={getValue()} />,
     }),
-    money("received", t.cashIn),
-    money("paid", t.cashOut),
+    money(formatRs, "received", t("cashBook.vouchers.cashIn")),
+    money(formatRs, "paid", t("cashBook.vouchers.cashOut")),
   ]);
 }

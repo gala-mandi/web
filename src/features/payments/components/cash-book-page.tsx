@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useFormat } from "@/lib/use-format";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -28,7 +30,6 @@ import { karachiToday } from "@/lib/format";
 import { paymentRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { useCashBook, usePayments } from "../hooks";
-import { paymentText } from "../text";
 import {
   type PaymentListQuery,
   paymentSortFields,
@@ -40,8 +41,6 @@ import {
   CashBookTotals,
 } from "./cash-book-summary";
 import { cashVoucherColumns } from "./cash-voucher-columns";
-
-const t = paymentText.cashBook;
 
 /** `?from=&to=` (default today); module scope, the hook needs it stable. */
 const cashBookFilters = { from: parseAsDay, to: parseAsDay };
@@ -72,6 +71,7 @@ export function CashBookPage() {
  * (today) with previous / next day; any range from the dates filter.
  */
 function CashBookView() {
+  const t = useTranslations("payments");
   const router = useRouter();
   const [today] = useState(() => karachiToday());
   const canCreate = useCanWrite("payment.create");
@@ -96,7 +96,8 @@ function CashBookView() {
     status: "posted",
   };
   const vouchers = usePayments(vouchersQuery);
-  const columns = useMemo(() => cashVoucherColumns(), []);
+  const format = useFormat();
+  const columns = useMemo(() => cashVoucherColumns(t, format), [t, format]);
 
   const status = book.isError ? toApiError(book.error).status : null;
   if (status === 403) return <ForbiddenState />;
@@ -106,8 +107,8 @@ function CashBookView() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={t.title}
-        description={t.description}
+        title={t("cashBook.title")}
+        description={t("cashBook.description")}
         actions={
           canCreate ? (
             <>
@@ -119,7 +120,7 @@ function CashBookView() {
               >
                 <Link href={paymentRoutes.new("received")}>
                   <ArrowDownLeft aria-hidden />
-                  {t.receiveButton}
+                  {t("cashBook.receiveButton")}
                 </Link>
               </Button>
               <Button
@@ -129,7 +130,7 @@ function CashBookView() {
               >
                 <Link href={paymentRoutes.new("paid")}>
                   <ArrowUpRight aria-hidden />
-                  {t.payButton}
+                  {t("cashBook.payButton")}
                 </Link>
               </Button>
             </>
@@ -139,7 +140,7 @@ function CashBookView() {
 
       <div className="flex flex-wrap items-end gap-2">
         <DataTableDateRangeFilter
-          label={t.datesLabel}
+          label={t("cashBook.datesLabel")}
           value={{ from, to }}
           onChange={(range) =>
             list.setFilters({ from: range.from, to: range.to })
@@ -153,7 +154,7 @@ function CashBookView() {
               variant="outline"
               size="icon"
               className="size-10"
-              aria-label={t.previousDay}
+              aria-label={t("cashBook.previousDay")}
               onClick={() => showDay(shiftDay(from, -1))}
             >
               <ChevronLeft aria-hidden className="rtl:rotate-180" />
@@ -163,7 +164,7 @@ function CashBookView() {
               variant="outline"
               size="icon"
               className="size-10"
-              aria-label={t.nextDay}
+              aria-label={t("cashBook.nextDay")}
               disabled={to >= today}
               onClick={() => showDay(shiftDay(from, 1))}
             >
@@ -178,7 +179,7 @@ function CashBookView() {
           disabled={from === today && to === today}
           onClick={() => list.setFilters({ from: null, to: null })}
         >
-          {t.today}
+          {t("cashBook.today")}
         </Button>
       </div>
 
@@ -188,11 +189,11 @@ function CashBookView() {
         <EmptyState
           role="alert"
           icon={CircleAlert}
-          title={t.error.title}
-          body={t.error.body}
+          title={t("cashBook.error.title")}
+          body={t("cashBook.error.body")}
           action={
             <Button variant="outline" onClick={() => void book.refetch()}>
-              {t.error.retry}
+              {t("cashBook.error.retry")}
             </Button>
           }
         />
@@ -218,14 +219,14 @@ function CashBookView() {
             id="cash-vouchers-title"
             className="font-heading text-lg font-bold"
           >
-            {t.vouchers.title}
+            {t("cashBook.vouchers.title")}
           </h2>
           <p className="text-muted-foreground text-sm">
-            {t.vouchers.description}
+            {t("cashBook.vouchers.description")}
           </p>
         </div>
         <DataTable
-          caption={t.vouchers.caption}
+          caption={t("cashBook.vouchers.caption")}
           columns={columns}
           data={vouchers.data?.data}
           getRowId={getRowId}
@@ -243,15 +244,15 @@ function CashBookView() {
           empty={
             <EmptyState
               icon={HandCoins}
-              title={t.vouchers.empty.title}
-              body={t.vouchers.empty.body}
+              title={t("cashBook.vouchers.empty.title")}
+              body={t("cashBook.vouchers.empty.body")}
               className="rounded-none border-0"
             />
           }
         />
       </section>
 
-      <p className="text-muted-foreground text-xs">{t.note}</p>
+      <p className="text-muted-foreground text-xs">{t("cashBook.note")}</p>
     </div>
   );
 }

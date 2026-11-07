@@ -1,7 +1,7 @@
+import { useTranslations } from "next-intl";
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { directionText } from "../text";
 import type { PaymentDirection } from "../types";
 
 const tone: Record<PaymentDirection, string> = {
@@ -14,6 +14,7 @@ const tone: Record<PaymentDirection, string> = {
  * the word is always shown, not only the colour.
  */
 export function DirectionBadge({ direction }: { direction: PaymentDirection }) {
+  const t = useTranslations("payments");
   const Icon = direction === "paid" ? ArrowUpRight : ArrowDownLeft;
   return (
     <Badge
@@ -22,7 +23,7 @@ export function DirectionBadge({ direction }: { direction: PaymentDirection }) {
       className={cn("border-transparent font-semibold", tone[direction])}
     >
       <Icon aria-hidden />
-      {directionText[direction]}
+      {t(`directions.${direction}`)}
     </Badge>
   );
 }
