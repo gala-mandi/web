@@ -1,7 +1,7 @@
+import { useTranslations } from "next-intl";
 import { PenLine, Undo2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { sourceTypeText } from "../text";
 import type { SourceType } from "../types";
 
 const tone: Record<SourceType, string> = {
@@ -17,6 +17,7 @@ const tone: Record<SourceType, string> = {
 
 /** What wrote a khata line; the word is always shown, not only the colour. */
 export function SourceBadge({ type }: { type: SourceType }) {
+  const t = useTranslations("ledger");
   const Icon =
     type === "adjustment" ? PenLine : type === "reversal" ? Undo2 : null;
   return (
@@ -30,7 +31,7 @@ export function SourceBadge({ type }: { type: SourceType }) {
       )}
     >
       {Icon ? <Icon aria-hidden /> : null}
-      {sourceTypeText[type]}
+      {t(`sources.${type}`)}
     </Badge>
   );
 }

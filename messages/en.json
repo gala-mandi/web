@@ -1766,5 +1766,119 @@
       },
       "note": "Only cash vouchers count. Amounts paid or received on a purchase or sale itself are not in the cash book."
     }
+  },
+  "ledger": {
+    "sources": {
+      "opening": "Opening balance",
+      "purchase": "Purchase",
+      "sale": "Sale",
+      "payment": "Payment",
+      "receipt": "Receipt",
+      "adjustment": "Adjustment",
+      "reversal": "Reversal"
+    },
+    "dr": "Dr",
+    "cr": "Cr",
+    "balance": {
+      "receivable": "Receivable",
+      "payable": "Payable",
+      "settled": "Settled",
+      "receivableHint": "They owe you",
+      "payableHint": "You owe them",
+      "settledHint": "Nothing owed"
+    },
+    "legend": {
+      "label": "How to read the khata",
+      "dr": "(debit): the trader owes you more — a sale to them, or money you paid them.",
+      "cr": "(credit): you owe the trader more — a purchase from them, or money they paid you."
+    },
+    "khata": {
+      "traderLabel": "Trader",
+      "traderPlaceholder": "Pick a trader…",
+      "dateLabel": "Dates",
+      "balancesLink": "All balances",
+      "pick": {
+        "title": "Pick a trader",
+        "body": "Choose a kissan or beopari to see their khata: every purchase, sale, payment and adjustment with the running balance."
+      },
+      "openingBalance": "Opening balance",
+      "openingOn": "Before {day}",
+      "openingAll": "Before the first entry",
+      "closingBalance": "Closing balance",
+      "closingOn": "At the end of {day}",
+      "closingNow": "Up to today",
+      "entriesTitle": "Entries",
+      "caption": "Khata of {name}",
+      "columns": {
+        "date": "Date",
+        "details": "Details",
+        "debit": "Dr (debit)",
+        "credit": "Cr (credit)",
+        "balance": "Balance"
+      },
+      "openSource": "Open {label}",
+      "adjustmentNote": "Adjustment by the owner",
+      "empty": {
+        "title": "No entries in these dates",
+        "body": "Nothing was written to this khata in the chosen dates. The opening and closing balance are shown above.",
+        "bodyAll": "Nothing has been written to this khata yet.",
+        "clear": "Show all dates"
+      },
+      "notFound": {
+        "title": "Trader not found",
+        "body": "This trader isn’t in your shop. Pick another trader."
+      },
+      "error": {
+        "title": "Couldn’t load the khata",
+        "body": "Check your internet and try again.",
+        "retry": "Try again"
+      }
+    },
+    "statement": {
+      "languageLabel": "Statement language",
+      "print": "Print",
+      "excel": "Excel",
+      "pdf": "PDF",
+      "preparing": "Preparing…",
+      "pdfHint": "In the print window, choose “Save as PDF”.",
+      "failed": "Couldn’t prepare the statement. Please try again."
+    },
+    "balances": {
+      "title": "Balances",
+      "description": "Every trader with what they owe you (receivable) and what you owe them (payable).",
+      "khataLink": "Open a khata",
+      "searchLabel": "Search traders",
+      "searchPlaceholder": "Name or phone",
+      "typeLabel": "Type",
+      "typeAll": "All traders",
+      "sortLabel": "Sort by",
+      "sorts": {
+        "-balance": "Largest receivable first",
+        "balance": "Largest payable first",
+        "name": "Name (A–Z)",
+        "-name": "Name (Z–A)"
+      },
+      "totalReceivable": "Total receivable",
+      "totalReceivableHint": "Traders owe you",
+      "totalPayable": "Total payable",
+      "totalPayableHint": "You owe traders",
+      "caption": "Trader balances",
+      "columns": {
+        "name": "Trader",
+        "type": "Type",
+        "phone": "Phone",
+        "receivable": "Receivable (Dr)",
+        "payable": "Payable (Cr)"
+      },
+      "empty": {
+        "title": "No traders yet",
+        "body": "Add traders, then their purchases and sales show up here."
+      },
+      "noMatches": {
+        "title": "No traders match",
+        "body": "Try another name or phone number, or clear the filters.",
+        "clear": "Clear filters"
+      }
+    }
   }
 }

@@ -6,7 +6,7 @@ import {
   statementDetails,
   statementPeriod,
 } from "../statement";
-import { type StatementLanguage, statementText } from "../text";
+import { type StatementLanguage, statementText } from "../statement-words";
 import type { Statement } from "../types";
 
 const cell = "border-b px-2 py-1.5 align-top";

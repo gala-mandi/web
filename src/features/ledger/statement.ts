@@ -1,7 +1,7 @@
 import { exportFileName } from "@/components/data-table/export";
 import { readBalance } from "@/features/traders/balance";
 import { formatDate, formatRs, SHOP_TIME_ZONE } from "@/lib/format";
-import { type StatementLanguage, statementText } from "./text";
+import { type StatementLanguage, statementText } from "./statement-words";
 import type { Statement, StatementEntry } from "./types";
 
 /**

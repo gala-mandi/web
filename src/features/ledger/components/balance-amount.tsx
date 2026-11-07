@@ -1,9 +1,7 @@
+import { useTranslations } from "next-intl";
 import { type BalanceKind, readBalance } from "@/features/traders/balance";
-import { formatRs } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
-import { ledgerText } from "../text";
-
-const t = ledgerText;
 
 /**
  * One colour per side everywhere in the ledger: green = Dr / receivable (the
@@ -21,16 +19,11 @@ export const sideTone = {
   credit: balanceTone.payable,
 } as const;
 
+/** The side's short word (Dr / بنام) and its meaning, by message key. */
 const sideLabel = {
-  receivable: { short: t.dr, long: t.balance.receivable },
-  payable: { short: t.cr, long: t.balance.payable },
+  receivable: { short: "dr", long: "balance.receivable" },
+  payable: { short: "cr", long: "balance.payable" },
   settled: null,
-} as const;
-
-const hintText = {
-  receivable: t.balance.receivableHint,
-  payable: t.balance.payableHint,
-  settled: t.balance.settledHint,
 } as const;
 
 export interface BalanceAmountProps {
@@ -50,6 +43,8 @@ export function BalanceAmount({
   showHint = false,
   className,
 }: BalanceAmountProps) {
+  const { formatRs } = useFormat();
+  const t = useTranslations("ledger");
   const { kind, amount } = readBalance(balance);
   const side = sideLabel[kind];
   return (
@@ -62,14 +57,14 @@ export function BalanceAmount({
         {side ? (
           <>
             {" "}
-            <abbr title={side.long} className="no-underline">
-              {side.short}
+            <abbr title={t(side.long)} className="no-underline">
+              {t(side.short)}
             </abbr>
           </>
         ) : null}
       </span>
       {showHint ? (
-        <span className="text-xs font-normal">{hintText[kind]}</span>
+        <span className="text-xs font-normal">{t(`balance.${kind}Hint`)}</span>
       ) : null}
     </span>
   );
@@ -86,6 +81,7 @@ export function SideAmount({
   amount: string;
   side: "debit" | "credit";
 }) {
+  const { formatRs } = useFormat();
   if (!/[1-9]/.test(amount)) return null;
   return (
     <span
