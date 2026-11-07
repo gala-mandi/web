@@ -10,6 +10,9 @@ updates:
     commit-message:
       prefix: chore(deps)
     groups:
+      # react and react-dom must move together (react-dom pins react as a peer).
+      react:
+        patterns: [react, react-dom]
       # Patch and minor updates of dev tools in one PR, to keep the noise down.
       dev-dependencies:
         dependency-type: development
