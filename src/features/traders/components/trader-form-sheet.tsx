@@ -24,7 +24,7 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { AdornedInput } from "@/components/adorned-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Sheet,
@@ -40,7 +40,6 @@ import {
   type ConflictFields,
 } from "@/features/staff/form-errors";
 import { toApiError } from "@/lib/api-error";
-import { cn } from "@/lib/utils";
 import { useCreateTrader, useUpdateTrader } from "../hooks";
 import {
   emptyTraderValues,
@@ -438,21 +437,12 @@ function TextField({
                 className="rounded-field bg-card"
               />
             ) : (
-              <div className="relative">
-                {prefix ? (
-                  <span
-                    aria-hidden
-                    className="text-muted-foreground pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm"
-                  >
-                    {prefix}
-                  </span>
-                ) : null}
-                <Input
-                  {...inputProps}
-                  {...common}
-                  className={cn(inputClass, prefix && "ps-10")}
-                />
-              </div>
+              <AdornedInput
+                {...inputProps}
+                {...common}
+                prefix={prefix}
+                className={inputClass}
+              />
             )}
             {hint ? (
               <FieldDescription id={`${id}-hint`}>{hint}</FieldDescription>

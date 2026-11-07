@@ -16,7 +16,7 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { AdornedInput } from "@/components/adorned-input";
 import {
   Select,
   SelectContent,
@@ -27,7 +27,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { applyServerErrors } from "@/features/staff/form-errors";
 import { toApiError } from "@/lib/api-error";
-import { cn } from "@/lib/utils";
 import { useUpdateSettings } from "../hooks";
 import {
   languages,
@@ -416,33 +415,13 @@ function TextField({
                 className="rounded-field bg-card"
               />
             ) : (
-              <div className="relative">
-                {prefix ? (
-                  <span
-                    aria-hidden
-                    className="text-muted-foreground pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm"
-                  >
-                    {prefix}
-                  </span>
-                ) : null}
-                <Input
-                  {...inputProps}
-                  {...common}
-                  className={cn(
-                    inputClass,
-                    prefix && "ps-10",
-                    suffix && "pe-10",
-                  )}
-                />
-                {suffix ? (
-                  <span
-                    aria-hidden
-                    className="text-muted-foreground pointer-events-none absolute inset-y-0 end-3 flex items-center text-sm"
-                  >
-                    {suffix}
-                  </span>
-                ) : null}
-              </div>
+              <AdornedInput
+                {...inputProps}
+                {...common}
+                prefix={prefix}
+                suffix={suffix}
+                className={inputClass}
+              />
             )}
             {hint ? (
               <FieldDescription id={`${id}-hint`}>{hint}</FieldDescription>

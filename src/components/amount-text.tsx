@@ -25,18 +25,18 @@ export function AmountText({
   );
   if (locale === "ur" && text.endsWith(` ${word}`)) {
     return (
-      <>
+      <span className="whitespace-nowrap">
         {text.slice(0, -word.length - 1)} {unit}
-      </>
+      </span>
     );
   }
   const english = /^(-?)Rs (.*)$/.exec(text);
   if (locale === "en" && english) {
     return (
-      <>
+      <span className="whitespace-nowrap">
         {english[1]}
         {unit} {english[2]}
-      </>
+      </span>
     );
   }
   return <>{text}</>;

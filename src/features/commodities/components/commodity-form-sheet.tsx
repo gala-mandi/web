@@ -32,7 +32,7 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { AdornedInput } from "@/components/adorned-input";
 import {
   Select,
   SelectContent,
@@ -434,37 +434,16 @@ function TextField({
               {label}
               {optional ? <OptionalMark /> : null}
             </FieldLabel>
-            <div className="relative">
-              {prefix ? (
-                <span
-                  aria-hidden
-                  className="text-muted-foreground pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm"
-                >
-                  {prefix}
-                </span>
-              ) : null}
-              <Input
-                {...inputProps}
-                {...field}
-                id={id}
-                aria-invalid={fieldState.invalid}
-                aria-describedby={describedBy}
-                className={cn(
-                  inputClass,
-                  prefix && "ps-10",
-                  suffix && "pe-10",
-                  className,
-                )}
-              />
-              {suffix ? (
-                <span
-                  aria-hidden
-                  className="text-muted-foreground pointer-events-none absolute inset-y-0 end-3 flex items-center text-sm"
-                >
-                  {suffix}
-                </span>
-              ) : null}
-            </div>
+            <AdornedInput
+              {...inputProps}
+              {...field}
+              id={id}
+              aria-invalid={fieldState.invalid}
+              aria-describedby={describedBy}
+              prefix={prefix}
+              suffix={suffix}
+              className={cn(inputClass, className)}
+            />
             {hint ? (
               <FieldDescription id={`${id}-hint`}>{hint}</FieldDescription>
             ) : null}
