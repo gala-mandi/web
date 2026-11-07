@@ -20,7 +20,7 @@ import {
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
-import { formatDateTime } from "@/lib/format";
+import { type Formatters, useFormat } from "@/lib/use-format";
 import { type StaffStatusAction, useStaff } from "../hooks";
 import type { StaffTranslator } from "../schemas";
 import type { StaffMember } from "../types";
@@ -99,6 +99,7 @@ const col = dataTableColumnHelper<StaffMember>();
 
 function staffColumns(
   t: StaffTranslator,
+  { formatDateTime }: Formatters,
   onOpen: (dialog: OpenDialog) => void,
 ): DataTableColumn<StaffMember>[] {
   return col.columns([
@@ -165,7 +166,11 @@ export function StaffTable() {
   const t = useTranslations("staff");
   const query = useStaff();
   const [dialog, setDialog] = useState<OpenDialog | null>(null);
-  const columns = useMemo(() => staffColumns(t, setDialog), [t]);
+  const format = useFormat();
+  const columns = useMemo(
+    () => staffColumns(t, format, setDialog),
+    [t, format],
+  );
   // Read-only shop: no role, activate or cancel buttons (the server refuses).
   const readOnly = useReadOnly();
   const visibleColumns = useMemo(

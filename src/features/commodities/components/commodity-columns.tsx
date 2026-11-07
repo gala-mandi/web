@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { categoryLabel, suggestedCategories } from "../categories";
+import { categoryLabel } from "../categories";
 import { CircleCheck, CircleOff, Pencil, Trash2 } from "lucide-react";
 import {
   type DataTableColumn,

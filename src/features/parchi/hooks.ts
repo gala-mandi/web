@@ -190,18 +190,22 @@ export function useReprint(load: (id: string) => Promise<ParchiBill>) {
   });
 
   /** Stable, so a memoised table column can hold it. */
-  const reprint = useCallback(async (id: string) => {
-    setPendingId(id);
-    try {
-      const bill = await loadRef.current(id);
-      printPending.current = true;
-      setJob({ bill, printedAt: new Date() });
-    } catch {
-      toast.error(t("failed"));
-    } finally {
-      setPendingId(null);
-    }
-  }, []);
+  const reprint = useCallback(
+    async (id: string) => {
+      setPendingId(id);
+      try {
+        const bill = await loadRef.current(id);
+        printPending.current = true;
+        setJob({ bill, printedAt: new Date() });
+      } catch {
+        toast.error(t("failed"));
+      } finally {
+        setPendingId(null);
+      }
+      // Stable per language: a memoised table column can hold it.
+    },
+    [t],
+  );
 
   return { reprint, pendingId, job, contentRef, shop, paper, lang };
 }

@@ -146,7 +146,7 @@ export function bookSheet(
   report: PurchasesReport | SalesReport,
   ctx: BookSheetContext = {},
 ): ReportSheet {
-  const { t, locale } = w;
+  const { t } = w;
   const charges = (m: object): string | null =>
     kind === "purchases"
       ? (m as PurchasesReport["totals"]).totalDeductions

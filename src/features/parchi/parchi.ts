@@ -3,13 +3,7 @@ import type { Purchase } from "@/features/purchases/types";
 import { statementDay } from "@/features/ledger/statement";
 import type { Sale } from "@/features/sales/types";
 import type { ChargeLine } from "@/lib/charges/calculate-transaction";
-import {
-  formatDateTime,
-  formatKg,
-  formatMaund,
-  formatRs,
-  SHOP_TIME_ZONE,
-} from "@/lib/format";
+import { formatDateTime, formatKg, formatMaund, formatRs } from "@/lib/format";
 import { parchiWords } from "./parchi-words";
 import type {
   PaperSize,

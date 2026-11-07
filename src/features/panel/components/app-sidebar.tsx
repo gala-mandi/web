@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Wheat } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,6 +31,7 @@ export function AppSidebar({
 }) {
   const t = useTranslations("panel");
   const pathname = usePathname();
+  const rtl = useLocale() === "ur";
   const { isMobile, setOpenMobile } = useSidebar();
   const items = menuFor(user, t);
   const home = landingItemFor(user, t);
@@ -39,7 +40,8 @@ export function AppSidebar({
   };
 
   return (
-    <Sidebar collapsible="icon">
+    // The menu sits on the start side: the right in Urdu.
+    <Sidebar collapsible="icon" side={rtl ? "right" : "left"}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

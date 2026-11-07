@@ -224,3 +224,53 @@
     box-shadow: none;
   }
 }
+
+/*
+ * The Urdu interface (<html lang="ur" dir="rtl">). Urdu letters are set in
+ * Noto Nastaliq Urdu; Latin names, amounts, phone and bill numbers stay in
+ * Inter (headings in Plus Jakarta Sans), because each face only covers its
+ * own script and the browser falls through to the next one. Nastaliq is tall
+ * and sits low, so lines get room (≈1.9–2.2) or the letters clip and
+ * overlap; fixed-height controls keep their height and centre the text.
+ */
+html:lang(ur) {
+  --font-urdu-ui:
+    "Inter", "Noto Nastaliq Urdu", var(--font-nastaliq), sans-serif;
+  --font-urdu-heading:
+    "Plus Jakarta Sans", "Noto Nastaliq Urdu", var(--font-nastaliq), sans-serif;
+  --text-xs--line-height: 2.1;
+  --text-sm--line-height: 2;
+  --text-base--line-height: 1.95;
+  --text-lg--line-height: 1.9;
+  --text-xl--line-height: 1.85;
+  --text-2xl--line-height: 1.8;
+  --text-3xl--line-height: 1.7;
+  --text-4xl--line-height: 1.6;
+  --text-5xl--line-height: 1.5;
+  --leading-tight: 1.7;
+  --leading-snug: 1.8;
+  --leading-normal: 1.95;
+  --leading-relaxed: 2.05;
+  --leading-loose: 2.25;
+  font-family: var(--font-urdu-ui);
+}
+html:lang(ur) body {
+  line-height: 1.95;
+}
+html:lang(ur) :where(.font-sans) {
+  font-family: var(--font-urdu-ui);
+}
+html:lang(ur) :where(.font-heading) {
+  font-family: var(--font-urdu-heading);
+  /* Latin tracking tightens Nastaliq joins; Urdu headings stay untracked. */
+  letter-spacing: normal;
+}
+/* English inside the Urdu interface (a sub-line, the English switch). */
+html:lang(ur) :where([lang="en"]) {
+  font-family: var(--font-inter), sans-serif;
+}
+
+/* Icons that point a way mirror in Urdu (chevrons and arrows use rtl:). */
+[dir="rtl"] :is(.lucide-arrow-up-right, .lucide-arrow-down-left) {
+  scale: -1 1;
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { unitWords } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { useReadOnly } from "@/features/subscription/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2 } from "lucide-react";
@@ -25,7 +27,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { applyServerErrors } from "@/features/staff/form-errors";
 import { toApiError } from "@/lib/api-error";
-import { formatMaund } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useUpdateSettings } from "../hooks";
 import {
@@ -47,6 +48,7 @@ const inputClass = "rounded-field h-11 bg-card";
 
 /** One form for every section; "Save changes" sends only what changed. */
 export function SettingsForm({ settings }: { settings: Settings }) {
+  const format = useFormat();
   const t = useTranslations("settings");
   const [formError, setFormError] = useState<string | null>(null);
   const update = useUpdateSettings();
@@ -101,6 +103,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
     }
   };
 
+  const { formatMaund } = format;
   const maundExample = formatMaund("1000", values.maundKg ?? "");
 
   return (
@@ -218,7 +221,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
               hint={t("fields.labourPerBagHint")}
               inputMode="decimal"
               dir="ltr"
-              prefix="Rs"
+              prefix={unitWords[format.locale].rs}
             />
           </div>
         </Section>
@@ -246,7 +249,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
               }
               inputMode="decimal"
               dir="ltr"
-              suffix="kg"
+              suffix={unitWords[format.locale].kg}
             />
             <SelectField
               control={form.control}

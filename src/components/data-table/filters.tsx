@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/use-format";
 import { cn } from "@/lib/utils";
 
 /** Radix Select can't have an empty value, so "All" uses this one. */
@@ -226,6 +226,7 @@ export function DataTableDateRangeFilter({
 }: DataTableDateRangeFilterProps) {
   const t = useTranslations("dataTable");
   const [open, setOpen] = useState(false);
+  const { formatDate } = useFormat();
   const labelId = useId();
   const triggerId = useId();
   const summary =

@@ -63,7 +63,7 @@ function OutstandingReportView() {
             filters.type ? t(`traderTypes.${filters.type}`) : null,
           )
         : null,
-    [words, report.data, filters.type],
+    [words, report.data, filters.type, t],
   );
 
   const data = report.data;

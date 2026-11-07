@@ -214,7 +214,12 @@
   },
   "common": {
     "language": "Language",
-    "languageHint": "Shown on this browser for you. The shop’s default is in Settings."
+    "languageHint": "Shown on this browser for you. The shop’s default is in Settings.",
+    "close": "Close",
+    "more": "More",
+    "sidebar": "Menu",
+    "sidebarDescription": "The main menu of the shop panel.",
+    "toggleSidebar": "Toggle menu"
   },
   "auth": {
     "meta": {

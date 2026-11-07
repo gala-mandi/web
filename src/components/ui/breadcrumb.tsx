@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "cn";
 import { Slot } from "radix-ui";
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
@@ -90,6 +91,7 @@ function BreadcrumbEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
+  const tCommon = useTranslations("common");
   return (
     <span
       data-slot="breadcrumb-ellipsis"
@@ -102,7 +104,7 @@ function BreadcrumbEllipsis({
       {...props}
     >
       <MoreHorizontalIcon />
-      <span className="sr-only">More</span>
+      <span className="sr-only">{tCommon("more")}</span>
     </span>
   );
 }

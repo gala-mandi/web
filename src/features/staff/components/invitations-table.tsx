@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { ForbiddenState } from "@/features/panel/components/status-pages";
 import { useReadOnly } from "@/features/subscription/hooks";
 import { toApiError } from "@/lib/api-error";
-import { formatDate, formatDateTime, formatRelative } from "@/lib/format";
+import { type Formatters, useFormat } from "@/lib/use-format";
 import { generalErrorMessage } from "../form-errors";
 import { useCancelInvitation, useInvitations, useInviteStaff } from "../hooks";
 import type { StaffTranslator } from "../schemas";
@@ -92,6 +92,7 @@ const col = dataTableColumnHelper<Invitation>();
 
 function invitationColumns(
   t: StaffTranslator,
+  { formatDate, formatDateTime, formatRelative }: Formatters,
   handlers: RowHandlers,
 ): DataTableColumn<Invitation>[] {
   return col.columns([
@@ -213,6 +214,7 @@ function CancelDialog({
 /** Invitations tab: cancel pending ones, resend pending or expired ones. */
 export function InvitationsTable() {
   const t = useTranslations("staff");
+  const format = useFormat();
   const query = useInvitations();
   const resend = useInviteStaff();
   const [cancelling, setCancelling] = useState<Invitation | null>(null);
@@ -222,7 +224,7 @@ export function InvitationsTable() {
 
   const columns = useMemo(
     () =>
-      invitationColumns(t, {
+      invitationColumns(t, format, {
         resendingId,
         onCancel: setCancelling,
         onResend: (invitation) => {
@@ -239,7 +241,7 @@ export function InvitationsTable() {
           );
         },
       }),
-    [resendingId, sendAgain, t],
+    [resendingId, sendAgain, t, format],
   );
   // Read-only shop: no role, activate or cancel buttons (the server refuses).
   const readOnly = useReadOnly();

@@ -163,7 +163,7 @@ export function RatesGrid({
         }),
       ),
     ],
-    [form.control, canManage],
+    [form.control, canManage, t],
   );
 
   const table = useTable({
