@@ -73,7 +73,7 @@ export function LockedOut({ seconds, who, onUnlock, lockId }: LockedOutProps) {
         <button
           type="button"
           onClick={onUnlock}
-          className="text-muted-foreground text-[13px] font-semibold hover:underline"
+          className="text-muted-foreground focus-visible:ring-ring/15 inline-flex min-h-11 items-center rounded-sm text-[13px] font-semibold hover:underline focus-visible:ring-4 focus-visible:outline-none sm:min-h-0"
         >
           {t("locked.backToSignIn")}
         </button>

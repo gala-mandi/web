@@ -32,7 +32,7 @@ export function LanguageSwitch({ className }: { className?: string }) {
             aria-pressed={active}
             onClick={() => changeLocale(value)}
             className={cn(
-              "focus-visible:ring-ring/30 inline-flex h-8 items-center rounded-full px-3.5 text-[13px] font-semibold transition-colors focus-visible:ring-4 focus-visible:outline-none",
+              "focus-visible:ring-ring/30 inline-flex h-11 items-center sm:h-8 rounded-full px-3.5 text-[13px] font-semibold transition-colors focus-visible:ring-4 focus-visible:outline-none",
               value === "ur" ? "font-urdu leading-none" : "font-sans",
               active
                 ? "bg-card text-foreground shadow-[0_1px_2px_rgb(30_27_46/0.12)]"

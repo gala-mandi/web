@@ -73,7 +73,9 @@ export function BrandPanel() {
           </h1>
           <OtherLanguage
             block
-            className="text-start text-lg/loose sm:text-xl/loose"
+            // Lines up with the page's text: left on English screens, right
+            // on Urdu ones (the other-language line runs the other way).
+            className="text-end text-lg/loose sm:text-xl/loose"
           >
             {t("brand.headlineSubline")}
           </OtherLanguage>
@@ -103,7 +105,7 @@ export function BrandPanel() {
                 <span className="text-[13px] font-bold">
                   {t("brand.ratesTitle")}
                 </span>
-                <OtherLanguage className="text-start text-[11px]/relaxed text-white/85">
+                <OtherLanguage className="text-end text-[11px]/relaxed text-white/85">
                   {t("brand.ratesTitleSubline")}
                 </OtherLanguage>
               </div>

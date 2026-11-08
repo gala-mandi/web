@@ -293,7 +293,7 @@ export function LoginForm({
               />
               <FieldLabel
                 htmlFor="login-remember"
-                className="text-foreground/85 text-sm font-normal"
+                className="text-foreground/85 min-h-11 text-sm font-normal sm:min-h-0"
               >
                 {t("login.rememberMe")}
               </FieldLabel>

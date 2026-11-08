@@ -386,7 +386,7 @@ function CodeStep({
         description={
           <>
             {t("forgot.code.sentTo", { channel: channelName })}{" "}
-            <strong dir="ltr" className="text-foreground">
+            <strong dir="ltr" className="text-foreground whitespace-nowrap">
               {maskPhone(sent.phone)}
             </strong>
             .{" "}
@@ -409,7 +409,8 @@ function CodeStep({
         onSubmit={verify}
         className="flex flex-col gap-5"
       >
-        <fieldset className="flex flex-col gap-2">
+        {/* min-w-0: a fieldset is never narrower than its content by default. */}
+        <fieldset className="flex min-w-0 flex-col gap-2">
           <legend className={cn(fieldLabelClass, "mb-2")}>
             {t("forgot.code.legend")}
           </legend>
