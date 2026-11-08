@@ -11,7 +11,11 @@ import { useState } from "react";
  */
 export function useReturnFocus(open: boolean) {
   const [wasOpen, setWasOpen] = useState(open);
-  const [opener, setOpener] = useState<HTMLElement | null>(null);
+  // A dialog mounted already open (rendered only while it shows) reads
+  // the focus on its first render.
+  const [opener, setOpener] = useState<HTMLElement | null>(() =>
+    open ? focusOrigin() : null,
+  );
   // Read while rendering the open state: before the sheet mounts and a
   // field inside it takes focus (autoFocus).
   if (open !== wasOpen) {
@@ -30,6 +34,7 @@ export function useReturnFocus(open: boolean) {
 
 /** The focused element; for an item of a dropdown menu, the menu's button. */
 function focusOrigin(): HTMLElement | null {
+  if (typeof document === "undefined") return null;
   const active = document.activeElement;
   if (!(active instanceof HTMLElement) || active === document.body) return null;
   const menu = active.closest<HTMLElement>("[role=menu]");
