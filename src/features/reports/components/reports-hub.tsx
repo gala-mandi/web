@@ -43,7 +43,7 @@ export function ReportsHub() {
             const { icon: Icon, tone } = look[slug];
             return (
               <li key={slug}>
-                <Card className="rounded-card group relative isolate h-full gap-3 overflow-hidden p-5 shadow-[0_1px_2px_rgb(30_27_46/0.04),0_8px_24px_-12px_rgb(76_29_149/0.14)] transition-[transform,box-shadow] duration-200 focus-within:ring-3 focus-within:ring-ring/50 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:shadow-none">
+                <Card className="rounded-card group relative isolate h-full gap-3 overflow-hidden p-5 shadow-card transition-[transform,box-shadow] duration-200 focus-within:ring-3 focus-within:ring-ring/50 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:shadow-none">
                   <span
                     aria-hidden
                     className={cn(

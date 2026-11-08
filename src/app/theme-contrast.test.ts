@@ -59,6 +59,7 @@ const pairs: [string, string, string][] = [
   ["destructive", "destructive-soft", "error box"],
   ["success", "card", "success text"],
   ["notice", "notice-soft", "shop suspended badge"],
+  ["notice", "notice-badge", "paused / plan limit badge"],
 ];
 
 describe.each(themes)("%s theme", (theme) => {

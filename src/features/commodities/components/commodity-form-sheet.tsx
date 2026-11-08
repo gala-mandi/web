@@ -78,8 +78,9 @@ import {
   type Commodity,
   type EffectiveCharges,
 } from "../types";
+import { useReturnFocus } from "@/hooks/use-return-focus";
 
-const inputClass = "rounded-field h-11 bg-card";
+const inputClass = "rounded-field h-[50px] bg-card";
 
 /** 409 codes of the commodities API and the field they belong to. */
 const commodityConflicts = (t: CommoditiesTranslator): ConflictFields => ({
@@ -115,6 +116,7 @@ export function CommodityFormSheet({
 }: CommodityFormSheetProps) {
   const t = useTranslations("commodities");
   const [busy, setBusy] = useState(false);
+  const returnFocus = useReturnFocus();
 
   return (
     <Sheet
@@ -125,6 +127,7 @@ export function CommodityFormSheet({
       }}
     >
       <SheetContent
+        {...returnFocus}
         side={endSide()}
         className="w-full gap-0 p-0 data-[side=left]:w-full data-[side=right]:w-full data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl"
       >
@@ -559,7 +562,7 @@ function UnitField({ control }: { control: Control<CommodityFormValues> }) {
               aria-labelledby={`${id}-label`}
               aria-describedby={`${id}-hint`}
               aria-invalid={fieldState.invalid}
-              className="rounded-field bg-card w-full data-[size=default]:h-11"
+              className="rounded-field bg-card w-full data-[size=default]:h-[50px]"
             >
               <SelectValue />
             </SelectTrigger>

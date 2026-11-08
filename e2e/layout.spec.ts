@@ -155,7 +155,6 @@ test.describe("shop panel layout", () => {
       "Purchases",
       "Sales",
       "Payments",
-      "Traders search comes with the Traders module",
     ]);
 
     await page.keyboard.type("pay");

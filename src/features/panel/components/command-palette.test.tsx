@@ -127,15 +127,47 @@ describe("CommandPalette", () => {
     expect(push).toHaveBeenCalledWith("/ledger");
   });
 
-  it("says traders search comes later, as a disabled hint", () => {
+  it("finds a trader by name and opens the profile (owner)", async () => {
+    api.defaults.adapter = fakeAdapter(async (config) =>
+      config.url === "/traders/lookup"
+        ? ok(config, {
+            data: [
+              {
+                id: "t-9",
+                type: "kissan",
+                name: "Rafiq Ahmad",
+                fatherName: null,
+                phone: "03001112223",
+                village: null,
+              },
+            ],
+          })
+        : ok(config, owner),
+    ).adapter;
+    renderPanel("page", owner);
+    pressCtrlK();
+    const input = within(palette()).getByRole("combobox");
+    expect(
+      within(palette()).getByRole("option", {
+        name: "Type 2 letters to find a trader by name or phone",
+      }),
+    ).toHaveAttribute("aria-disabled", "true");
+
+    fireEvent.change(input, { target: { value: "0300" } });
+    const traders = within(palette()).getByRole("group", { name: "Traders" });
+    fireEvent.click(
+      await within(traders).findByRole("option", { name: /Rafiq Ahmad/ }),
+    );
+
+    expect(push).toHaveBeenCalledWith("/traders/t-9");
+  });
+
+  it("has no trader search for an operator (no profile or khata access)", () => {
     signIn(operator);
     pressCtrlK();
 
-    const hint = within(palette()).getByRole("option", {
-      name: "Traders search comes with the Traders module",
-    });
-    expect(hint).toHaveAttribute("aria-disabled", "true");
-    fireEvent.click(hint);
-    expect(push).not.toHaveBeenCalled();
+    expect(
+      within(palette()).queryByRole("group", { name: "Traders" }),
+    ).toBeNull();
   });
 });

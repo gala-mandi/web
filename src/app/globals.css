@@ -27,7 +27,13 @@
   --color-destructive-border: var(--destructive-border);
   --color-notice: var(--notice);
   --color-notice-soft: var(--notice-soft);
+  --color-notice-badge: var(--notice-badge);
+  --color-notice-border: var(--notice-border);
   --color-surface-muted: var(--surface-muted);
+  /* Cards on the dashboard and the reports hub: tinted by the theme's brand. */
+  --shadow-card:
+    0 1px 2px rgb(30 27 46 / 0.04),
+    0 8px 24px -12px color-mix(in srgb, var(--brand-from) 14%, transparent);
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
@@ -132,6 +138,8 @@
   --destructive-border: #fecdd3;
   --notice: #9a3412;
   --notice-soft: #fff7ed;
+  --notice-badge: #ffedd5;
+  --notice-border: #fed7aa;
   --surface-muted: #edeaf3;
   /* The printed parchi: white paper and dark ink in every theme. */
   --paper: #ffffff;
@@ -255,6 +263,8 @@
   --destructive-border: rgb(251 113 133 / 0.3);
   --notice: #fdba74;
   --notice-soft: rgb(253 186 116 / 0.1);
+  --notice-badge: rgb(253 186 116 / 0.16);
+  --notice-border: rgb(253 186 116 / 0.3);
   --surface-muted: #2a2538;
 }
 

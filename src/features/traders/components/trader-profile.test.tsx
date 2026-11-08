@@ -32,7 +32,7 @@ describe("TraderProfile", () => {
 
   afterEach(() => useSessionStore.getState().clear());
 
-  it("shows the details, the balance and where transactions will appear", async () => {
+  it("shows the details, the balance and the way to the khata", async () => {
     vi.mocked(getTrader).mockResolvedValue(
       traderDetail({ creditLimit: "200000.00", notes: "Pays on Fridays" }),
     );
@@ -52,12 +52,14 @@ describe("TraderProfile", () => {
     expect(details).toHaveTextContent("Rs 200,000.00");
     expect(details).toHaveTextContent("Pays on Fridays");
     expect(details).toHaveTextContent("27 Oct 2026");
+    expect(screen.getByRole("heading", { name: "Transactions" })).toBeVisible();
     expect(
-      screen.getByRole("heading", { name: "Recent transactions" }),
+      screen.getByText(/Every purchase, sale and payment with Muhammad Aslam/),
     ).toBeVisible();
-    expect(
-      screen.getByText(/Purchases, sales and payments with this trader/),
-    ).toBeVisible();
+    expect(screen.getByRole("link", { name: "Open khata" })).toHaveAttribute(
+      "href",
+      `/ledger?trader=${ID}`,
+    );
     expect(
       screen.getByRole("link", { name: "Back to traders" }),
     ).toHaveAttribute("href", "/traders");

@@ -141,7 +141,7 @@ export function ChangeRoleDialog({
                         ? "change-role-hint change-role-error"
                         : "change-role-hint"
                     }
-                    className="rounded-field bg-card w-full data-[size=default]:h-11"
+                    className="rounded-field bg-card w-full data-[size=default]:h-[50px]"
                   >
                     <SelectValue />
                   </SelectTrigger>

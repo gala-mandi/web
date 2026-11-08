@@ -93,7 +93,9 @@ function PurchasesList() {
     defaultSort: "-purchaseDate",
   });
   const { columnVisibility, onColumnVisibilityChange } =
-    useColumnVisibility(PURCHASES_TABLE_ID);
+    // The deductions column starts hidden so the list (and its Status and
+    // row menu) fits a 1440 px screen; it is one click away under Columns.
+    useColumnVisibility(PURCHASES_TABLE_ID, { totalDeductions: false });
   const commodities = useEveryCommodity();
 
   const listQuery: PurchaseListQuery = toListSearchParams(list.listParams);

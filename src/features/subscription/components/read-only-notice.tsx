@@ -27,11 +27,11 @@ export function ReadOnlyNotice() {
         data-testid="read-only-notice"
         className="max-w-[460px] gap-[18px] p-6 sm:p-9"
       >
-        <div className="bg-notice-soft text-notice flex size-[60px] items-center justify-center rounded-[18px] border border-orange-200">
+        <div className="bg-notice-soft text-notice flex size-[60px] items-center justify-center rounded-[18px] border border-notice-border">
           <PauseCircle aria-hidden className="size-7" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-notice self-start rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold">
+          <span className="text-notice self-start rounded-full bg-notice-badge px-2.5 py-1 text-xs font-bold">
             {t("badge")}
           </span>
           <h1 className="font-heading text-[26px] font-extrabold tracking-tight">

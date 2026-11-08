@@ -124,7 +124,11 @@ export function AllocationTable({
                 {t("bills.columns.bill")}
               </th>
 
-              <th scope="col" className="px-3 py-2.5 text-end font-semibold">
+              {/* Net is on the bill; it makes room for the split on a laptop. */}
+              <th
+                scope="col"
+                className="hidden px-3 py-2.5 text-end font-semibold 2xl:table-cell"
+              >
                 {t("bills.columns.net")}
               </th>
               <th scope="col" className="px-3 py-2.5 text-end font-semibold">
@@ -156,13 +160,10 @@ export function AllocationTable({
           </tbody>
           <tfoot>
             <tr className="border-t-2 font-semibold">
-              <th
-                scope="row"
-                colSpan={2}
-                className="px-4 py-3 text-start font-semibold"
-              >
+              <th scope="row" className="px-4 py-3 text-start font-semibold">
                 {t("bills.total")}
               </th>
+              <td className="hidden 2xl:table-cell" />
               <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
                 <span dir="auto">{formatRs(totalOutstanding(bills))}</span>
               </td>
@@ -231,7 +232,7 @@ function BillRow({
           {formatDate(bill.date)}
         </time>
       </th>
-      <td className="px-3 py-3 text-end whitespace-nowrap tabular-nums">
+      <td className="hidden px-3 py-3 text-end whitespace-nowrap tabular-nums 2xl:table-cell">
         <span dir="auto">{formatRs(bill.netAmount)}</span>
       </td>
       <td className="px-3 py-3 text-end font-semibold whitespace-nowrap tabular-nums">

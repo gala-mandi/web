@@ -58,8 +58,9 @@ import {
   type TraderType,
   traderTypes,
 } from "../types";
+import { useReturnFocus } from "@/hooks/use-return-focus";
 
-const inputClass = "rounded-field h-11 bg-card";
+const inputClass = "rounded-field h-[50px] bg-card";
 
 /** 409 codes of the traders API and the field they belong to. */
 const traderConflicts = (t: TradersTranslator): ConflictFields => ({
@@ -98,6 +99,7 @@ export function TraderFormSheet({
 }: TraderFormSheetProps) {
   const t = useTranslations("traders");
   const [busy, setBusy] = useState(false);
+  const returnFocus = useReturnFocus();
 
   return (
     <Sheet
@@ -108,6 +110,7 @@ export function TraderFormSheet({
       }}
     >
       <SheetContent
+        {...returnFocus}
         side={endSide()}
         className="w-full gap-0 p-0 data-[side=left]:w-full data-[side=right]:w-full data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl"
       >

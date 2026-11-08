@@ -43,7 +43,7 @@ import type { Settings } from "../types";
 import { LogoUpload } from "./logo-upload";
 import { ParchiPreview } from "./parchi-preview";
 
-const inputClass = "rounded-field h-11 bg-card";
+const inputClass = "rounded-field h-[50px] bg-card";
 
 /** One form for every section; "Save changes" sends only what changed. */
 export function SettingsForm({ settings }: { settings: Settings }) {
@@ -469,7 +469,7 @@ function SelectField({
               aria-labelledby={`${id}-label`}
               aria-describedby={hint ? `${id}-hint` : undefined}
               aria-invalid={fieldState.invalid}
-              className="rounded-field bg-card w-full data-[size=default]:h-11"
+              className="rounded-field bg-card w-full data-[size=default]:h-[50px]"
             >
               <SelectValue />
             </SelectTrigger>
