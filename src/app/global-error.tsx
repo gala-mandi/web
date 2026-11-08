@@ -1,6 +1,8 @@
 "use client";
 
 import "./globals.css";
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 import { type Messages, NextIntlClientProvider } from "next-intl";
 import { ErrorState } from "@/features/panel/components/status-pages";
 import { localeDirection } from "@/i18n/config";
@@ -14,7 +16,17 @@ import ur from "../../messages/ur.json";
  * `<html>` without the root provider, so it reads the language from this
  * browser's cookies and carries only the error words.
  */
-export default function GlobalError({ retry }: { retry: () => void }) {
+export default function GlobalError({
+  error,
+  retry,
+}: {
+  error: unknown;
+  retry: () => void;
+}) {
+  useEffect(() => {
+    // No-op when Sentry is off.
+    Sentry.captureException(error);
+  }, [error]);
   const locale = wantedLocale();
   const messages = {
     panel: { error: (locale === "ur" ? ur : en).panel.error },
