@@ -2,7 +2,13 @@
 
 import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, CircleAlert, Pencil, ReceiptText } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  CircleAlert,
+  Pencil,
+  ReceiptText,
+} from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { EmptyState } from "@/components/empty-state";
@@ -17,7 +23,8 @@ import {
 import { toApiError } from "@/lib/api-error";
 import { useCanWrite } from "@/features/subscription/hooks";
 import { useFormat } from "@/lib/use-format";
-import { traderRoutes } from "@/lib/routes";
+import { useCan } from "@/lib/can";
+import { ledgerRoutes, traderRoutes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { readBalance } from "../balance";
 import { useTrader } from "../hooks";
@@ -83,6 +90,7 @@ function Profile({ trader }: { trader: TraderDetail }) {
   const { formatDate, formatRs } = useFormat();
   const t = useTranslations("traders");
   const canManage = useCanWrite("trader.manage");
+  const canViewKhata = useCan("ledger.view");
   const [editing, setEditing] = useState(false);
 
   return (
@@ -216,8 +224,24 @@ function Profile({ trader }: { trader: TraderDetail }) {
         <EmptyState
           icon={ReceiptText}
           title={t("profile.transactions.emptyTitle")}
-          body={t("profile.transactions.emptyBody")}
+          body={t("profile.transactions.emptyBody", {
+            name: bidi(trader.name),
+          })}
           headingLevel="h2"
+          action={
+            canViewKhata ? (
+              <Button
+                asChild
+                size="lg"
+                className="h-11 gap-2 px-5 font-semibold"
+              >
+                <Link href={ledgerRoutes.khata(trader.id)}>
+                  <BookOpen aria-hidden />
+                  {t("profile.transactions.openKhata")}
+                </Link>
+              </Button>
+            ) : null
+          }
         />
       </section>
 

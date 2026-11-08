@@ -190,7 +190,7 @@
       "empty": "No page matches.",
       "pages": "Pages",
       "traders": "Traders",
-      "tradersSoon": "Traders search comes with the Traders module"
+      "tradersHint": "Type 2 letters to find a trader by name or phone"
     },
     "loading": "Loading page…",
     "notFound": {
@@ -923,9 +923,10 @@
         "settledHint": "Nothing is owed either way."
       },
       "transactions": {
-        "title": "Recent transactions",
-        "emptyTitle": "No transactions yet",
-        "emptyBody": "Purchases, sales and payments with this trader will appear here once those modules are ready."
+        "title": "Transactions",
+        "emptyTitle": "In the khata",
+        "emptyBody": "Every purchase, sale and payment with {name} is in their khata, with the running balance.",
+        "openKhata": "Open khata"
       },
       "error": {
         "title": "Couldn’t load this trader",

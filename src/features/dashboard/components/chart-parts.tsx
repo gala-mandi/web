@@ -259,4 +259,4 @@ export function SectionEmpty({
 
 /** The card frame every dashboard panel uses (radius, shadow, hover lift). */
 export const panelClass =
-  "rounded-card gap-4 border py-5 shadow-[0_1px_2px_rgb(30_27_46/0.04),0_8px_24px_-12px_rgb(76_29_149/0.14)] dark:shadow-none";
+  "rounded-card gap-4 border py-5 shadow-card dark:shadow-none";

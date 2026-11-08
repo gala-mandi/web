@@ -22,7 +22,14 @@ import {
   ChevronRight,
   CircleAlert,
 } from "lucide-react";
-import { type MouseEvent, type ReactNode, useId, useMemo } from "react";
+import {
+  type MouseEvent,
+  type ReactNode,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -222,6 +229,29 @@ function selectColumn<TData extends RowData>(
  * optional bulk select and column visibility, loading skeleton rows, an empty
  * state and an error state with retry.
  */
+/**
+ * The empty and error messages span every column; on a phone the table
+ * scrolls sideways, so they stay on the visible part (sticky at the start,
+ * as wide as the card) instead of being centred off screen.
+ */
+const visibleWidthClass = "sticky start-0 w-[var(--data-table-width,100%)]";
+
+/** Keeps `--data-table-width` on the card at its inner width. */
+function useVisibleWidth() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const update = () =>
+      el.style.setProperty("--data-table-width", `${el.clientWidth}px`);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+}
+
 export function DataTable<TData extends RowData>({
   columns,
   data,
@@ -320,8 +350,13 @@ export function DataTable<TData extends RowData>({
     ? (data ?? []).filter((row) => rowSelection[getRowId(row)])
     : [];
 
+  const frame = useVisibleWidth();
+
   return (
-    <div className="bg-card text-card-foreground rounded-card overflow-hidden border">
+    <div
+      ref={frame}
+      className="bg-card text-card-foreground rounded-card overflow-hidden border"
+    >
       {selectable && selectedIds.length > 0 ? (
         <div
           role="region"
@@ -397,7 +432,10 @@ export function DataTable<TData extends RowData>({
               >
                 <div
                   role="alert"
-                  className="flex flex-col items-center gap-3 px-6 py-12 text-center"
+                  className={cn(
+                    "flex flex-col items-center gap-3 px-6 py-12 text-center",
+                    visibleWidthClass,
+                  )}
                 >
                   <CircleAlert
                     aria-hidden
@@ -421,11 +459,13 @@ export function DataTable<TData extends RowData>({
                 colSpan={columnCount}
                 className="p-0 whitespace-normal"
               >
-                {empty ?? (
-                  <p className="text-muted-foreground px-6 py-12 text-center">
-                    {t("emptyTitle")}
-                  </p>
-                )}
+                <div className={visibleWidthClass}>
+                  {empty ?? (
+                    <p className="text-muted-foreground px-6 py-12 text-center">
+                      {t("emptyTitle")}
+                    </p>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ) : (

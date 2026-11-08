@@ -115,7 +115,8 @@ describe("PurchasesPage", () => {
     const row = link.closest("tr")!;
     expect(row).toHaveTextContent("Rafiq Ahmad");
     expect(row).toHaveTextContent("Rs 100,000.00");
-    expect(row).toHaveTextContent("Rs 2,700.00");
+    // Deductions start hidden (the list fits 1440 px); see Columns.
+    expect(row).not.toHaveTextContent("Rs 2,700.00");
     expect(row).toHaveTextContent("Rs 97,300.00");
     expect(row).toHaveTextContent("Saved");
     expect(

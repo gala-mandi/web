@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -21,7 +21,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { User } from "@/features/auth/types";
+import { useTraderLookup } from "@/features/traders/hooks";
 import { hasPermission } from "@/lib/can";
+import { ledgerRoutes, traderRoutes } from "@/lib/routes";
 import { useUiStore } from "@/stores/ui";
 import { menuFor } from "../menu";
 
@@ -71,7 +73,9 @@ export function PaletteButton() {
 /**
  * Ctrl+K quick search: lists the pages the user may open (same gating as the
  * menu) and goes there on Enter. Arrow keys move, Esc closes and returns
- * focus. Searching traders needs the traders API, so for now it only says so.
+ * focus. From two letters on it also finds traders by name or phone
+ * (`GET /traders/lookup`) and opens their profile, or their khata for a
+ * role that may read the khata but not manage traders.
  */
 export function CommandPalette({
   user,
@@ -83,16 +87,35 @@ export function CommandPalette({
   const open = useUiStore((s) => s.paletteOpen);
   const setOpen = useUiStore((s) => s.setPaletteOpen);
   const pages = menuFor(user, t);
-  const showTraders = hasPermission(user, "trader.view");
+  const tt = useTranslations("traders");
+  const traderHref = hasPermission(user, "trader.manage")
+    ? traderRoutes.detail
+    : hasPermission(user, "ledger.view")
+      ? (id: string) => ledgerRoutes.khata(id)
+      : null;
+  const [search, setSearch] = useState("");
+  const q = search.trim();
+  const lookup = useTraderLookup(
+    { q, limit: 6 },
+    open && traderHref !== null && q.length >= 2,
+  );
+  const traders = q.length >= 2 ? (lookup.data ?? []) : [];
   const returnFocus = useRef<HTMLElement | null>(null);
 
   const go = (href: string) => {
     setOpen(false);
+    setSearch("");
     router.push(href);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setSearch("");
+      }}
+    >
       <DialogContent
         showCloseButton={false}
         className="top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0"
@@ -117,6 +140,8 @@ export function CommandPalette({
           <CommandInput
             placeholder={t("palette.placeholder")}
             aria-label={t("palette.title")}
+            value={search}
+            onValueChange={setSearch}
           />
           <CommandList>
             <CommandEmpty>{t("palette.empty")}</CommandEmpty>
@@ -135,12 +160,31 @@ export function CommandPalette({
                 );
               })}
             </CommandGroup>
-            {showTraders ? (
-              <CommandGroup heading={t("palette.traders")} forceMount>
-                <CommandItem value="traders-search" disabled forceMount>
-                  <Users aria-hidden />
-                  {t("palette.tradersSoon")}
-                </CommandItem>
+            {traderHref ? (
+              <CommandGroup heading={t("palette.traders")}>
+                {q.length < 2 ? (
+                  <CommandItem value="traders-hint" disabled forceMount>
+                    <Users aria-hidden />
+                    {t("palette.tradersHint")}
+                  </CommandItem>
+                ) : null}
+                {traders.map((trader) => (
+                  <CommandItem
+                    key={trader.id}
+                    value={`trader-${trader.id}`}
+                    // The server matched name or phone: always show it.
+                    keywords={[search]}
+                    onSelect={() => go(traderHref(trader.id))}
+                  >
+                    <Users aria-hidden />
+                    <span dir="auto" className="flex-1 truncate">
+                      {trader.name}
+                    </span>
+                    <span className="text-muted-foreground ms-auto text-xs">
+                      {tt(`types.${trader.type}`)}
+                    </span>
+                  </CommandItem>
+                ))}
               </CommandGroup>
             ) : null}
           </CommandList>

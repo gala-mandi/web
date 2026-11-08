@@ -47,7 +47,7 @@ export function KpiTile({
   return (
     <Card
       data-tile={id}
-      className="rounded-card relative isolate min-w-0 gap-3 overflow-hidden p-4 shadow-[0_1px_2px_rgb(30_27_46/0.04),0_8px_24px_-12px_rgb(76_29_149/0.14)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5 dark:shadow-none"
+      className="rounded-card relative isolate min-w-0 gap-3 overflow-hidden p-4 shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5 dark:shadow-none"
     >
       <span
         aria-hidden

@@ -88,7 +88,9 @@ function SalesList() {
     defaultSort: "-saleDate",
   });
   const { columnVisibility, onColumnVisibilityChange } =
-    useColumnVisibility(SALES_TABLE_ID);
+    // The charges column starts hidden so the list (and its Status and
+    // row menu) fits a 1440 px screen; it is one click away under Columns.
+    useColumnVisibility(SALES_TABLE_ID, { totalCharges: false });
   const commodities = useEveryCommodity();
 
   const listQuery: SaleListQuery = toListSearchParams(list.listParams);

@@ -51,7 +51,7 @@ import { OneTimeSecretDialog } from "./one-time-secret-dialog";
 
 const methods: InviteMethod[] = ["link", "password"];
 
-export const inputClass = "rounded-field h-11 bg-card";
+export const inputClass = "rounded-field h-[50px] bg-card";
 
 /**
  * "Invite staff" button + dialog form. On success the form closes and the
@@ -70,7 +70,7 @@ function PlanLimitAlert() {
     <div
       role="alert"
       data-testid="plan-limit-alert"
-      className="bg-notice-soft text-notice flex items-start gap-3 rounded-xl border border-orange-200 px-3.5 py-3"
+      className="bg-notice-soft text-notice flex items-start gap-3 rounded-xl border border-notice-border px-3.5 py-3"
     >
       <Users aria-hidden className="mt-0.5 size-4 flex-none" />
       <div className="flex flex-col gap-0.5">
@@ -245,7 +245,7 @@ function InviteDialogInner() {
                           ? "invite-role-hint invite-role-error"
                           : "invite-role-hint"
                       }
-                      className="rounded-field bg-card w-full data-[size=default]:h-11"
+                      className="rounded-field bg-card w-full data-[size=default]:h-[50px]"
                     >
                       <SelectValue />
                     </SelectTrigger>

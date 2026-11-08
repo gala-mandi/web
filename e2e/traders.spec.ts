@@ -222,8 +222,9 @@ test.describe("traders", () => {
     await expect(balance).toContainText("Rs 2,500.00");
     await expect(balance).toContainText("Receivable");
     await expect(
-      page.getByRole("heading", { name: "Recent transactions" }),
+      page.getByRole("heading", { name: "Transactions", exact: true }),
     ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open khata" })).toBeVisible();
     const crumbs = page.getByRole("navigation", { name: "Breadcrumb" });
     await expect(crumbs).toContainText("Trader profile");
     await crumbs.getByRole("link", { name: "Traders" }).click();
