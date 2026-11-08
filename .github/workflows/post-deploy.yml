@@ -1,10 +1,16 @@
-# Runs when Vercel reports a production deployment (Vercel for GitHub creates
-# a GitHub deployment for each one), then checks the live sign-in page.
-# A failed run e-mails the person who pushed. A failed Vercel build fails here too.
-# Repository variable (optional): SITE_URL.
+# Runs when Vercel finishes a production deployment, then checks the live
+# sign-in page. A failed run e-mails the person who pushed. A failed Vercel
+# build fails here too.
+#
+# Vercel reports deployments on this repo as commit statuses (context
+# "Vercel"), not as GitHub deployments, so this listens to `status`
+# events for commits on main. `deployment_status` is kept in case Vercel
+# deployments are switched on later.
+# Repository variables (optional): SITE_URL, VERCEL_STATUS_CONTEXT.
 name: Post-deploy check
 
 on:
+  status:
   deployment_status:
   workflow_dispatch:
 
@@ -17,18 +23,27 @@ concurrency:
 
 jobs:
   smoke:
-    # Vercel names the environment "Production" or "Production – <project>".
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (startsWith(github.event.deployment.environment, 'Production') &&
+      (github.event_name == 'status' &&
+       github.event.context == (vars.VERCEL_STATUS_CONTEXT || 'Vercel') &&
+       contains(github.event.branches.*.name, 'main') &&
+       github.event.state != 'pending') ||
+      (github.event_name == 'deployment_status' &&
+       startsWith(github.event.deployment.environment, 'Production') &&
        contains(fromJSON('["success","failure","error"]'), github.event.deployment_status.state))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Vercel deployment failed
-        if: github.event_name == 'deployment_status' && github.event.deployment_status.state != 'success'
+        if: >-
+          (github.event_name == 'status' && github.event.state != 'success') ||
+          (github.event_name == 'deployment_status' && github.event.deployment_status.state != 'success')
+        env:
+          STATE: ${{ github.event.state || github.event.deployment_status.state }}
+          URL: ${{ github.event.target_url || github.event.deployment_status.target_url }}
         run: |
-          echo "::error::Vercel production deployment ${{ github.event.deployment_status.state }}: ${{ github.event.deployment_status.target_url }}"
+          echo "::error::Vercel production deployment $STATE: $URL"
           exit 1
 
       - uses: actions/checkout@v4
