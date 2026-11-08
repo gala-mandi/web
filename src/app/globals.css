@@ -278,6 +278,30 @@
   html {
     @apply font-sans;
   }
+  /* Tailwind v4 gives buttons the default arrow cursor; show the hand on
+     everything clickable, and not-allowed on what is disabled. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"],
+  [role="option"],
+  [role="menuitem"],
+  [role="menuitemradio"],
+  [role="menuitemcheckbox"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="checkbox"]:not(:disabled) ~ label,
+  [role="switch"]:not(:disabled) ~ label,
+  [role="radio"]:not(:disabled) ~ label,
+  select:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
 }
 
 /* Dashboard list bars grow from the start edge to their length. */
