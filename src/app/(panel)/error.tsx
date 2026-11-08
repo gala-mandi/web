@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 import { ErrorState } from "@/features/panel/components/status-pages";
 
@@ -13,6 +14,8 @@ export default function PanelError({
 }) {
   useEffect(() => {
     console.error(error);
+    // Caught here, so Sentry would not see it otherwise (no-op when off).
+    Sentry.captureException(error);
   }, [error]);
 
   const digest =

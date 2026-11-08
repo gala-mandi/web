@@ -1,0 +1,40 @@
+# Runs when Vercel reports a production deployment (Vercel for GitHub creates
+# a GitHub deployment for each one), then checks the live sign-in page.
+# A failed run e-mails the person who pushed. A failed Vercel build fails here too.
+# Repository variable (optional): SITE_URL.
+name: Post-deploy check
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-deploy
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    # Vercel names the environment "Production" or "Production – <project>".
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (startsWith(github.event.deployment.environment, 'Production') &&
+       contains(fromJSON('["success","failure","error"]'), github.event.deployment_status.state))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Vercel deployment failed
+        if: github.event_name == 'deployment_status' && github.event.deployment_status.state != 'success'
+        run: |
+          echo "::error::Vercel production deployment ${{ github.event.deployment_status.state }}: ${{ github.event.deployment_status.target_url }}"
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Check /login
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://web-mandi-1.vercel.app' }}
+          TIMEOUT: "300"
+        run: scripts/smoke-check.sh "$SITE_URL/login"
