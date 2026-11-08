@@ -113,7 +113,8 @@ describe("SalesPage", () => {
     const row = link.closest("tr")!;
     expect(row).toHaveTextContent("Shahid Traders");
     expect(row).toHaveTextContent("Rs 100,000.00");
-    expect(row).toHaveTextContent("Rs 2,700.00");
+    // Charges start hidden (the list fits 1440 px); see Columns.
+    expect(row).not.toHaveTextContent("Rs 2,700.00");
     expect(row).toHaveTextContent("Rs 102,700.00");
     expect(row).toHaveTextContent("Saved");
     expect(

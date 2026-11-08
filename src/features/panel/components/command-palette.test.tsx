@@ -154,7 +154,9 @@ describe("CommandPalette", () => {
     ).toHaveAttribute("aria-disabled", "true");
 
     fireEvent.change(input, { target: { value: "0300" } });
-    const traders = within(palette()).getByRole("group", { name: "Traders" });
+    const traders = await within(palette()).findByRole("group", {
+      name: "Traders",
+    });
     fireEvent.click(
       await within(traders).findByRole("option", { name: /Rafiq Ahmad/ }),
     );
