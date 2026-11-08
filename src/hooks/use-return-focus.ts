@@ -1,31 +1,43 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
 
 /**
  * For a sheet or dialog opened from state (no `SheetTrigger`): remembers
- * what had focus when it opened and gives focus back there when it closes,
- * so a keyboard user lands on the button they started from (Radix only does
- * this for its own trigger). Spread the result on `SheetContent` /
- * `DialogContent`.
+ * what had focus when `open` turned true and gives focus back there when it
+ * closes, so a keyboard user lands on the button they started from (Radix
+ * only does this for its own trigger). Spread the result on `SheetContent`
+ * / `DialogContent`.
  */
-export function useReturnFocus() {
-  const opener = useRef<HTMLElement | null>(null);
+export function useReturnFocus(open: boolean) {
+  const [wasOpen, setWasOpen] = useState(open);
+  const [opener, setOpener] = useState<HTMLElement | null>(null);
+  // Read while rendering the open state: before the sheet mounts and a
+  // field inside it takes focus (autoFocus).
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setOpener(focusOrigin());
+  }
   return {
-    onOpenAutoFocus: () => {
-      opener.current =
-        document.activeElement instanceof HTMLElement &&
-        document.activeElement !== document.body
-          ? document.activeElement
-          : null;
-    },
     onCloseAutoFocus: (event: Event) => {
-      const target = opener.current;
-      opener.current = null;
-      if (target?.isConnected) {
+      if (opener?.isConnected) {
         event.preventDefault();
-        target.focus();
+        opener.focus();
       }
     },
   };
+}
+
+/** The focused element; for an item of a dropdown menu, the menu's button. */
+function focusOrigin(): HTMLElement | null {
+  const active = document.activeElement;
+  if (!(active instanceof HTMLElement) || active === document.body) return null;
+  const menu = active.closest<HTMLElement>("[role=menu]");
+  if (menu?.id) {
+    const trigger = document.querySelector<HTMLElement>(
+      `[aria-controls="${CSS.escape(menu.id)}"]`,
+    );
+    if (trigger) return trigger;
+  }
+  return active;
 }

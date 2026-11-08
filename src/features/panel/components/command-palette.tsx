@@ -177,7 +177,7 @@ export function CommandPalette({
                     onSelect={() => go(traderHref(trader.id))}
                   >
                     <Users aria-hidden />
-                    <span dir="auto" className="truncate">
+                    <span dir="auto" className="flex-1 truncate">
                       {trader.name}
                     </span>
                     <span className="text-muted-foreground ms-auto text-xs">

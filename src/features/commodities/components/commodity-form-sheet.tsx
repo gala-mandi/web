@@ -116,7 +116,7 @@ export function CommodityFormSheet({
 }: CommodityFormSheetProps) {
   const t = useTranslations("commodities");
   const [busy, setBusy] = useState(false);
-  const returnFocus = useReturnFocus();
+  const returnFocus = useReturnFocus(open);
 
   return (
     <Sheet

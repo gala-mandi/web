@@ -99,7 +99,7 @@ export function TraderFormSheet({
 }: TraderFormSheetProps) {
   const t = useTranslations("traders");
   const [busy, setBusy] = useState(false);
-  const returnFocus = useReturnFocus();
+  const returnFocus = useReturnFocus(open);
 
   return (
     <Sheet
