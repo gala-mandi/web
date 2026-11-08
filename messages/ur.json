@@ -299,6 +299,15 @@
       "staffHint": "اسٹاف ممبر؟ آپ کا دکان مالک بھی آپ کا پاس ورڈ ری سیٹ کر سکتا ہے۔",
       "staffHintSubline": "Staff member? Your shop owner can also reset your password.",
       "copyright": "© غلہ منڈی",
+      "theme": {
+        "label": "تھیم",
+        "violet": "بنفشی تھیم",
+        "indigo": "نیلگوں تھیم",
+        "blue": "نیلی تھیم",
+        "green": "سبز تھیم",
+        "red": "سرخ تھیم",
+        "dark": "گہری تھیم"
+      },
       "errors": {
         "identifierRequired": "اپنا فون نمبر یا ای میل درج کریں",
         "identifierTooLong": "160 یا اس سے کم حروف لکھیں",

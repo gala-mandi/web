@@ -14,7 +14,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
       <div className="flex flex-[1_1_520px]">
         <BrandPanel />
       </div>
-      <main className="flex flex-[1_1_480px] flex-col items-center gap-6 px-4 py-7 sm:px-6">
+      <main className="flex min-w-0 flex-[1_1_480px] flex-col items-center gap-6 px-4 py-7 sm:px-6">
         <div className="flex w-full max-w-[560px] items-center justify-start">
           <LanguageSwitch />
         </div>

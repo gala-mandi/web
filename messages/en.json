@@ -299,6 +299,15 @@
       "staffHint": "Staff member? Your shop owner can also reset your password.",
       "staffHintSubline": "اسٹاف؟ آپ کا دکان مالک بھی پاس ورڈ ری سیٹ کر سکتا ہے",
       "copyright": "© Galla Mandi",
+      "theme": {
+        "label": "Theme",
+        "violet": "Violet theme",
+        "indigo": "Indigo theme",
+        "blue": "Blue theme",
+        "green": "Green theme",
+        "red": "Red theme",
+        "dark": "Dark theme"
+      },
       "errors": {
         "identifierRequired": "Enter your phone number or email",
         "identifierTooLong": "Use 160 characters or fewer",

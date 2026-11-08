@@ -174,7 +174,7 @@ export function ChangePasswordForm() {
         type="button"
         onClick={() => logout.mutate()}
         disabled={logout.isPending}
-        className="text-muted-foreground self-center text-[13px] font-semibold hover:underline"
+        className="text-muted-foreground focus-visible:ring-ring/15 inline-flex min-h-11 items-center self-center rounded-sm text-[13px] font-semibold hover:underline focus-visible:ring-4 focus-visible:outline-none sm:min-h-0"
       >
         {t("changePassword.signOut")}
       </button>

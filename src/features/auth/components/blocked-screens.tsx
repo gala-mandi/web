@@ -1,6 +1,7 @@
 import { bidi } from "@/i18n/bidi";
 import { useTranslations } from "next-intl";
 import { Check, Lock, PauseCircle } from "lucide-react";
+import Link from "next/link";
 import { AuthCard, TextLink, SubLine } from "./auth-ui";
 
 /** 4.1 Shop suspended (login or refresh answered 403 `TENANT_SUSPENDED`). */
@@ -73,7 +74,12 @@ export function AccountDisabled() {
         {t("hint")} <strong className="text-foreground">{t("hintPath")}</strong>
         .
       </div>
-      <TextLink href="/login">{t("back")}</TextLink>
+      <Link
+        href="/login"
+        className="rounded-button border-border bg-card text-foreground hover:bg-background focus-visible:ring-ring/15 flex min-h-[50px] w-full items-center justify-center border text-[15px] font-bold focus-visible:ring-4 focus-visible:outline-none"
+      >
+        {t("back")}
+      </Link>
     </AuthCard>
   );
 }
