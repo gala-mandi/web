@@ -6,6 +6,7 @@ import { AlertCircle, Clock, Lock, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { ThemePicker } from "@/components/theme-picker";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import {
@@ -324,6 +325,8 @@ export function LoginForm({
           {t("login.staffHintSubline")}
         </SubLine>
       </div>
+
+      <ThemePicker className="border-border/60 border-t pt-5" />
     </AuthCard>
   );
 }

@@ -79,7 +79,7 @@ function Joined({ result }: { result: AcceptInviteResult }) {
         ref={linkRef}
         href={signInPathFor(result.phone)}
         className={cn(
-          "rounded-button from-primary to-brand-to text-primary-foreground shadow-button flex h-[52px] w-full items-center justify-center gap-2.5 bg-linear-90 text-base font-bold hover:opacity-95",
+          "rounded-button from-primary to-primary-to text-primary-foreground shadow-button flex h-[52px] w-full items-center justify-center gap-2.5 bg-linear-90 text-base font-bold hover:opacity-95",
           "focus-visible:ring-ring/15 focus-visible:ring-4 focus-visible:outline-none",
         )}
       >

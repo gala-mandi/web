@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Noto_Nastaliq_Urdu, Plus_Jakarta_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import { cookies } from "next/headers";
 import { localeDirection } from "@/i18n/config";
+import { resolveTheme, THEME_COOKIE } from "@/lib/theme";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -38,10 +40,13 @@ export const instant = false;
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const locale = await getLocale();
+  // The theme picked on this browser (sign-in screen), violet by default.
+  const theme = resolveTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <html
       lang={locale}
       dir={localeDirection[locale]}
+      data-theme={theme}
       className={`${inter.variable} ${jakarta.variable} ${nastaliq.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">

@@ -129,7 +129,7 @@ export function PrimaryButton({
   return (
     <Button
       className={cn(
-        "rounded-button from-primary to-brand-to text-primary-foreground shadow-button h-[52px] w-full gap-2.5 bg-linear-90 text-base font-bold hover:opacity-95 disabled:opacity-60",
+        "rounded-button from-primary to-primary-to text-primary-foreground shadow-button h-[52px] w-full gap-2.5 bg-linear-90 text-base font-bold hover:opacity-95 disabled:opacity-60",
         "focus-visible:ring-ring/15 focus-visible:ring-4",
         className,
       )}
